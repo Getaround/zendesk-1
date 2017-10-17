@@ -1,5 +1,5 @@
 view: organizations {
-  sql_table_name: looker_zendesk.organizations ;;
+  sql_table_name: zendesk.organizations ;;
 
   dimension: id {
     primary_key: yes
