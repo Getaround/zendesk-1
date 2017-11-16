@@ -15,6 +15,13 @@ explore: audits {
     relationship: many_to_one
   }
 
+  join: ticket_custom_fields {
+    view_label: "Tickets"
+    type: left_outer
+    foreign_key: tickets.id
+    relationship: one_to_one
+  }
+
   join: organizations {
     type: left_outer
     sql_on: ${tickets.organization_id} = ${organizations.id} ;;
@@ -85,6 +92,14 @@ explore: ticket_fields {
 }
 
 explore: tickets {
+
+  join: ticket_custom_fields {
+    view_label: "Tickets"
+    type: left_outer
+    foreign_key: tickets.id
+    relationship: one_to_one
+  }
+
   join: organizations {
     type: left_outer
     sql_on: ${tickets.organization_id} = ${organizations.id} ;;
