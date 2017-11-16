@@ -4,6 +4,10 @@ view: ticket_custom_fields {
       SELECT DISTINCT
         tickets__fields._sdc_source_key_id AS ticket_id,
 
+        -- Field IDs defined in Zendesk
+        -- Navigate to:
+        --   https://getaround.zendesk.com/agent/admin/ticket_fields
+        -- Then edit a field to see its numeric ID
         MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 21140580)
           OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_category,
         MAX(value_options.name) FILTER (WHERE tickets__fields.id = 21140580)
