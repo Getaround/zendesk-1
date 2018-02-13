@@ -10,6 +10,7 @@ view: ticket__tags {
 
   dimension: ticket_id {
     type: number
+    hidden: yes
     sql: ${TABLE}._sdc_source_key_id ;;
   }
 
