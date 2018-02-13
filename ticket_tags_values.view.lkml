@@ -14,7 +14,7 @@ view: ticket__tags {
   }
 
   dimension: value {
-    view_label: "Ticket Tag"
+    label: "Ticket Tag"
     group_label: "Custom Fields"
     description: "Custom tag associated with a ticket"
     type: string
