@@ -248,6 +248,42 @@ view: tickets {
     }
   }
 
+  measure: count_satisfied {
+    description: "Count tickets marked as \"good\" by the requester"
+    type: count
+    filters: {
+      field: csat_rating
+      value: "good"
+    }
+  }
+
+  measure: count_dissatisfied {
+    description: "Count tickets marked as \"bad\" by the requester"
+    type: count
+    filters: {
+      field: csat_rating
+      value: "bad"
+    }
+  }
+
+  measure: count_offered {
+    description: "Count tickets marked as \"offered\" by the requester"
+    type: count
+    filters: {
+      field: csat_rating
+      value: "offered"
+    }
+  }
+
+  measure: count_unoffered {
+    description: "Count tickets marked as \"unoffered\" by the requester"
+    type: count
+    filters: {
+      field: csat_rating
+      value: "unoffered"
+    }
+  }
+
   ############ TIME FIELDS ###########
 
 #  dimension_group: time {
