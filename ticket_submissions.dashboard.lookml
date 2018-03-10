@@ -121,9 +121,9 @@
     type: looker_column
     model: zendesk
     explore: ticket_metrics
-    dimensions: [tickets.time_hour_of_day]
+    dimensions: [tickets.created_at_hour_of_day]
     measures: [tickets.count]
-    sorts: [tickets.time_hour_of_day]
+    sorts: [tickets.created_at_hour_of_day]
     limit: 500
     column_limit: 50
     stacking: percent
@@ -152,9 +152,9 @@
     type: looker_column
     model: zendesk
     explore: ticket_metrics
-    dimensions: [tickets.time_day_of_week]
+    dimensions: [tickets.created_at_day_of_week]
     measures: [tickets.count]
-    sorts: [tickets.time_day_of_week]
+    sorts: [tickets.created_at_day_of_week]
     limit: 500
     column_limit: 50
     stacking: percent
