@@ -64,17 +64,29 @@ view: tickets {
     sql: ${TABLE}.requester_id ;;
   }
 
-  #   - dimension: satisfaction_rating__comment
-  #     type: string
-  #     sql: ${TABLE}.satisfaction_rating__comment
-  #
-  #   - dimension: satisfaction_rating__id
-  #     type: number
-  #     sql: ${TABLE}.satisfaction_rating__id
-  #
-  #   - dimension: satisfaction_rating__score
-  #     type: string
-  #     sql: ${TABLE}.satisfaction_rating__score
+  dimension: csat_comment {
+    description: "CSAT comment submitted by the ticket requester"
+    label: "CSAT Comment"
+    group_label: "CSAT"
+    type: string
+    sql: ${TABLE}.satisfaction_rating__comment ;;
+  }
+
+  dimension: csat_id {
+    description: "CSAT ID for the rating submitted by the ticket requester"
+    label: "CSAT ID"
+    group_label: "CSAT"
+    type: number
+    sql: ${TABLE}.satisfaction_rating__id ;;
+  }
+
+  dimension: csat_rating {
+    description: "CSAT rating submitted by the ticket requester"
+    label: "CSAT Rating"
+    group_label: "CSAT"
+    type: string
+    sql: ${TABLE}.satisfaction_rating__score ;;
+  }
 
   dimension: status {
     type: string
