@@ -27,7 +27,6 @@ view: tickets {
   dimension_group: created_at {
     type: time
     group_label: "Time Created At"
-    label: "Created At"
     timeframes: [
       raw,
       time,
@@ -50,7 +49,7 @@ view: tickets {
 
   dimension_group: created_at_utc {
     type: time
-    group_label: "Time Created At UTC"
+    group_label: "Time Created At"
     label: "Created At UTC"
     timeframes: [
       raw,
