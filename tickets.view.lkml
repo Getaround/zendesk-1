@@ -26,8 +26,51 @@ view: tickets {
 
   dimension_group: created_at {
     type: time
-    timeframes: [time, date, week, month]
-    sql: ${TABLE}.created_at::timestamp ;;
+    group_label: "Time Created At"
+    label: "Created At"
+    timeframes: [
+      raw,
+      time,
+      date,
+      time_of_day,
+      week,
+      month,
+      quarter,
+      hour_of_day,
+      day_of_week,
+      day_of_week_index,
+      day_of_month,
+      year,
+      week_of_year,
+      month_num,
+      quarter_of_year
+    ]
+    sql: ${TABLE}.created_at ;;
+  }
+
+  dimension_group: created_at_utc {
+    type: time
+    group_label: "Time Created At UTC"
+    label: "Created At UTC"
+    timeframes: [
+      raw,
+      time,
+      date,
+      time_of_day,
+      week,
+      month,
+      quarter,
+      hour_of_day,
+      day_of_week,
+      day_of_week_index,
+      day_of_month,
+      year,
+      week_of_year,
+      month_num,
+      quarter_of_year
+    ]
+    sql: ${TABLE}.created_at ;;
+    convert_tz: no
   }
 
   dimension: group_id {
@@ -208,12 +251,12 @@ view: tickets {
 
   ############ TIME FIELDS ###########
 
-  dimension_group: time {
-    type: time
+#  dimension_group: time {
+#    type: time
     ###   use day_of_week
-    timeframes: [day_of_week, hour_of_day]
-    sql: ${TABLE}.created_at::timestamp ;;
-  }
+#    timeframes: [day_of_week, hour_of_day]
+#    sql: ${TABLE}.created_at::timestamp ;;
+#  }
 }
 
 #   - dimension: created_day_of_week
