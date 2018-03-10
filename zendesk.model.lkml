@@ -2,6 +2,13 @@ connection: "getdata"
 
 # include all the views
 include: "*.view"
+include: "/getaround/getaround_trip.view"
+include: "/getaround/getaround_car.view"
+include: "/getaround/getaround_car_style.view"
+include: "/getaround/getaround_user.view"
+include: "/getaround/getaround_market.view"
+include: "/getaround/getaround_market_timezone.view"
+include: "/getaround/edmunds_*.view"
 
 # include all the dashboards
 include: "*.dashboard"
@@ -93,12 +100,100 @@ explore: ticket_fields {
 
 explore: tickets {
 
+  fields: [
+    ALL_FIELDS*,
+    -getaround_car.car_fact_dependent*,
+    -getaround_user.renter_fact_dependent_fields*,
+    -getaround_user.owner_fact_dependent_fields*,
+    -getaround_trip.market_fact_dependent*,
+    -getaround_trip.renter_fact_dependent*,
+    -getaround_trip.car_fact_dependent*,
+    -getaround_trip.insurance_dependent*,
+    -getaround_trip.user_market_dependent*,
+    -getaround_car.closeio_lead_dependent*,
+#    -getaround_car.car_style_dependent*,
+    -getaround_user.stripe_dependent_fields*,
+    -getaround_owner.market_dependent_fields*,
+    -getaround_owner.renter_fact_dependent_fields*,
+    -getaround_owner.owner_fact_dependent_fields*,
+    -getaround_owner.stripe_dependent_fields*
+  ]
+
   join: ticket_custom_fields {
     view_label: "Tickets"
     type: left_outer
     foreign_key: tickets.id
     relationship: one_to_one
   }
+
+  join: getaround_trip {
+    foreign_key: ticket_custom_fields.trip_id
+    relationship: many_to_one
+  }
+
+  join: getaround_user {
+    foreign_key: getaround_trip.renter_id
+    relationship:  many_to_one
+  }
+
+  join: getaround_market {
+    foreign_key: getaround_trip.car_parking_address_postcode
+    relationship: many_to_one
+  }
+
+  join: getaround_market_timezone {
+    sql_on: ${getaround_market.market_id} = ${getaround_market_timezone.market_id} AND coalesce(${getaround_market.zone_id},0) = coalesce(${getaround_market_timezone.zone_id},0) ;;
+    relationship: one_to_one
+  }
+
+  join: getaround_car {
+    foreign_key: ticket_custom_fields.car_id
+    relationship: many_to_one
+  }
+
+  join: getaround_car_style {
+    foreign_key: getaround_car.id
+    relationship: one_to_one
+  }
+
+  join: getaround_owner
+  {
+    from: getaround_user
+    foreign_key: getaround_trip.renter_id
+    relationship:  many_to_one
+  }
+
+  # Edmunds begins #
+  join: edmunds_style {
+    view_label: "Edmunds"
+    sql_on: ${getaround_car.model_style_id} = ${edmunds_style.id} ;;
+    relationship: many_to_one
+  }
+
+  join: edmunds_engine {
+    view_label: "Edmunds"
+    sql_on: ${edmunds_style.engine_id} = ${edmunds_engine.id} ;;
+    relationship: many_to_one
+  }
+
+  join: edmunds_fuel_economy {
+    view_label: "Edmunds"
+    sql_on: ${edmunds_style.fuel_economy_id} = ${edmunds_fuel_economy.id} ;;
+    relationship: many_to_one
+  }
+
+  join: edmunds_price {
+    view_label: "Edmunds"
+    sql_on: ${edmunds_style.price_id} = ${edmunds_price.id} ;;
+    relationship: many_to_one
+  }
+
+  join: edmunds_category {
+    view_label: "Edmunds"
+    sql_on: ${edmunds_style.category_id} = ${edmunds_category.id} ;;
+    relationship: many_to_one
+  }
+  # Edmunds ends #
 
   join: organizations {
     type: left_outer
