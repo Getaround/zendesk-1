@@ -17,13 +17,13 @@ view: ticket_custom_fields {
 
         MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 21061264)
           OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_freedom_metadata,
-        (CASE WHEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 22157130)
+        CASE WHEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 22157130)
                     OVER (PARTITION BY tickets__fields._sdc_source_key_id) ~ '^\d+(.\d+)?$'
                   AND length(MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 22157130)
                                OVER (PARTITION BY tickets__fields._sdc_source_key_id)) < 20
              THEN (MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 22157130)
-                    OVER (PARTITION BY tickets__fields._sdc_source_key_id))::bigint
-             ELSE NULL END)::text AS value_car_id,
+                    OVER (PARTITION BY tickets__fields._sdc_source_key_id))::text
+             ELSE NULL END AS value_car_id,
         CASE WHEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 21146160)
                     OVER (PARTITION BY tickets__fields._sdc_source_key_id) ~ '^\d+(.\d+)?$'
                   AND length(MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 21146160)
