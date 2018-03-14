@@ -83,8 +83,8 @@ view: ticket_custom_fields {
   dimension: car_id {
     group_label: "Custom Fields"
     hidden: yes
-    type: number
-    sql: ${TABLE}.value_car_id ;;
+    type: string
+    sql: ${TABLE}.value_car_id::text ;;
   }
 
   dimension: trip_id {
