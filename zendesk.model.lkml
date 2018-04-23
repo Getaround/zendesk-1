@@ -220,6 +220,12 @@ explore: tickets {
     sql_on: ${tickets.group_id} = ${groups.id} ;;
     relationship: many_to_one
   }
+
+  join: ticket__tags {
+    type: left_outer
+    sql_on: ${tickets.id} = ${ticket__tags.ticket_id} ;;
+    relationship: one_to_many
+  }
 }
 
 # - explore: tickets__fields
