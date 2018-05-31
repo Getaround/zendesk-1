@@ -215,6 +215,12 @@ explore: tickets {
     relationship: many_to_one
   }
 
+  join: ticket_metrics {
+    type: left_outer
+    sql_on: ${tickets.id} = ${ticket_metrics.ticket_id} ;;
+    relationship: one_to_one
+  }
+
   join: groups {
     type: left_outer
     sql_on: ${tickets.group_id} = ${groups.id} ;;

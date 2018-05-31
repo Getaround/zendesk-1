@@ -31,7 +31,7 @@ view: ticket_metrics {
 
   dimension: assignee_email {
     type: string
-    sql: ${users.email} ;;
+    sql: ${assignees.email} ;;
   }
 
   dimension: group_name {
@@ -164,14 +164,15 @@ view: ticket_metrics {
     sql: ${full_resolution_time_in_days__business} ;;
   }
 
-  #   - dimension: full_resolution_time_in_days__calendar
-  #     type: number
-  #     sql: ${TABLE}.full_resolution_time_in_minutes__calendar / 1440
-  #
-  #   - measure: avg_full_resolution_time_in_days__calendar
-  #     type: avg
-  #     sql: ${full_resolution_time_in_days__calendar}
+  dimension: full_resolution_time_in_days__calendar{
+    type: number
+    sql: ${TABLE}.full_resolution_time_in_minutes__calendar / 1440;;
+  }
 
+  measure: avg_full_resolution_time_in_days__calendar{
+    type: average
+    sql: ${full_resolution_time_in_days__calendar};;
+  }
 
   dimension_group: initially_assigned {
     type: time
