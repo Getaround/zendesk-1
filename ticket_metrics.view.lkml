@@ -166,12 +166,14 @@ view: ticket_metrics {
 
   dimension: full_resolution_time_in_days__calendar {
     type: number
+    value_format_name: decimal_1
     sql: ${TABLE}.full_resolution_time_in_minutes__calendar / 1440 ;;
   }
 
-  measure: avg_full_resolution_time_in_days__calendar{
+  measure: avg_full_resolution_time_in_days__calendar {
     type: average
-    sql: ${full_resolution_time_in_days__calendar};;
+    value_format_name: decimal_1
+    sql: ${full_resolution_time_in_days__calendar} ;;
   }
 
   dimension_group: initially_assigned {
