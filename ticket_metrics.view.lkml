@@ -164,9 +164,9 @@ view: ticket_metrics {
     sql: ${full_resolution_time_in_days__business} ;;
   }
 
-  dimension: full_resolution_time_in_days__calendar{
+  dimension: full_resolution_time_in_days__calendar {
     type: number
-    sql: ${TABLE}.full_resolution_time_in_minutes__calendar / 1440;;
+    sql: ${TABLE}.full_resolution_time_in_minutes__calendar / 1440 ;;
   }
 
   measure: avg_full_resolution_time_in_days__calendar{
