@@ -68,10 +68,19 @@ view: ticket_metrics {
     sql: ${first_resolution_time_in_minutes__business} ;;
   }
 
-  #   - dimension: first_resolution_time_in_minutes__calendar
-  #     type: number
-  #     sql: ${TABLE}.first_resolution_time_in_minutes__calendar
-  #
+  dimension: first_resolution_time_in_minutes__calendar {
+    type: number
+    value_format_name: decimal_1
+    sql: ${TABLE}.first_resolution_time_in_minutes__calendar ;;
+  }
+
+  dimension: one_touch_resolution {
+    description: "\"Yes\" if the ticket was resolved on first contact"
+    label: "One-Touch Ticket Resolution"
+    type: yesno
+    sql: ${TABLE}.first_resolution_time_in_minutes__calendar >= ${TABLE}.full_resolution_time_in_minutes__calendar ;;
+  }
+
   #   - measure: avg_first_resolution_time_in_minutes__calendar
   #     type: avg
   #     sql: ${first_resolution_time_in_minutes__calendar}
