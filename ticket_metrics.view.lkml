@@ -86,10 +86,20 @@ view: ticket_metrics {
     sql: ${full_resolution_time_in_minutes__business} ;;
   }
 
-  #   - dimension: full_resolution_time_in_minutes__calendar
-  #     type: number
-  #     sql: ${TABLE}.full_resolution_time_in_minutes__calendar
-  #
+  dimension: full_resolution_time_in_minutes__calendar {
+    type: number
+    value_format_name: decimal_2
+    sql: ${TABLE}.full_resolution_time_in_minutes__calendar ;;
+  }
+
+  dimension: full_resolution_time_in_minutes__calendar_meet_SLA {
+    description: "\"Yes\" if the ticket was solved within the first 12 calendar hours"
+    label: "Full Resolution Time Meets 12 hour SLA"
+    group_label: "SLA"
+    type: yesno
+    sql: ${TABLE}.full_resolution_time_in_minutes__calendar <= 720 ;;
+  }
+
   #   - measure: avg_full_resolution_time_in_minutes__calendar
   #     type: avg
   #     sql: ${full_resolution_time_in_minutes__calendar}
