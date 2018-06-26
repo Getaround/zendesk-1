@@ -70,7 +70,7 @@ view: ticket_metrics {
 
   dimension: first_resolution_time_in_minutes__calendar {
     type: number
-    value_format_name: decimal_1
+    value_format_name: decimal_2
     sql: ${TABLE}.first_resolution_time_in_minutes__calendar ;;
   }
 
