@@ -68,10 +68,19 @@ view: ticket_metrics {
     sql: ${first_resolution_time_in_minutes__business} ;;
   }
 
-  #   - dimension: first_resolution_time_in_minutes__calendar
-  #     type: number
-  #     sql: ${TABLE}.first_resolution_time_in_minutes__calendar
-  #
+  dimension: first_resolution_time_in_minutes__calendar {
+    type: number
+    value_format_name: decimal_2
+    sql: ${TABLE}.first_resolution_time_in_minutes__calendar ;;
+  }
+
+  dimension: one_touch_resolution {
+    description: "\"Yes\" if the ticket was resolved on first contact"
+    label: "One-Touch Ticket Resolution"
+    type: yesno
+    sql: ${TABLE}.first_resolution_time_in_minutes__calendar >= ${TABLE}.full_resolution_time_in_minutes__calendar ;;
+  }
+
   #   - measure: avg_first_resolution_time_in_minutes__calendar
   #     type: avg
   #     sql: ${first_resolution_time_in_minutes__calendar}
@@ -86,10 +95,20 @@ view: ticket_metrics {
     sql: ${full_resolution_time_in_minutes__business} ;;
   }
 
-  #   - dimension: full_resolution_time_in_minutes__calendar
-  #     type: number
-  #     sql: ${TABLE}.full_resolution_time_in_minutes__calendar
-  #
+  dimension: full_resolution_time_in_minutes__calendar {
+    type: number
+    value_format_name: decimal_2
+    sql: ${TABLE}.full_resolution_time_in_minutes__calendar ;;
+  }
+
+  dimension: full_resolution_time_in_minutes__calendar_meet_SLA {
+    description: "\"Yes\" if the ticket was solved within the first 12 calendar hours"
+    label: "Full Resolution Time Meets 12 hour SLA"
+    group_label: "SLA"
+    type: yesno
+    sql: ${TABLE}.full_resolution_time_in_minutes__calendar <= 720 ;;
+  }
+
   #   - measure: avg_full_resolution_time_in_minutes__calendar
   #     type: avg
   #     sql: ${full_resolution_time_in_minutes__calendar}
@@ -218,14 +237,25 @@ view: ticket_metrics {
     sql: ${reply_time_in_minutes__business} ;;
   }
 
-  #   - dimension: reply_time_in_minutes__calendar
-  #     type: number
-  #     sql: ${TABLE}.reply_time_in_minutes__calendar
-  #
-  #   - measure: avg_reply_time_in_minutes__calendar
-  #     type: avg
-  #     sql: ${reply_time_in_minutes__calendar}
+  dimension: reply_time_in_minutes__calendar {
+    type: number
+    value_format_name: decimal_2
+    sql: ${TABLE}.reply_time_in_minutes__calendar ;;
+  }
 
+  dimension: reply_time_in_hours__calendar_meet_SLA {
+    description: "\"Yes\" if the ticket was first replied to within the first 4 calendar hours"
+    label: "First Reply Time Meets 4 hour SLA"
+    group_label: "SLA"
+    type: yesno
+    sql: ${TABLE}.reply_time_in_minutes__calendar <= 240 ;;
+  }
+
+  measure: avg_reply_time_in_minutes__calendar {
+    type: average
+    value_format_name: decimal_2
+    sql: ${reply_time_in_minutes__calendar} ;;
+  }
 
   # FIRST REPLY HOURS
 
@@ -239,13 +269,17 @@ view: ticket_metrics {
     sql: ${reply_time_in_hours__business} ;;
   }
 
-  #   - dimension: reply_time_in_hours__calendar
-  #     type: number
-  #     sql: ${TABLE}.reply_time_in_minutes__calendar / 60
-  #
-  #   - measure: avg_reply_time_in_hours__calendar
-  #     type: avg
-  #     sql: ${reply_time_in_hours__calendar}
+  # dimension: reply_time_in_hours__calendar {
+  #   type: number
+  #   value_format_name: decimal_2
+  #   sql: ${TABLE}.reply_time_in_minutes__calendar / 60 ;;
+  # }
+
+  # measure: avg_reply_time_in_hours__calendar {
+  #   type: average
+  #   value_format_name: decimal_2
+  #   sql: ${reply_time_in_hours__calendar} ;;
+  # }
 
   dimension_group: requester_updated {
     type: time
