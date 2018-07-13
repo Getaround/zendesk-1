@@ -201,6 +201,7 @@ view: ticket_custom_fields {
     type: count
     filters: {
       field: is_trip_related
+      value: "Yes"
     }
   }
 
@@ -209,6 +210,7 @@ view: ticket_custom_fields {
     type: count
     filters: {
       field: is_car_related
+      value: "Yes"
     }
   }
 
