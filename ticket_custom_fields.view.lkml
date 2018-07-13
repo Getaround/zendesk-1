@@ -80,19 +80,23 @@ view: ticket_custom_fields {
     sql: ${TABLE}.ticket_id ;;
   }
 
-  dimension: car_id {
+  dimension: getaround_car_id {
+    alias: [car_id]
+    description: "Getaround ID of the car this ticket relates to"
+    label: "Getaround Car ID"
     group_label: "Custom Fields"
-    hidden: yes
     type: string
     sql: ${TABLE}.value_car_id ;;
   }
 
-  dimension: trip_id {
+  dimension: getaround_trip_id {
+    alias: [trip_id]
+    description: "Getaround ID of the trip this ticket relates to"
+    label: "Getaround Trip ID"
     group_label: "Custom Fields"
-    hidden: yes
     type: number
     sql: ${TABLE}.value_trip_id ;;
-  }
+   }
 
   dimension: category_name {
     group_label: "Custom Fields"
@@ -164,6 +168,20 @@ view: ticket_custom_fields {
     sql: ${TABLE}.value_time_spent_last_update ;;
   }
 
+  dimension: is_trip_related {
+    group_label: "Custom Fields"
+    description: "\"Yes\" if this ticket has a Trip ID set"
+    type: yesno
+    sql:  ${getaround_trip_id} IS NOT NULL ;;
+  }
+
+  dimension: is_car_related {
+    group_label: "Custom Fields"
+    description: "\"Yes\" if this ticket has a Car ID set"
+    type: yesno
+    sql:  ${getaround_car_id} IS NOT NULL ;;
+  }
+
   # Measures
 
   measure: sum_total_time_spent {
@@ -176,5 +194,21 @@ view: ticket_custom_fields {
     description: "Sum time spent on the last ticket update, in seconds"
     type: sum
     sql: ${time_spent_last_update} ;;
+  }
+
+  measure: count_trip_related {
+    description: "Count tickets that have an associated Getaround Trip ID"
+    type: count
+    filters: {
+      field: is_trip_related
+    }
+  }
+
+  measure: count_car_related {
+    description: "Count tickets that have an associated Getaround Car ID"
+    type: count
+    filters: {
+      field: is_car_related
+    }
   }
 }

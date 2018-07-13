@@ -166,9 +166,15 @@ view: tickets {
 
   # ----- ADDITIONAL FIELDS -----
 
-  dimension: is_backlogged {
+  dimension: is_pending {
+    alias: [is_backlogged]
     type: yesno
     sql: ${status} = 'pending' ;;
+  }
+
+  dimension: is_onhold {
+    type: yesno
+    sql: ${status} = 'hold' ;;
   }
 
   dimension: is_new {
@@ -201,7 +207,16 @@ view: tickets {
     type: count
 
     filters: {
-      field: is_backlogged
+      field: is_pending
+      value: "Yes"
+    }
+  }
+
+  measure: count_onhold_tickets {
+    type: count
+
+    filters: {
+      field: is_onhold
       value: "Yes"
     }
   }

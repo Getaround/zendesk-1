@@ -127,7 +127,7 @@ explore: tickets {
   }
 
   join: getaround_trip {
-    foreign_key: ticket_custom_fields.trip_id
+    foreign_key: ticket_custom_fields.getaround_trip_id
     relationship: many_to_one
   }
 
@@ -147,7 +147,7 @@ explore: tickets {
   }
 
   join: getaround_car {
-    foreign_key: ticket_custom_fields.car_id
+    foreign_key: ticket_custom_fields.getaround_car_id
     relationship: many_to_one
   }
 
