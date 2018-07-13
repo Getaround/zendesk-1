@@ -123,6 +123,7 @@ view: users {
   }
 
   measure: count {
+    description: "Count Zendesk users"
     type: count
     drill_fields: [id, name]
   }

@@ -23,6 +23,7 @@ view: groups {
   }
 
   measure: count {
+    description: "Count Zendesk groups"
     type: count
     drill_fields: [id, name]
   }

@@ -39,6 +39,7 @@ view: organizations {
   }
 
   measure: count {
+    description: "Count Zendesk organizations"
     type: count
     drill_fields: [id, name]
   }

@@ -25,6 +25,7 @@ view: audits {
   }
 
   measure: count {
+    description: "Count Zendesk ticket changes"
     type: count
     drill_fields: [detail*]
   }

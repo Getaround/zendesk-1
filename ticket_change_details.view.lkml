@@ -76,6 +76,7 @@ view: audits__events {
   }
 
   measure: count {
+    description: "Count Zendesk ticket change details"
     type: count
     drill_fields: [id_change_events, field_name, audits.id, audits.via__source__from__name, audits.via__source__to__name]
   }
