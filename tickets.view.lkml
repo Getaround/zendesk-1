@@ -160,6 +160,7 @@ view: tickets {
   }
 
   measure: count {
+    description: "Count Zendesk tickets"
     type: count
     drill_fields: [id, requester_email]
   }

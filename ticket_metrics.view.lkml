@@ -321,6 +321,7 @@ view: ticket_metrics {
   }
 
   measure: count {
+    description: "Count Zendesk ticket metrics"
     type: count
     drill_fields: [id, tickets.via__source__from__name, tickets.id, tickets.via__source__to__name]
   }

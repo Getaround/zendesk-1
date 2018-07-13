@@ -18,6 +18,7 @@ view: ticket__tags {
   }
 
   measure: count {
+    description: "Count Zendesk ticket tag values"
     type: count
     drill_fields: []
   }
