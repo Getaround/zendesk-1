@@ -211,4 +211,16 @@ view: ticket_custom_fields {
       field: is_car_related
     }
   }
+
+  measure: count_unique_trips {
+    description: "Unique count of Trip IDs referenced by Zendesk tickets"
+    type:  count_distinct
+    sql:  ${getaround_trip_id} ;;
+  }
+
+  measure: count_unique_cars {
+    description: "Unique count of Car IDs referenced by Zendesk tickets"
+    type:  count_distinct
+    sql:  ${getaround_car_id} ;;
+  }
 }
