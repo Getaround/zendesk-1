@@ -159,10 +159,18 @@ view: tickets {
     sql: ${TABLE}.via__channel ;;
   }
 
+  dimension: hyperlink {
+    description: "Hyperlink to the Zendesk ticket"
+    group_label: "Zendesk"
+    type: string
+    sql: ${TABLE}.id ;;
+    html: <a href="https://getaround.zendesk.com/agent/tickets/{{ value }}">{{ value }}</a> ;;
+  }
+
   measure: count {
     description: "Count Zendesk tickets"
     type: count
-    drill_fields: [id, requester_email]
+    drill_fields: [default*]
   }
 
   # ----- ADDITIONAL FIELDS -----
@@ -206,11 +214,11 @@ view: tickets {
 
   measure: count_pending_tickets {
     type: count
-
     filters: {
       field: is_pending
       value: "Yes"
     }
+    drill_fields: [default*]
   }
 
   measure: count_onhold_tickets {
@@ -220,6 +228,7 @@ view: tickets {
       field: is_onhold
       value: "Yes"
     }
+    drill_fields: [default*]
   }
 
   measure: count_new_tickets {
@@ -229,6 +238,7 @@ view: tickets {
       field: is_new
       value: "Yes"
     }
+    drill_fields: [default*]
   }
 
   measure: count_open_tickets {
@@ -238,6 +248,7 @@ view: tickets {
       field: is_open
       value: "Yes"
     }
+    drill_fields: [default*]
   }
 
   measure: count_solved_tickets {
@@ -247,6 +258,7 @@ view: tickets {
       field: is_solved
       value: "Yes"
     }
+    drill_fields: [default*]
   }
 
   measure: count_distinct_organizations {
@@ -271,6 +283,7 @@ view: tickets {
       field: csat_rating
       value: "good"
     }
+    drill_fields: [default*]
   }
 
   measure: count_dissatisfied {
@@ -280,6 +293,7 @@ view: tickets {
       field: csat_rating
       value: "bad"
     }
+    drill_fields: [default*]
   }
 
   measure: count_offered {
@@ -289,6 +303,7 @@ view: tickets {
       field: csat_rating
       value: "offered"
     }
+    drill_fields: [default*]
   }
 
   measure: count_unoffered {
@@ -298,7 +313,22 @@ view: tickets {
       field: csat_rating
       value: "unoffered"
     }
+    drill_fields: [default*]
   }
+
+  set: default {
+    fields: [
+      hyperlink,
+      created_at_time,
+      organization_name,
+      status,
+      csat_rating,
+      type,
+      via__channel,
+      subject
+    ]
+  }
+
 
   ############ TIME FIELDS ###########
 
