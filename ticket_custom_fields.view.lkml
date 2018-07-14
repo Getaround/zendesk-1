@@ -1,73 +1,86 @@
 view: ticket_custom_fields {
   derived_table: {
     sql:
-      SELECT DISTINCT
-        tickets__fields._sdc_source_key_id AS ticket_id,
+      WITH ticket_custom_fields AS (
+        SELECT DISTINCT
+          tickets__fields._sdc_source_key_id AS ticket_id,
 
-        -- Field IDs defined in Zendesk
-        -- Navigate to:
-        --   https://getaround.zendesk.com/agent/admin/ticket_fields
-        -- Then edit a field to see its numeric ID
-        MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 21140580)
-          OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_category,
-        MAX(value_options.name) FILTER (WHERE tickets__fields.id = 21140580)
-          OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_category_name,
-        MAX(value_options.raw_name) FILTER (WHERE tickets__fields.id = 21140580)
-          OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_category_raw_name,
+          -- Field IDs defined in Zendesk
+          -- Navigate to:
+          --   https://getaround.zendesk.com/agent/admin/ticket_fields
+          -- Then edit a field to see its numeric ID
+          MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 21140580)
+            OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_category,
+          MAX(value_options.name) FILTER (WHERE tickets__fields.id = 21140580)
+            OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_category_name,
+          MAX(value_options.raw_name) FILTER (WHERE tickets__fields.id = 21140580)
+            OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_category_raw_name,
 
-        MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 21061264)
-          OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_freedom_metadata,
-        CASE WHEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 22157130)
-                    OVER (PARTITION BY tickets__fields._sdc_source_key_id) ~ '^\d+(.\d+)?$'
-                  AND length(MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 22157130)
-                               OVER (PARTITION BY tickets__fields._sdc_source_key_id)) < 20
-             THEN (MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 22157130)
-                    OVER (PARTITION BY tickets__fields._sdc_source_key_id))::text
-             ELSE NULL END AS value_car_id,
-        CASE WHEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 21146160)
-                    OVER (PARTITION BY tickets__fields._sdc_source_key_id) ~ '^\d+(.\d+)?$'
-                  AND length(MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 21146160)
-                               OVER (PARTITION BY tickets__fields._sdc_source_key_id)) < 20
-             THEN (MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 21146160)
-                    OVER (PARTITION BY tickets__fields._sdc_source_key_id))::bigint
-             ELSE NULL END AS value_trip_id,
+          MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 21061264)
+            OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_freedom_metadata,
+          CASE WHEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 22157130)
+                      OVER (PARTITION BY tickets__fields._sdc_source_key_id) ~ '^\d+(.\d+)?$'
+                    AND length(MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 22157130)
+                                 OVER (PARTITION BY tickets__fields._sdc_source_key_id)) < 20
+               THEN (MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 22157130)
+                      OVER (PARTITION BY tickets__fields._sdc_source_key_id))::text
+               ELSE NULL END AS value_car_id,
+          CASE WHEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 21146160)
+                      OVER (PARTITION BY tickets__fields._sdc_source_key_id) ~ '^\d+(.\d+)?$'
+                    AND length(MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 21146160)
+                                 OVER (PARTITION BY tickets__fields._sdc_source_key_id)) < 20
+               THEN (MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 21146160)
+                      OVER (PARTITION BY tickets__fields._sdc_source_key_id))::bigint
+               ELSE NULL END AS value_trip_id,
 
-        MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 22850570)
-          OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_zone_group,
-        MAX(value_options.name) FILTER (WHERE tickets__fields.id = 22850570)
-          OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_zone_group_name,
-        MAX(value_options.raw_name) FILTER (WHERE tickets__fields.id = 22850570)
-          OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_zone_group_raw_name,
+          MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 22850570)
+            OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_zone_group,
+          MAX(value_options.name) FILTER (WHERE tickets__fields.id = 22850570)
+            OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_zone_group_name,
+          MAX(value_options.raw_name) FILTER (WHERE tickets__fields.id = 22850570)
+            OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_zone_group_raw_name,
 
-        MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 22939810)
-          OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_exit_reason,
-        MAX(value_options.name) FILTER (WHERE tickets__fields.id = 22939810)
-          OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_exit_reason_name,
-        MAX(value_options.raw_name) FILTER (WHERE tickets__fields.id = 22939810)
-          OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_exit_reason_raw_name,
+          MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 22939810)
+            OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_exit_reason,
+          MAX(value_options.name) FILTER (WHERE tickets__fields.id = 22939810)
+            OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_exit_reason_name,
+          MAX(value_options.raw_name) FILTER (WHERE tickets__fields.id = 22939810)
+            OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_exit_reason_raw_name,
 
-        MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 30166248)
-          OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_claim_status,
-        MAX(value_options.name) FILTER (WHERE tickets__fields.id = 30166248)
-          OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_claim_status_name,
-        MAX(value_options.raw_name) FILTER (WHERE tickets__fields.id = 30166248)
-          OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_claim_status_raw_name,
+          MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 30166248)
+            OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_claim_status,
+          MAX(value_options.name) FILTER (WHERE tickets__fields.id = 30166248)
+            OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_claim_status_name,
+          MAX(value_options.raw_name) FILTER (WHERE tickets__fields.id = 30166248)
+            OVER (PARTITION BY tickets__fields._sdc_source_key_id) AS value_claim_status_raw_name,
 
-        (CASE WHEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 31479707)
-                    OVER (PARTITION BY tickets__fields._sdc_source_key_id) ~ '^\d+(.\d+)?$'
-             THEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 31479707)
-                    OVER (PARTITION BY tickets__fields._sdc_source_key_id)
-             ELSE NULL END)::int AS value_total_time_spent,
-        (CASE WHEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 31479717)
-                    OVER (PARTITION BY tickets__fields._sdc_source_key_id) ~ '^\d+(.\d+)?$'
-             THEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 31479717)
-                    OVER (PARTITION BY tickets__fields._sdc_source_key_id)
-             ELSE NULL END)::int AS value_time_spent_last_update
+          (CASE WHEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 31479707)
+                      OVER (PARTITION BY tickets__fields._sdc_source_key_id) ~ '^\d+(.\d+)?$'
+               THEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 31479707)
+                      OVER (PARTITION BY tickets__fields._sdc_source_key_id)
+               ELSE NULL END)::int AS value_total_time_spent,
+          (CASE WHEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 31479717)
+                      OVER (PARTITION BY tickets__fields._sdc_source_key_id) ~ '^\d+(.\d+)?$'
+               THEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 31479717)
+                      OVER (PARTITION BY tickets__fields._sdc_source_key_id)
+               ELSE NULL END)::int AS value_time_spent_last_update
 
-      FROM zendesk.tickets__fields
-        LEFT JOIN zendesk.ticket_fields__custom_field_options AS value_options
-          ON (tickets__fields.id = value_options._sdc_source_key_id AND
-              tickets__fields.value = value_options.value) ;;
+        FROM zendesk.tickets__fields
+          LEFT JOIN zendesk.ticket_fields__custom_field_options AS value_options
+            ON (tickets__fields.id = value_options._sdc_source_key_id AND
+                tickets__fields.value = value_options.value))
+
+      SELECT
+        ticket_custom_fields.*,
+        COALESCE(getaround_trip_a.coalesced_id, getaround_trip_b.coalesced_id) AS corrected_trip_id
+      FROM
+        ticket_custom_fields
+      LEFT JOIN public.trip AS getaround_trip_a
+        ON (getaround_trip_a.coalesced_id = ticket_custom_fields.value_trip_id::text)
+      LEFT JOIN public.trip AS getaround_trip_b
+        ON (getaround_trip_b.id = ticket_custom_fields.value_trip_id::text)
+      WHERE
+        value_trip_id IS NOT NULL ;;
     indexes: ["ticket_id",
               "value_trip_id",
               "value_car_id"]
@@ -97,7 +110,7 @@ view: ticket_custom_fields {
     label: "Getaround Trip ID"
     group_label: "Custom Fields"
     type: number
-    sql: ${TABLE}.value_trip_id ;;
+    sql: ${TABLE}.corrected_trip_id ;;
    }
 
   dimension: category_name {
