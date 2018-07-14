@@ -68,7 +68,9 @@ view: ticket_custom_fields {
         LEFT JOIN zendesk.ticket_fields__custom_field_options AS value_options
           ON (tickets__fields.id = value_options._sdc_source_key_id AND
               tickets__fields.value = value_options.value) ;;
-    indexes: ["ticket_id"]
+    indexes: ["ticket_id",
+              "value_trip_id",
+              "value_car_id"]
     sql_trigger_value: SELECT MAX(_sdc_sequence) FROM zendesk.tickets__fields ;;
   }
 
@@ -184,16 +186,9 @@ view: ticket_custom_fields {
 
   # Measures
 
-  measure: sum_total_time_spent {
-    description: "Sum total time spent working this ticket, in seconds"
-    type: sum
-    sql: ${total_time_spent} ;;
-  }
-
-  measure: sum_time_spent_last_update {
-    description: "Sum time spent on the last ticket update, in seconds"
-    type: sum
-    sql: ${time_spent_last_update} ;;
+  measure: count {
+    description: "Count tickets custom field records"
+    type: count
   }
 
   measure: count_trip_related {
@@ -224,5 +219,17 @@ view: ticket_custom_fields {
     description: "Unique count of Car IDs referenced by Zendesk tickets"
     type:  count_distinct
     sql:  ${getaround_car_id} ;;
+  }
+
+  measure: sum_total_time_spent {
+    description: "Sum total time spent working this ticket, in seconds"
+    type: sum
+    sql: ${total_time_spent} ;;
+  }
+
+  measure: sum_time_spent_last_update {
+    description: "Sum time spent on the last ticket update, in seconds"
+    type: sum
+    sql: ${time_spent_last_update} ;;
   }
 }
