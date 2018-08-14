@@ -161,7 +161,7 @@ view: ticket_metrics {
   measure: avg_full_resolution_time_in_hours__calendar {
     description: "Average ticket full resolution time in calendar hours"
     type: average
-    sql: ${full_resolution_time_in_minutes__calendar} ;;
+    sql: ${full_resolution_time_in_minutes__calendar} / 60 ;;
   }
 
 
