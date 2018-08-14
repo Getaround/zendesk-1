@@ -144,13 +144,15 @@ view: ticket_metrics {
     sql: ${full_resolution_time_in_hours__business} ;;
   }
 
-  #   - dimension: full_resolution_time_in_hours__calendar
-  #     type: number
-  #     sql: ${TABLE}.full_resolution_time_in_minutes__calendar / 60
-  #
-  #   - measure: avg_full_resolution_time_in_hours__calendar
-  #     type: avg
-  #     sql: ${full_resolution_time_in_minutes__calendar}
+  dimension: full_resolution_time_in_hours__calendar {
+    type: number
+    sql: ${TABLE}.full_resolution_time_in_minutes__calendar / 60 ;;
+  }
+
+  measure: avg_full_resolution_time_in_hours__calendar {
+    type: average
+    sql: ${full_resolution_time_in_minutes__calendar} ;;
+  }
 
 
   # DAYS
