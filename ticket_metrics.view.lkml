@@ -153,11 +153,13 @@ view: ticket_metrics {
   }
 
   dimension: full_resolution_time_in_hours__calendar {
+    description: "Ticket full resolution time in calendar hours"
     type: number
     sql: ${TABLE}.full_resolution_time_in_minutes__calendar / 60 ;;
   }
 
   measure: avg_full_resolution_time_in_hours__calendar {
+    description: "Average ticket full resolution time in calendar hours"
     type: average
     sql: ${full_resolution_time_in_minutes__calendar} ;;
   }
