@@ -101,12 +101,20 @@ view: ticket_metrics {
     sql: ${TABLE}.full_resolution_time_in_minutes__calendar ;;
   }
 
-  dimension: full_resolution_time_in_minutes__calendar_meet_SLA {
+  dimension: full_resolution_time_in_minutes__calendar_less_than_12_hours {
     description: "\"Yes\" if the ticket was solved within the first 12 calendar hours"
     label: "Full Resolution Time Meets 12 hour SLA"
     group_label: "SLA"
     type: yesno
     sql: ${TABLE}.full_resolution_time_in_minutes__calendar <= 720 ;;
+  }
+
+  dimension: full_resolution_time_in_minutes__calendar_less_than_8_hours {
+    description: "\"Yes\" if the ticket was solved within the first 8 calendar hours"
+    label: "Full Resolution Time Meets 8 hour SLA"
+    group_label: "SLA"
+    type: yesno
+    sql: ${TABLE}.full_resolution_time_in_minutes__calendar <= 480 ;;
   }
 
   #   - measure: avg_full_resolution_time_in_minutes__calendar
@@ -144,13 +152,17 @@ view: ticket_metrics {
     sql: ${full_resolution_time_in_hours__business} ;;
   }
 
-  #   - dimension: full_resolution_time_in_hours__calendar
-  #     type: number
-  #     sql: ${TABLE}.full_resolution_time_in_minutes__calendar / 60
-  #
-  #   - measure: avg_full_resolution_time_in_hours__calendar
-  #     type: avg
-  #     sql: ${full_resolution_time_in_minutes__calendar}
+  dimension: full_resolution_time_in_hours__calendar {
+    description: "Ticket full resolution time in calendar hours"
+    type: number
+    sql: ${TABLE}.full_resolution_time_in_minutes__calendar / 60 ;;
+  }
+
+  measure: avg_full_resolution_time_in_hours__calendar {
+    description: "Average ticket full resolution time in calendar hours"
+    type: average
+    sql: ${full_resolution_time_in_minutes__calendar} / 60 ;;
+  }
 
 
   # DAYS
