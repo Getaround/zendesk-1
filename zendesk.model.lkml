@@ -126,6 +126,13 @@ explore: tickets {
     relationship: one_to_one
   }
 
+  join: ticket_facts {
+    view_label: "Ticket Facts"
+    type: left_outer
+    foreign_key: tickets.id
+    relationship: one_to_one
+  }
+
   # join: getaround_trip {
   #   foreign_key: ticket_custom_fields.getaround_trip_id
   #   relationship: many_to_one
