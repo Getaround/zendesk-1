@@ -8,8 +8,10 @@ view: ticket_facts {
           tickets.via__source__to__name,
           groups.name,
           metrics.group_stations AS number_of_groups_involved,
-          COUNT(DISTINCT audits.id) FILTER(WHERE audits.via__channel = 'voice' AND audits.via__source__from__name = 'Getaround' AND audits.via__source__rel = 'outbound')  AS number_outbound_calls,
-          COUNT(DISTINCT audits.id) FILTER(WHERE (audits.via__channel = 'voice' AND audits.via__source__to__name = 'Getaround' AND audits.via__source__rel = 'inbound')
+          COUNT(DISTINCT audits.id) FILTER(WHERE audits.via__channel = 'voice' AND audits.via__source__from__name = 'Getaround'
+                                  AND audits.via__source__rel = 'outbound')  AS number_outbound_calls,
+          COUNT(DISTINCT audits.id) FILTER(WHERE (audits.via__channel = 'voice' AND audits.via__source__to__name = 'Getaround'
+                                  AND audits.via__source__rel = 'inbound')
                                   OR (audits.via__channel = 'voice' AND audits.via__source__rel = 'voicemail'))  AS number_inbound_calls,
           COUNT(DISTINCT audits.id) FILTER(WHERE (events.type = 'Comment' AND events.public = true AND audits.via__source__to__name = 'Getaround')
                                   OR (events.type = 'Comment' AND events.public = true AND audits.via__channel = 'mobile_sdk')
@@ -73,7 +75,8 @@ view: ticket_facts {
       sql: CASE WHEN ${via__channel} = 'voice' AND ${via__source__rel} = 'inbound' THEN 'Inbound Call'
            WHEN ${via__channel} = 'voice' AND ${via__source__rel} = 'outbound' THEN 'Outbound Call'
            WHEN ${via__channel} = 'voice' AND ${via__source__rel} = 'voicemail' THEN 'Inbound Voicemail'
-           WHEN ${via__channel} = 'email' AND ${via__source__rel} IS NULL AND (${requesters.email} = 'no-reply@getaround.com' OR ${requesters.email} LIKE '%@shadowfam.com') THEN 'Managed Tickets - Email'
+           WHEN ${via__channel} = 'email' AND ${via__source__rel} IS NULL AND (${requesters.email} = 'no-reply@getaround.com'
+                                    OR ${requesters.email} LIKE '%@shadowfam.com') THEN 'Managed Tickets - Email'
            WHEN ${via__channel} = 'email' AND ${via__source__rel} IS NULL THEN 'Inbound Email'
            WHEN ${via__channel} = 'api' AND ${via__source__rel} IS NULL AND ${requesters.email} = 'zendesk@getaround.com' THEN 'Sentinel'
            WHEN ${via__channel} = 'api' AND ${via__source__rel} IS NULL THEN 'Internally Generated'
@@ -160,7 +163,6 @@ view: ticket_facts {
       type: yesno
       sql: ${ticket_source} LIKE 'Inbound Email%'
          AND ${status} IN ('solved', 'closed')
-         AND ${number_inbound_emails} >= 1
          AND (${number_outbound_emails} + ${number_outbound_calls}) = 1 ;;
     }
 
@@ -170,7 +172,6 @@ view: ticket_facts {
       type: yesno
       sql: ${ticket_source} LIKE 'Inbound Email%'
           AND ${status} IN ('solved', 'closed')
-          AND ${number_inbound_emails} >= 1
           AND (${number_outbound_emails} + ${number_outbound_calls}) >= 1 ;;
     }
 
@@ -190,7 +191,7 @@ view: ticket_facts {
       type: yesno
       sql: ${ticket_source} IN ('Inbound Call','Inbound Voicemail')
            AND ${status} IN ('solved', 'closed')
-           AND ${number_inbound_calls} = 1 ;;
+           AND ${number_inbound_calls} >= 1 ;;
     }
 
     dimension: number_outbound_emails {
