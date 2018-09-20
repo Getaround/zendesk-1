@@ -163,7 +163,9 @@ view: ticket_facts {
       type: yesno
       sql: ${ticket_source} LIKE 'Inbound Email%'
          AND ${status} IN ('solved', 'closed')
-         AND (${number_outbound_emails} + ${number_outbound_calls}) = 1 ;;
+         AND ${is_ticket_merged} = false
+         AND (${number_outbound_emails} + ${number_outbound_calls}) = 1
+         AND ${is_parent_to_merged_tickets} = false ;;
     }
 
     dimension: is_eligible_for_first_touch_resolution_email {
@@ -172,6 +174,7 @@ view: ticket_facts {
       type: yesno
       sql: ${ticket_source} LIKE 'Inbound Email%'
           AND ${status} IN ('solved', 'closed')
+          AND ${is_ticket_merged} = false
           AND (${number_outbound_emails} + ${number_outbound_calls}) >= 1 ;;
     }
 
@@ -181,8 +184,10 @@ view: ticket_facts {
       type: yesno
       sql: ${ticket_source} IN ('Inbound Call','Inbound Voicemail')
            AND ${status} IN ('solved', 'closed')
+           AND ${is_ticket_merged} = false
            AND ${number_inbound_calls} = 1
-           AND (${number_outbound_emails} + ${number_outbound_calls}) = 0 ;;
+           AND (${number_outbound_emails} + ${number_outbound_calls}) = 0
+           AND ${is_parent_to_merged_tickets} = false ;;
     }
 
     dimension: is_eligible_for_first_touch_resolution_phone_call {
@@ -191,6 +196,7 @@ view: ticket_facts {
       type: yesno
       sql: ${ticket_source} IN ('Inbound Call','Inbound Voicemail')
            AND ${status} IN ('solved', 'closed')
+           AND ${is_ticket_merged} = false
            AND ${number_inbound_calls} >= 1 ;;
     }
 
