@@ -16,7 +16,7 @@ view: ticket_facts {
           COUNT(DISTINCT audits.id) FILTER(WHERE (events.type = 'Comment' AND events.public = true AND audits.via__source__to__name = 'Getaround')
                                   OR (events.type = 'Comment' AND events.public = true AND audits.via__channel = 'mobile_sdk')
                                   OR (events.type = 'Comment' AND events.public = true AND audits.via__source__rel = 'follow_up'))  AS number_inbound_emails,
-          COUNT(DISTINCT audits.id) FILTER(WHERE events.type = 'Comment' AND events.public = true AND
+          COUNT(DISTINCT audits.id) FILTER(WHERE events.type = 'Comment' AND events.public = true AND audits.via__channel <> 'mobile_sdk' AND
                                  (audits.via__source__to__name IS NULL OR audits.via__source__to__name <> 'Getaround'))  AS number_outbound_emails,
           COUNT(DISTINCT audits.id) FILTER(WHERE events.type = 'Comment' AND events.public = false)  AS number_internal_comments,
           COUNT(DISTINCT audits.id) FILTER(WHERE audits.via__source__rel = 'merge' and audits.via__source__from__ticket_id IS NULL) AS number_merged_tickets,
