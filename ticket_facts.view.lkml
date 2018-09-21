@@ -21,7 +21,7 @@ view: ticket_facts {
           COUNT(DISTINCT audits.id) FILTER(WHERE events.type = 'Comment' AND events.public = false)  AS number_internal_comments,
           COUNT(DISTINCT audits.id) FILTER(WHERE audits.via__source__rel = 'merge' and audits.via__source__from__ticket_id IS NULL) AS number_merged_tickets,
           COUNT(DISTINCT audits.id) FILTER(WHERE audits.via__source__rel = 'merge' and audits.via__source__from__ticket_id IS NOT NULL)  AS is_ticket_merged,
-          COUNT(DISTINCT tickets.id) FILTER(WHERE tickets.via__channel = 'api') AS is_auto_created
+          COUNT(DISTINCT tickets.id) FILTER(WHERE tickets.via__channel = 'api') AS is_programmatically_created
 
         FROM
         zendesk.audits AS audits
@@ -79,7 +79,7 @@ view: ticket_facts {
                                     OR ${requesters.email} LIKE '%@shadowfam.com') THEN 'Managed Tickets - Email'
            WHEN ${via__channel} = 'email' AND ${via__source__rel} IS NULL THEN 'Inbound Email'
            WHEN ${via__channel} = 'api' AND ${via__source__rel} IS NULL AND ${requesters.email} = 'zendesk@getaround.com' THEN 'Sentinel'
-           WHEN ${via__channel} = 'api' AND ${via__source__rel} IS NULL THEN 'Internally Generated'
+           WHEN ${via__channel} = 'api' AND ${via__source__rel} IS NULL THEN 'Programmatic'
            WHEN ${via__channel} = 'sms' AND ${via__source__rel} IS NULL THEN 'Managed Tickets - SMS'
            WHEN ${via__channel} = 'mobile_sdk' AND ${via__source__rel} = 'mobile_sdk' THEN 'Inbound Email (from GA App)'
            WHEN ${via__channel} = 'facebook' AND ${via__source__rel} IN ('message', 'post') THEN 'Facebook Message'
@@ -89,19 +89,13 @@ view: ticket_facts {
            ELSE NULL END;;
     }
 
-    dimension: group_name {
-      description: "Ticket's group name. (If ticket was in more than one group, the group name defaults to the last assigned group)"
-      type: string
-      sql: ${TABLE}.name ;;
-    }
-
     dimension: via__source__to__name {
       hidden: yes
       type: string
       sql: ${TABLE}.via__source__to__name ;;
     }
 
-    dimension: multiple_groups_involved {
+    dimension: has_touched_multiple_groups {
       description: "Yes, if the ticket has changed assigned group at any point."
       group_label: "Activity Details"
       type: yesno
@@ -150,53 +144,54 @@ view: ticket_facts {
       sql: ${number_inbound_emails} > 0 ;;
     }
 
-    dimension: involves_customer {
-      description: "Yes, if ticket has inbound or outbound activity"
+    dimension: is_customer_visible {
+      description: "Yes, if ticket has inbound or outbound activity involving a customer (public comments)"
       group_label: "Ticket Details"
       type: yesno
       sql: ${number_inbound_calls} > 0 OR ${number_inbound_emails} > 0 OR ${number_outbound_calls} > 0 OR ${number_outbound_emails} > 0 ;;
     }
 
-    dimension: is_first_touch_resolution_email {
+    dimension: is_one_touch_resolved_email {
       description: "Yes, if inbound email was solved at first agent touch"
       group_label: "Activity Details"
       type: yesno
       sql: ${ticket_source} LIKE 'Inbound Email%'
          AND ${status} IN ('solved', 'closed')
-         AND ${is_ticket_merged} = false
+         AND ${is_merged_into_another_ticket} = false
          AND (${number_outbound_emails} + ${number_outbound_calls}) = 1
          AND ${is_parent_to_merged_tickets} = false ;;
     }
 
-    dimension: is_eligible_for_first_touch_resolution_email {
+    dimension: is_eligible_for_one_touch_resolved_email {
       description: "Yes, if inbound email was solved and has outbound activity"
       group_label: "Activity Details"
       type: yesno
       sql: ${ticket_source} LIKE 'Inbound Email%'
           AND ${status} IN ('solved', 'closed')
-          AND ${is_ticket_merged} = false
+          AND ${is_merged_into_another_ticket} = false
           AND (${number_outbound_emails} + ${number_outbound_calls}) >= 1 ;;
     }
 
-    dimension: is_first_touch_resolution_phone_call {
+    dimension: is_one_touch_resolved_phone_call {
       description: "Yes, if inbound phone call was solved at first agent touch"
       group_label: "Activity Details"
       type: yesno
-      sql: ${ticket_source} IN ('Inbound Call','Inbound Voicemail')
-           AND ${status} IN ('solved', 'closed')
-           AND ${is_ticket_merged} = false
+      sql: ${status} IN ('solved', 'closed')
+           AND ${is_merged_into_another_ticket} = false
            AND ${number_inbound_calls} = 1
-           AND (${number_outbound_emails} + ${number_outbound_calls}) = 0
-           AND ${is_parent_to_merged_tickets} = false ;;
+           AND ${is_parent_to_merged_tickets} = false
+           AND ((${ticket_source} = 'Inbound Call' AND (${number_outbound_emails} + ${number_outbound_calls}) = 0)
+                   OR
+                (${ticket_source} = 'Inbound Voicemail' AND (${number_outbound_emails} + ${number_outbound_calls}) = 1)) ;;
     }
 
-    dimension: is_eligible_for_first_touch_resolution_phone_call {
+    dimension: is_eligible_for_one_touch_resolved_phone_call {
       description: "Yes, if inbound phone call was solved"
       group_label: "Activity Details"
       type: yesno
       sql: ${ticket_source} IN ('Inbound Call','Inbound Voicemail')
            AND ${status} IN ('solved', 'closed')
-           AND ${is_ticket_merged} = false
+           AND ${is_merged_into_another_ticket} = false
            AND ${number_inbound_calls} >= 1 ;;
     }
 
@@ -235,18 +230,18 @@ view: ticket_facts {
       sql: ${TABLE}.number_merged_tickets > 0 ;;
     }
 
-    dimension: is_ticket_merged {
+    dimension: is_merged_into_another_ticket {
       description: "Yes, if the ticket has been merged into another ticket"
       group_label: "Ticket Details"
       type: yesno
       sql: ${TABLE}.is_ticket_merged > 0 ;;
     }
 
-    dimension: is_automatically_generated {
+    dimension: is_programmatically_created {
       description: "Yes, if ticket has been created automatically.  Generally via Sentinel"
       group_label: "Ticket Details"
       type: yesno
-      sql: ${TABLE}.is_auto_created > 0 ;;
+      sql: ${TABLE}.is_programmatically_created > 0 ;;
     }
 
     measure: count {
@@ -263,15 +258,15 @@ view: ticket_facts {
         via__channel,
         via__source__rel,
         via__source__to__name,
-        multiple_groups_involved,
+        has_touched_multiple_groups,
         number_outbound_calls,
         number_inbound_calls,
         number_inbound_emails,
         number_outbound_emails,
         number_internal_comments,
         is_parent_to_merged_tickets,
-        is_ticket_merged,
-        is_automatically_generated
+        is_merged_into_another_ticket,
+        is_programmatically_created
       ]
     }
   }
