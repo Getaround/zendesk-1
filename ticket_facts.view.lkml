@@ -130,46 +130,40 @@ view: ticket_facts {
       sql: ${number_inbound_calls} > 0 OR ${number_inbound_emails} > 0 OR ${number_outbound_calls} > 0 OR ${number_outbound_emails} > 0 ;;
     }
 
-    dimension: is_one_touch_resolved_email {
-      description: "Yes, if inbound email was solved at first agent touch"
-      group_label: "Activity Details"
-      type: yesno
-      sql: ${tickets.ticket_source} LIKE 'Inbound Email%'
-         AND ${status} IN ('solved', 'closed')
-         AND ${is_merged_into_another_ticket} = false
-         AND (${number_outbound_emails} + ${number_outbound_calls}) = 1 ;;
-    }
-
-    dimension: is_eligible_for_one_touch_resolved_email {
-      description: "Yes, if inbound email was solved and has outbound activity"
-      group_label: "Activity Details"
-      type: yesno
-      sql: ${tickets.ticket_source} LIKE 'Inbound Email%'
-          AND ${status} IN ('solved', 'closed')
-          AND ${is_merged_into_another_ticket} = false
-          AND (${number_outbound_emails} + ${number_outbound_calls}) >= 1 ;;
-    }
-
-    dimension: is_one_touch_resolved_phone_call {
-      description: "Yes, if inbound phone call was solved at first agent touch"
+    dimension: is_one_touch_resolved {
+      description: "Yes, if inbound phone call or email was solved at first agent touch"
       group_label: "Activity Details"
       type: yesno
       sql: ${status} IN ('solved', 'closed')
            AND ${is_merged_into_another_ticket} = false
-           AND ${number_inbound_calls} = 1
-           AND ((${tickets.ticket_source} = 'Inbound Call' AND (${number_outbound_emails} + ${number_outbound_calls}) = 0)
-                   OR
-                (${tickets.ticket_source} = 'Inbound Voicemail' AND (${number_outbound_emails} + ${number_outbound_calls}) = 1)) ;;
+           AND ( -- phone call definition
+                  ${number_inbound_calls} = 1
+                  AND ((${tickets.ticket_source} = 'Inbound Call' AND (${number_outbound_emails} + ${number_outbound_calls}) = 0)
+                        OR
+                      (${tickets.ticket_source} = 'Inbound Voicemail' AND (${number_outbound_emails} + ${number_outbound_calls}) = 1))
+               )
+              OR
+              ( -- email definition
+                ${tickets.ticket_source} LIKE 'Inbound Email%'
+                AND (${number_outbound_emails} + ${number_outbound_calls}) = 1
+              ) ;;
     }
 
-    dimension: is_eligible_for_one_touch_resolved_phone_call {
-      description: "Yes, if inbound phone call was solved"
+    dimension: is_eligible_for_one_touch_resolved {
+      description: "Yes, if inbound phone call or email was solved"
       group_label: "Activity Details"
       type: yesno
-      sql: ${tickets.ticket_source} IN ('Inbound Call','Inbound Voicemail')
-           AND ${status} IN ('solved', 'closed')
+      sql: ${status} IN ('solved', 'closed')
            AND ${is_merged_into_another_ticket} = false
-           AND ${number_inbound_calls} >= 1 ;;
+           AND ( -- phone call defintion
+                  ${tickets.ticket_source} IN ('Inbound Call','Inbound Voicemail')
+                  AND ${number_inbound_calls} >= 1
+               )
+               OR
+              ( -- email definition
+               ${tickets.ticket_source} LIKE 'Inbound Email%'
+               AND (${number_outbound_emails} + ${number_outbound_calls}) >= 1
+              ) ;;
     }
 
     dimension: number_outbound_emails {
