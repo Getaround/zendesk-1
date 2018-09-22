@@ -159,6 +159,12 @@ view: tickets {
     sql: ${TABLE}.via__channel ;;
   }
 
+  dimension: via__source__rel {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.via__source__rel ;;
+  }
+
   dimension: hyperlink {
     description: "Hyperlink to the Zendesk ticket"
     group_label: "Zendesk"
@@ -210,6 +216,26 @@ view: tickets {
       ELSE 'Other'
       END
        ;;
+  }
+
+  dimension: ticket_source {
+    description: "How the ticket was created"
+    group_label: "Ticket Details"
+    type: string
+    sql: CASE WHEN ${via__channel} = 'voice' AND ${via__source__rel} = 'inbound' THEN 'Inbound Call'
+           WHEN ${via__channel} = 'voice' AND ${via__source__rel} = 'outbound' THEN 'Outbound Call'
+           WHEN ${via__channel} = 'voice' AND ${via__source__rel} = 'voicemail' THEN 'Inbound Voicemail'
+           WHEN ${via__channel} = 'email' AND ${via__source__rel} IS NULL AND (${submitter_id} = 387083233
+                                    OR ${submitter_id} IN (14347589207, 20732481127, 360354963368)) THEN 'Managed Tickets' ---shadow & no-reply
+           WHEN ${via__channel} = 'email' AND ${via__source__rel} IS NULL THEN 'Inbound Email'
+           WHEN ${via__channel} = 'api' AND ${via__source__rel} IS NULL THEN 'Programmatic'
+           WHEN ${via__channel} = 'sms' AND ${via__source__rel} IS NULL THEN 'Managed Tickets' --- sms
+           WHEN ${via__channel} = 'mobile_sdk' AND ${via__source__rel} = 'mobile_sdk' THEN 'Inbound Email'
+           WHEN ${via__channel} = 'facebook' AND ${via__source__rel} IN ('message', 'post') THEN 'Facebook'
+           WHEN ${via__channel} = 'twitter' AND ${via__source__rel} IN ('direct_message', 'mention') THEN 'Twitter'
+           WHEN ${via__channel} = 'web' AND ${via__source__rel} = 'follow_up' THEN 'Inbound Email' --- follow-up ticket
+           WHEN ${via__channel} = 'web' AND ${via__source__rel} IS NULL AND ${ticket_facts.number_outbound_emails} > 0 THEN 'Outbound Email'
+           ELSE NULL END;;
   }
 
   measure: count_pending_tickets {

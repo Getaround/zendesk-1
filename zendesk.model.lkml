@@ -22,6 +22,12 @@ explore: audits {
     relationship: many_to_one
   }
 
+  join: ticket_facts {
+    type: left_outer
+    sql_on: ${audits.ticket_id} = ${ticket_facts.ticket_id} ;;
+    relationship: many_to_one
+  }
+
   join: ticket_custom_fields {
     view_label: "Tickets"
     type: left_outer
@@ -251,6 +257,12 @@ explore: ticket__tags {
     relationship: many_to_one
   }
 
+  join: ticket_facts {
+    type: left_outer
+    sql_on: ${ticket__tags.ticket_id} = ${ticket_facts.ticket_id} ;;
+    relationship: many_to_one
+  }
+
   join: organizations {
     type: left_outer
     sql_on: ${tickets.organization_id} = ${organizations.id} ;;
@@ -288,6 +300,12 @@ explore: ticket_metrics {
   join: tickets {
     type: left_outer
     sql_on: ${ticket_metrics.ticket_id} = ${tickets.id} ;;
+    relationship: many_to_one
+  }
+
+  join: ticket_facts {
+    type: left_outer
+    sql_on: ${ticket_metrics.ticket_id} = ${ticket_facts.ticket_id} ;;
     relationship: many_to_one
   }
 

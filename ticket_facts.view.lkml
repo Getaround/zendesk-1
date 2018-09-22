@@ -68,27 +68,6 @@ view: ticket_facts {
       sql: ${TABLE}.via__source__rel ;;
     }
 
-    dimension: ticket_source {
-      description: "How the ticket was created"
-      group_label: "Ticket Details"
-      type: string
-      sql: CASE WHEN ${via__channel} = 'voice' AND ${via__source__rel} = 'inbound' THEN 'Inbound Call'
-           WHEN ${via__channel} = 'voice' AND ${via__source__rel} = 'outbound' THEN 'Outbound Call'
-           WHEN ${via__channel} = 'voice' AND ${via__source__rel} = 'voicemail' THEN 'Inbound Voicemail'
-           WHEN ${via__channel} = 'email' AND ${via__source__rel} IS NULL AND (${requesters.email} = 'no-reply@getaround.com'
-                                    OR ${requesters.email} LIKE '%@shadowfam.com') THEN 'Managed Tickets - Email'
-           WHEN ${via__channel} = 'email' AND ${via__source__rel} IS NULL THEN 'Inbound Email'
-           WHEN ${via__channel} = 'api' AND ${via__source__rel} IS NULL AND ${requesters.email} = 'zendesk@getaround.com' THEN 'Sentinel'
-           WHEN ${via__channel} = 'api' AND ${via__source__rel} IS NULL THEN 'Programmatic'
-           WHEN ${via__channel} = 'sms' AND ${via__source__rel} IS NULL THEN 'Managed Tickets - SMS'
-           WHEN ${via__channel} = 'mobile_sdk' AND ${via__source__rel} = 'mobile_sdk' THEN 'Inbound Email (from GA App)'
-           WHEN ${via__channel} = 'facebook' AND ${via__source__rel} IN ('message', 'post') THEN 'Facebook Message'
-           WHEN ${via__channel} = 'twitter' AND ${via__source__rel} IN ('direct_message', 'mention') THEN 'Twitter Message'
-           WHEN ${via__channel} = 'web' AND ${via__source__rel} = 'follow_up' THEN 'Follow-up Ticket'
-           WHEN ${via__channel} = 'web' AND ${via__source__rel} IS NULL AND ${number_outbound_emails} > 0 THEN 'Outbound Email'
-           ELSE NULL END;;
-    }
-
     dimension: via__source__to__name {
       hidden: yes
       type: string
@@ -155,18 +134,17 @@ view: ticket_facts {
       description: "Yes, if inbound email was solved at first agent touch"
       group_label: "Activity Details"
       type: yesno
-      sql: ${ticket_source} LIKE 'Inbound Email%'
+      sql: ${tickets.ticket_source} LIKE 'Inbound Email%'
          AND ${status} IN ('solved', 'closed')
          AND ${is_merged_into_another_ticket} = false
-         AND (${number_outbound_emails} + ${number_outbound_calls}) = 1
-         AND ${is_parent_to_merged_tickets} = false ;;
+         AND (${number_outbound_emails} + ${number_outbound_calls}) = 1 ;;
     }
 
     dimension: is_eligible_for_one_touch_resolved_email {
       description: "Yes, if inbound email was solved and has outbound activity"
       group_label: "Activity Details"
       type: yesno
-      sql: ${ticket_source} LIKE 'Inbound Email%'
+      sql: ${tickets.ticket_source} LIKE 'Inbound Email%'
           AND ${status} IN ('solved', 'closed')
           AND ${is_merged_into_another_ticket} = false
           AND (${number_outbound_emails} + ${number_outbound_calls}) >= 1 ;;
@@ -179,17 +157,16 @@ view: ticket_facts {
       sql: ${status} IN ('solved', 'closed')
            AND ${is_merged_into_another_ticket} = false
            AND ${number_inbound_calls} = 1
-           AND ${is_parent_to_merged_tickets} = false
-           AND ((${ticket_source} = 'Inbound Call' AND (${number_outbound_emails} + ${number_outbound_calls}) = 0)
+           AND ((${tickets.ticket_source} = 'Inbound Call' AND (${number_outbound_emails} + ${number_outbound_calls}) = 0)
                    OR
-                (${ticket_source} = 'Inbound Voicemail' AND (${number_outbound_emails} + ${number_outbound_calls}) = 1)) ;;
+                (${tickets.ticket_source} = 'Inbound Voicemail' AND (${number_outbound_emails} + ${number_outbound_calls}) = 1)) ;;
     }
 
     dimension: is_eligible_for_one_touch_resolved_phone_call {
       description: "Yes, if inbound phone call was solved"
       group_label: "Activity Details"
       type: yesno
-      sql: ${ticket_source} IN ('Inbound Call','Inbound Voicemail')
+      sql: ${tickets.ticket_source} IN ('Inbound Call','Inbound Voicemail')
            AND ${status} IN ('solved', 'closed')
            AND ${is_merged_into_another_ticket} = false
            AND ${number_inbound_calls} >= 1 ;;
@@ -245,7 +222,7 @@ view: ticket_facts {
     }
 
     measure: count {
-      description: "Count Tickets"
+      description: "Count Tickets Facts"
       type: count_distinct
       sql: ${ticket_id} ;;
       drill_fields: [detail*]
