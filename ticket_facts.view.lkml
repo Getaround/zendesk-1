@@ -15,7 +15,7 @@ view: ticket_facts {
                                   OR (audits.via__channel = 'voice' AND audits.via__source__rel = 'voicemail'))  AS number_inbound_calls,
           COUNT(DISTINCT audits.id) FILTER(WHERE (events.type = 'Comment' AND events.public = true AND audits.via__source__to__name = 'Getaround')
                                   OR (events.type = 'Comment' AND events.public = true AND audits.via__channel = 'mobile_sdk')
-                                  OR (events.type = 'Comment' AND events.public = true AND audits.via__source__rel = 'follow_up'))  AS number_inbound_emails,
+                                  OR (events.type = 'Comment' AND events.public = true AND audits.via__channel = 'web' AND audits.via__source__rel = 'follow_up'))  AS number_inbound_emails,
           COUNT(DISTINCT audits.id) FILTER(WHERE events.type = 'Comment' AND events.public = true AND audits.via__channel <> 'mobile_sdk' AND
                                  (audits.via__source__to__name IS NULL OR audits.via__source__to__name <> 'Getaround'))  AS number_outbound_emails,
           COUNT(DISTINCT audits.id) FILTER(WHERE events.type = 'Comment' AND events.public = false)  AS number_internal_comments,

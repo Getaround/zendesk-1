@@ -199,7 +199,7 @@ view: ticket_custom_fields {
 
   # Measures
 
-  measure: count_custom_fields {
+  measure: count {
     description: "Count tickets custom field records"
     type: count
   }

@@ -29,7 +29,6 @@ explore: audits {
   }
 
   join: ticket_custom_fields {
-    view_label: "Tickets"
     type: left_outer
     foreign_key: tickets.id
     relationship: one_to_one
@@ -126,14 +125,12 @@ explore: tickets {
   ]
 
   join: ticket_custom_fields {
-    view_label: "Tickets"
     type: left_outer
     foreign_key: tickets.id
     relationship: one_to_one
   }
 
   join: ticket_facts {
-    view_label: "Ticket Facts"
     type: left_outer
     foreign_key: tickets.id
     relationship: one_to_one
