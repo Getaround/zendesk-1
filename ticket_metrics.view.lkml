@@ -269,6 +269,12 @@ view: ticket_metrics {
     sql: ${reply_time_in_minutes__calendar} ;;
   }
 
+  measure: median_reply_time_in_minutes__calendar {
+    type: median
+    value_format_name: decimal_2
+    sql: ${reply_time_in_minutes__calendar} ;;
+  }
+
   # FIRST REPLY HOURS
 
   dimension: reply_time_in_hours__business {
