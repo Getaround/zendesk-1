@@ -78,9 +78,7 @@ view: ticket_custom_fields {
       LEFT JOIN public.trip AS getaround_trip_a
         ON (getaround_trip_a.coalesced_id = ticket_custom_fields.value_trip_id::text)
       LEFT JOIN public.trip AS getaround_trip_b
-        ON (getaround_trip_b.id = ticket_custom_fields.value_trip_id::text)
-      WHERE
-        value_trip_id IS NOT NULL ;;
+        ON (getaround_trip_b.id = ticket_custom_fields.value_trip_id::text) ;;
     indexes: ["ticket_id",
               "value_trip_id",
               "value_car_id"]
