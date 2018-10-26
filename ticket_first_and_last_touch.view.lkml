@@ -1,3 +1,4 @@
+# need to QA first & last groups before creating PR
 view: ticket_first_and_last_touch {
   derived_table: {
     sql: SELECT
