@@ -1,3 +1,4 @@
+# currently not being used in an explore
 view: ticket_fields {
   sql_table_name: zendesk_stitch.ticket_fields ;;
 

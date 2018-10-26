@@ -51,8 +51,13 @@ view: ticket__tags {
     label: "Created At"
     hidden: yes
     type: time
-    timeframes: [time, date, week, month]
-    sql: ${tickets.created_at_time}::timestamp ;;
+    timeframes: [
+      time,
+      date,
+      week,
+      month
+      ]
+    sql: ${tickets.time_created_at_time}::timestamp ;;
   }
 
   measure: count {

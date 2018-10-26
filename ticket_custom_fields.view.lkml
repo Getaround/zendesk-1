@@ -64,8 +64,7 @@ view: ticket_custom_fields {
                THEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 31479717)
                       OVER (PARTITION BY tickets__fields._sdc_source_key_id)
                ELSE NULL END)::int AS value_time_spent_last_update
-
-        FROM zendesk_stitch.tickets__fields
+       FROM zendesk_stitch.tickets__custom_fields as tickets__fields
           LEFT JOIN zendesk_stitch.ticket_fields__custom_field_options AS value_options
             ON (tickets__fields.id = value_options._sdc_source_key_id AND
                 tickets__fields.value = value_options.value))
@@ -82,7 +81,7 @@ view: ticket_custom_fields {
     indexes: ["ticket_id",
               "value_trip_id",
               "value_car_id"]
-    sql_trigger_value: SELECT MAX(_sdc_sequence) FROM zendesk.tickets__fields ;;
+    sql_trigger_value: SELECT MAX(_sdc_sequence) FROM zendesk_stitch.tickets__custom_fields ;;
   }
 
   dimension: ticket_id {
@@ -109,7 +108,7 @@ view: ticket_custom_fields {
     group_label: "Custom Fields"
     type: number
     sql: ${TABLE}.corrected_trip_id ;;
-   }
+  }
 
   dimension: category_name {
     group_label: "Custom Fields"

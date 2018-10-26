@@ -1,3 +1,4 @@
+# currently not being used in an explore
 view: ticket_history_audit {
   derived_table: {
     sql: select

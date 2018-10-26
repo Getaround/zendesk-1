@@ -21,7 +21,8 @@ view: tickets {
     sql: ${TABLE}.assignee_id ;;
   }
 
-  dimension_group: created_at {
+  dimension_group: time_created_at {
+    alias: [created_at]
     type: time
     group_label: "Time Created At"
     timeframes: [
@@ -69,17 +70,17 @@ view: tickets {
     label_from_parameter: time_created_at_filter
     description: "Use this field with the Time Created At Filter.  Using this field allows you to adjust the time frame dynamically"
     type: string
-    sql: CASE WHEN {% parameter time_created_at_filter %} = 'date' THEN ${created_at_date}::text
-          WHEN {% parameter time_created_at_filter %} = 'week' THEN ${created_at_week}
-          WHEN {% parameter time_created_at_filter %} = 'month' THEN ${created_at_month}
-          WHEN {% parameter time_created_at_filter %} = 'quarter' THEN ${created_at_quarter}
+    sql: CASE WHEN {% parameter time_created_at_filter %} = 'date' THEN ${time_created_at_date}::text
+          WHEN {% parameter time_created_at_filter %} = 'week' THEN ${time_created_at_week}
+          WHEN {% parameter time_created_at_filter %} = 'month' THEN ${time_created_at_month}
+          WHEN {% parameter time_created_at_filter %} = 'quarter' THEN ${time_created_at_quarter}
          END ;;
   }
 
 
-  dimension_group: created_at_utc {
+  dimension_group: time_created_at_utc {
     type: time
-    group_label: "Time Created At"
+    group_label: "Time Created At UTC"
     label: "Created At UTC"
     timeframes: [
       raw,
@@ -257,6 +258,7 @@ view: tickets {
            WHEN ${via__channel} = 'email' AND ${via__source__rel} IS NULL AND (${submitter_id} = 387083233
                                     OR ${submitter_id} IN (14347589207, 20732481127, 360354963368)) THEN 'Managed Tickets' ---shadow & no-reply
            WHEN ${via__channel} = 'email' AND ${via__source__rel} IS NULL THEN 'Inbound Email'
+           WHEN ${via__channel} = 'api' AND ${via__source__rel} IS NULL AND ${TABLE}.description LIKE 'Forked%' THEN 'Forked Ticket'
            WHEN ${via__channel} = 'api' AND ${via__source__rel} IS NULL THEN 'Programmatic'
            WHEN ${via__channel} = 'sms' AND ${via__source__rel} IS NULL THEN 'Managed Tickets' --- sms
            WHEN ${via__channel} = 'mobile_sdk' AND ${via__source__rel} = 'mobile_sdk' THEN 'Inbound Email'
@@ -374,7 +376,7 @@ view: tickets {
   set: default {
     fields: [
       hyperlink,
-      created_at_time,
+      time_created_at_time,
       organization_name,
       status,
       csat_rating,

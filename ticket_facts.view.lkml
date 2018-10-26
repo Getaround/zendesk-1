@@ -40,7 +40,7 @@ view: ticket_facts {
         GROUP BY 1,2,3,4,5,6,7 ;;
 
     indexes: ["ticket_id"]
-    sql_trigger_value: SELECT COUNT(*) FROM zendesk.tickets ;;
+    sql_trigger_value: SELECT COUNT(*) FROM zendesk_stitch.tickets ;;
    }
 
     dimension: ticket_id {

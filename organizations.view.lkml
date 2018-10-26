@@ -34,8 +34,8 @@ view: organizations {
 
   dimension: is_owner_group {
     description: "\"Yes\" if this is an vehicle owner group"
-    type: string
-    sql: ${name} IN ("Owner", "VIP Owners", "DriveWhip")  ;;
+    type: yesno
+    sql: ${name} IN ('Owner', 'VIP Owners', 'DriveWhip') ;;
   }
 
   dimension: notes {

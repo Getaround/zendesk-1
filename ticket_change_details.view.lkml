@@ -1,3 +1,4 @@
+# view is not necessary with the ticket_facts table. Phase 2 project to make this more user friendly
 view: audits__events {
   sql_table_name: zendesk_stitch.audits__events ;;
 

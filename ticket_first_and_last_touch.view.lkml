@@ -35,6 +35,8 @@ view: ticket_first_and_last_touch {
       WHERE
         users.role IN ('agent', 'admin')
        ;;
+    indexes: ["ticket_id"]
+    sql_trigger_value: SELECT COUNT(*) FROM zendesk_stitch.ticket_audits ;;
   }
 
   dimension: ticket_id {
