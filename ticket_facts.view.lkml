@@ -24,18 +24,18 @@ view: ticket_facts {
           COUNT(DISTINCT tickets.id) FILTER(WHERE tickets.via__channel = 'api') AS is_programmatically_created
 
         FROM
-        zendesk.audits AS audits
+        zendesk_stitch.ticket_audits AS audits
 
-        LEFT JOIN zendesk.audits__events AS events
+        LEFT JOIN zendesk_stitch.ticket_audits__events AS events
         ON events.audit_id = audits.id
 
-        LEFT JOIN zendesk.tickets AS tickets
+        LEFT JOIN zendesk_stitch.tickets AS tickets
         ON audits.ticket_id = tickets.id
 
-        LEFT JOIN zendesk.zendesk_ticket_metrics AS metrics
+        LEFT JOIN zendesk_stitch.ticket_metrics AS metrics
         ON audits.ticket_id = metrics.ticket_id
 
-        LEFT JOIN zendesk.zendesk_groups AS groups
+        LEFT JOIN zendesk_stitch.groups AS groups
         ON tickets.group_id = groups.id
         GROUP BY 1,2,3,4,5,6,7 ;;
 

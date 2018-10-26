@@ -1,5 +1,5 @@
 view: audits {
-  sql_table_name: zendesk.audits ;;
+  sql_table_name: zendesk_stitch.audits ;;
 
   dimension: id {
     primary_key: yes

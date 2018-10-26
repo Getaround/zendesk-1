@@ -5,14 +5,14 @@ view: ticket__tags {
         tags.value,
         value_aggregate.all_values
       FROM
-        zendesk.tickets__tags AS tags
+        zendesk_stitch.tickets__tags AS tags
       LEFT JOIN (
         SELECT
           _sdc_source_key_id,
           STRING_AGG(value,
             ', ') AS all_values
         FROM
-          zendesk.tickets__tags
+          zendesk_stitch.tickets__tags
         GROUP BY
           _sdc_source_key_id) AS value_aggregate
       ON

@@ -1,5 +1,5 @@
 view: ticket_fields {
-  sql_table_name: zendesk.ticket_fields ;;
+  sql_table_name: zendesk_stitch.ticket_fields ;;
 
   dimension: id_field_name {
     primary_key: yes

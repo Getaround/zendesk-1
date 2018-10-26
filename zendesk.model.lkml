@@ -2,16 +2,6 @@ connection: "getdata"
 
 # include all the views
 include: "*.view"
-# include: "/getaround/getaround_trip.view"
-# include: "/getaround/getaround_car.view"
-# include: "/getaround/getaround_car_style.view"
-# include: "/getaround/getaround_user.view"
-# include: "/getaround/getaround_market.view"
-# include: "/getaround/getaround_market_timezone.view"
-# include: "/getaround/edmunds_*.view"
-
-# include all the dashboards
-include: "*.dashboard"
 
 explore: audits {
   label: "Ticket Changes"
@@ -290,8 +280,6 @@ explore: users {
 }
 
 explore: groups {}
-
-explore: tag_types {}
 
 explore: ticket_metrics {
   join: tickets {

@@ -1,5 +1,5 @@
 view: organizations {
-  sql_table_name: zendesk.organizations ;;
+  sql_table_name: zendesk_stitch.organizations ;;
 
   dimension: id {
     primary_key: yes
@@ -7,35 +7,41 @@ view: organizations {
     sql: ${TABLE}.id ;;
   }
 
-  dimension_group: created {
+  dimension_group: time_created_at {
+    description: "The time the organization was created"
     type: time
-    timeframes: [time, date, week, month]
+    hidden: yes
+    timeframes: [
+      time,
+      date,
+      week,
+      month
+    ]
     sql: ${TABLE}.created_at ;;
   }
 
   dimension: details {
+    description: "Details about the organization, such as its address"
     type: string
     sql: ${TABLE}.details ;;
   }
 
   dimension: name {
+    description: "The name of the organization"
     type: string
     sql: ${TABLE}.name ;;
   }
 
+  dimension: is_owner_group {
+    description: "\"Yes\" if this is an vehicle owner group"
+    type: string
+    sql: ${name} IN ("Owner", "VIP Owners", "DriveWhip")  ;;
+  }
+
   dimension: notes {
+    description: "Notes about the organization"
     type: string
     sql: ${TABLE}.notes ;;
-  }
-
-  dimension: shared_comments {
-    type: yesno
-    sql: ${TABLE}.shared_comments ;;
-  }
-
-  dimension: shared_tickets {
-    type: yesno
-    sql: ${TABLE}.shared_tickets ;;
   }
 
   measure: count {

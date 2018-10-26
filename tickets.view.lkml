@@ -1,5 +1,5 @@
 view: tickets {
-  sql_table_name: zendesk.tickets ;;
+  sql_table_name: zendesk_stitch.tickets ;;
 
   dimension: id {
     primary_key: yes
@@ -9,20 +9,17 @@ view: tickets {
 
   dimension: assignee_email {
     description: "the requester is the customer who initiated the ticket. the email is retrieved from the `users` table."
+    type: string
     sql: ${assignees.email} ;;
   }
 
   ## include only if your Zendesk application utilizes the assignee_id field
   dimension: assignee_id {
+    description: "The ID of the agent currently assigned to the ticket"
     type: number
     value_format_name: id
     sql: ${TABLE}.assignee_id ;;
   }
-
-  #   - dimension: brand_id      ## include only if your Zendesk application utilizes the brand field
-  #     value_format_name: id                ## only associated with Zendesk Enterprise Accounts
-  #     type: number
-  #     sql: ${TABLE}.brand_id
 
   dimension_group: created_at {
     type: time
@@ -46,6 +43,39 @@ view: tickets {
     ]
     sql: ${TABLE}.created_at ;;
   }
+
+  parameter: time_created_at_filter {
+    description: "Filter-only field that can be used with the Time Created At Filtered dimension"
+    type: string
+    allowed_value: {
+      label: "Date"
+      value: "date"
+    }
+    allowed_value: {
+      label: "Week"
+      value: "week"
+    }
+    allowed_value: {
+      label: "Month"
+      value: "month"
+    }
+    allowed_value: {
+      label: "Quarter"
+      value: "quarter"
+    }
+  }
+
+  dimension: time_created_at_filtered {
+    label_from_parameter: time_created_at_filter
+    description: "Use this field with the Time Created At Filter.  Using this field allows you to adjust the time frame dynamically"
+    type: string
+    sql: CASE WHEN {% parameter time_created_at_filter %} = 'date' THEN ${created_at_date}::text
+          WHEN {% parameter time_created_at_filter %} = 'week' THEN ${created_at_week}
+          WHEN {% parameter time_created_at_filter %} = 'month' THEN ${created_at_month}
+          WHEN {% parameter time_created_at_filter %} = 'quarter' THEN ${created_at_quarter}
+         END ;;
+  }
+
 
   dimension_group: created_at_utc {
     type: time
@@ -100,7 +130,7 @@ view: tickets {
   }
 
   dimension: requester_id {
-    description: "the requester is the customer who initiated the ticket"
+    description: "The requester is the customer who initiated the ticket"
     type: number
     value_format_name: id
     sql: ${TABLE}.requester_id ;;
@@ -141,9 +171,8 @@ view: tickets {
     sql: ${TABLE}.subject ;;
   }
 
-  ## The submitter is always the first to comment on a ticket
   dimension: submitter_id {
-    description: "a submitter is either a customer or an agent submitting on behalf of a customer"
+    description: "the submitter is always the first to comment on a ticket"
     type: number
     value_format_name: id
     sql: ${TABLE}.submitter_id ;;

@@ -1,5 +1,5 @@
 view: audits__events {
-  sql_table_name: zendesk.audits__events ;;
+  sql_table_name: zendesk_stitch.audits__events ;;
 
   dimension: id_change_events {
     primary_key: yes

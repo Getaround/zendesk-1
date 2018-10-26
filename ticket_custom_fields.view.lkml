@@ -65,8 +65,8 @@ view: ticket_custom_fields {
                       OVER (PARTITION BY tickets__fields._sdc_source_key_id)
                ELSE NULL END)::int AS value_time_spent_last_update
 
-        FROM zendesk.tickets__fields
-          LEFT JOIN zendesk.ticket_fields__custom_field_options AS value_options
+        FROM zendesk_stitch.tickets__fields
+          LEFT JOIN zendesk_stitch.ticket_fields__custom_field_options AS value_options
             ON (tickets__fields.id = value_options._sdc_source_key_id AND
                 tickets__fields.value = value_options.value))
 

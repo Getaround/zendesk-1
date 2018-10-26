@@ -1,5 +1,5 @@
 view: groups {
-  sql_table_name: zendesk.zendesk_groups ;;
+  sql_table_name: zendesk_stitch.groups ;;
 
   dimension: id {
     primary_key: yes
@@ -7,17 +7,20 @@ view: groups {
     sql: ${TABLE}.id ;;
   }
 
-  dimension_group: created_at {
+  dimension_group: time_created_at {
+    hidden: yes
     type: time
-    timeframes: [time, date, week, month]
+    timeframes: [
+      time,
+      date,
+      week,
+      month
+    ]
     sql: ${TABLE}.created_at ;;
   }
 
-  #   - dimension: deleted
-  #     type: yesno
-  #     sql: ${TABLE}.deleted
-
   dimension: name {
+    description: "The name of the group"
     type: string
     sql: ${TABLE}.name ;;
   }
