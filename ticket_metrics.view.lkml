@@ -429,7 +429,7 @@ view: ticket_metrics {
   }
 
   dimension_group: time_solved_at {
-    alias: [solved_at]
+    alias: [solved]
     type: time
     group_label: "Time Solved At"
     timeframes: [
