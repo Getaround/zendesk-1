@@ -79,6 +79,7 @@ view: tickets {
 
 
   dimension_group: time_created_at_utc {
+    alias: [created_at_utc]
     type: time
     group_label: "Time Created At UTC"
     label: "Created At UTC"
@@ -385,48 +386,4 @@ view: tickets {
       subject
     ]
   }
-
-
-  ############ TIME FIELDS ###########
-
-#  dimension_group: time {
-#    type: time
-    ###   use day_of_week
-#    timeframes: [day_of_week, hour_of_day]
-#    sql: ${TABLE}.created_at::timestamp ;;
-#  }
 }
-
-#   - dimension: created_day_of_week
-#     sql_case:
-#       Sunday:    ${hidden_created_day_of_week_index} = 6
-#       Monday:    ${hidden_created_day_of_week_index} = 0
-#       Tuesday:   ${hidden_created_day_of_week_index} = 1
-#       Wednesday: ${hidden_created_day_of_week_index} = 2
-#       Thursday:  ${hidden_created_day_of_week_index} = 3
-#       Friday:    ${hidden_created_day_of_week_index} = 4
-#       Saturday:  ${hidden_created_day_of_week_index} = 5
-
-### REVIEW
-#   - dimension: satisfaction_rating_percent_tier
-#     type: tier
-#     tiers: [10,20,30,40,50,60,70,80,90]
-#     sql: ${satisfaction_rating}
-#
-#   - measure: average_satisfaction_rating
-#     type: avg
-#     sql: ${satisfaction_rating}
-#     value_format: '#,#00.00%'
-
-
-### REVIEW BELOW
-# ----- Sets of fields for drilling ------
-#   sets:
-#     detail:
-#     - via__source__from__ticket_id
-#     - via__source__from__name
-#     - via__source__to__name
-#     - organizations.id
-#     - organizations.name
-#     - audits.count
-#     - zendesk_ticket_metrics.count
