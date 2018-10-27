@@ -56,6 +56,8 @@ view: ticket_fields {
     sql: ${TABLE}.type ;;
   }
 
+  ### Measures
+
   measure: count_field_names {
     type: count
     drill_fields: [id_field_name]

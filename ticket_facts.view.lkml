@@ -215,6 +215,8 @@ view: ticket_facts {
       sql: ${TABLE}.is_programmatically_created > 0 ;;
     }
 
+  ### Measures
+
     measure: count {
       description: "Count Tickets Facts"
       type: count_distinct

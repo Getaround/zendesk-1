@@ -26,6 +26,8 @@ view: audits {
     sql: ${TABLE}.ticket_id ;;
   }
 
+  ### Measures
+
   measure: count {
     description: "Count Zendesk ticket changes"
     type: count

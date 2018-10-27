@@ -18,6 +18,8 @@ view: tickets__fields {
     sql: ${TABLE}.value ;;
   }
 
+  ### Measures
+
   measure: count_field_values {
     type: count
     drill_fields: [id_field_value]

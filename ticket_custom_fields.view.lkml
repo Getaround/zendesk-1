@@ -96,7 +96,6 @@ view: ticket_custom_fields {
     alias: [car_id]
     description: "Getaround ID of the car this ticket relates to"
     label: "Getaround Car ID"
-    group_label: "Custom Fields"
     type: string
     sql: ${TABLE}.value_car_id ;;
   }
@@ -105,96 +104,83 @@ view: ticket_custom_fields {
     alias: [trip_id]
     description: "Getaround ID of the trip this ticket relates to"
     label: "Getaround Trip ID"
-    group_label: "Custom Fields"
     type: number
     sql: ${TABLE}.corrected_trip_id ;;
   }
 
   dimension: category_name {
-    group_label: "Custom Fields"
     description: "Category dropdown full menu item name"
     type: string
     sql: ${TABLE}.value_category_name ;;
   }
 
   dimension: category_tag {
-    group_label: "Custom Fields"
     description: "Category tag associated with a menu item"
     type: string
     sql: ${TABLE}.value_category ;;
   }
 
   dimension: zone_group_name {
-    group_label: "Custom Fields"
     description: "Zone Group dropdown full menu item name"
     type: string
     sql: ${TABLE}.value_zone_group_name ;;
   }
 
   dimension: zone_group_tag {
-    group_label: "Custom Fields"
     description: "Zone Group tag associated with a menu item"
     type: string
     sql: ${TABLE}.value_zone_group ;;
   }
 
   dimension: exit_reason_name {
-    group_label: "Custom Fields"
     description: "Exit Reason dropdown full menu item name"
     type: number
     sql: ${TABLE}.value_exit_reason_name ;;
   }
 
   dimension: exit_reason_tag {
-    group_label: "Custom Fields"
     description: "Exit Reason tag associated with a menu item"
     type: string
     sql: ${TABLE}.value_exit_reason ;;
   }
 
   dimension: claim_status_name {
-    group_label: "Custom Fields"
     description: "Claim Status dropdown full menu item name"
     type: string
     sql: ${TABLE}.value_claim_status_name ;;
   }
 
   dimension: claim_status_tag {
-    group_label: "Custom Fields"
     description: "Claim Status tag associated with a menu item"
     type: string
     sql: ${TABLE}.value_claim_status ;;
   }
 
   dimension: total_time_spent {
-    group_label: "Custom Fields"
     description: "Agent total time spent working this ticket, in seconds"
     type: number
     sql: ${TABLE}.value_total_time_spent ;;
   }
 
   dimension: time_spent_last_update {
-    group_label: "Custom Fields"
     description: "Agent time spent on the last ticket update, in seconds"
     type: number
     sql: ${TABLE}.value_time_spent_last_update ;;
   }
 
   dimension: is_trip_related {
-    group_label: "Custom Fields"
     description: "\"Yes\" if this ticket has a Trip ID set"
     type: yesno
     sql:  ${getaround_trip_id} IS NOT NULL ;;
   }
 
   dimension: is_car_related {
-    group_label: "Custom Fields"
     description: "\"Yes\" if this ticket has a Car ID set"
     type: yesno
     sql:  ${getaround_car_id} IS NOT NULL ;;
   }
 
-  # Measures
+  ### Measures
 
   measure: count {
     description: "Count tickets custom field records"

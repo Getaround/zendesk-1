@@ -20,10 +20,12 @@ view: groups {
   }
 
   dimension: name {
-    description: "The name of the group"
+    description: "The name of the group, which generally corresponds to various teams at Getaround"
     type: string
     sql: ${TABLE}.name ;;
   }
+
+  ### Measures
 
   measure: count {
     description: "Count Zendesk groups"

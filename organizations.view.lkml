@@ -27,22 +27,23 @@ view: organizations {
   }
 
   dimension: name {
-    description: "The name of the organization"
+    description: "The name of the organization, which corresponds to external partners (e.g. insurance entities, specific owner groups) and internal categories (e.g. Vendors)."
     type: string
     sql: ${TABLE}.name ;;
   }
 
   dimension: is_owner_group {
-    description: "\"Yes\" if this is an vehicle owner group"
+    description: "\"Yes\" if this is a vehicle owner group"
     type: yesno
     sql: ${name} IN ('Owner', 'VIP Owners', 'DriveWhip') ;;
   }
 
   dimension: notes {
-    description: "Notes about the organization"
     type: string
     sql: ${TABLE}.notes ;;
   }
+
+  ### Measures
 
   measure: count {
     description: "Count Zendesk organizations"

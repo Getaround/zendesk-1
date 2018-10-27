@@ -96,6 +96,8 @@ view: audits__events {
        ;;
   }
 
+  ### Measures
+
   measure: total_agent_touches {
     type: sum
     sql: ${number_of_agent_touches} ;;

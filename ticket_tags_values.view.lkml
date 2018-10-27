@@ -60,6 +60,8 @@ view: ticket__tags {
     sql: ${tickets.time_created_at_time}::timestamp ;;
   }
 
+  ### Measures
+
   measure: count {
     description: "Count Zendesk ticket tag values"
     type: count

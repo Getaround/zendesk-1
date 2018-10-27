@@ -23,8 +23,9 @@ view: ticket_metrics {
     sql: ${TABLE}.agent_wait_time_in_minutes__calendar ;;
   }
 
-  dimension_group: assigned {
+  dimension_group: time_last_assigned_at {
     description: "The time the ticket was last assigned"
+    group_label: "Time Last Assigned At"
     type: time
     timeframes: [
       time,
@@ -35,25 +36,25 @@ view: ticket_metrics {
     sql: ${TABLE}.assigned_at ;;
   }
 
-  dimension: assignee_id {
+  dimension: last_assignee_id {
     description: "The id of the user last assigned to the ticket"
     type: number
     sql: ${tickets.assignee_id} ;;
   }
 
-  dimension: assignee_email {
+  dimension: last_assignee_email {
     description: "The email address of the user last assigned to the ticket"
     type: string
     sql: ${assignees.email} ;;
   }
 
-  dimension: group_name {
+  dimension: last_group_name {
     description: "The name of the group last assigned to the ticket"
     type: string
     sql: ${groups.name} ;;
   }
 
-  dimension_group: time_assignee_updated_at {
+  dimension_group: time_last_updated_at {
     description: "The time the assignee last updated the ticket"
     type: time
     timeframes: [
@@ -490,6 +491,8 @@ view: ticket_metrics {
     hidden: yes
     sql: ${TABLE}.ticket_id ;;
   }
+
+  ### Measures
 
   measure: count {
     description: "Count Zendesk ticket metrics"

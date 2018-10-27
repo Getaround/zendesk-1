@@ -8,13 +8,13 @@ view: users {
   }
 
   dimension: alias {
-    description: "The user’s alias, displayed to end users"
+    description: "The Zendesk user’s alias, displayed to Getaround's users"
     type: string
     sql: ${TABLE}.alias ;;
   }
 
   dimension_group: time_created_at {
-    description: "Timestamp when the user was created at"
+    description: "Timestamp when the Zendesk user was created at"
     group_label: "Time Created At"
     label: "Created At"
     type: time
@@ -28,13 +28,13 @@ view: users {
   }
 
   dimension: email {
-    description: "The user’s primary email address"
+    description: "The Zendesk user’s primary email address"
     type: string
     sql: ${TABLE}.email ;;
   }
 
   dimension: name {
-    description: "The user’s name"
+    description: "The Zendesk user’s full name"
     type: string
     sql: ${TABLE}.name ;;
   }
@@ -47,16 +47,18 @@ view: users {
   }
 
   dimension: role {
-    description: "The role of the user. Possible values are agent, admin, end-user."
+    description: "The role of the Zendesk user. Possible values are agent, admin, end-user."
     type: string
     sql: ${TABLE}.role ;;
   }
 
   dimension: time_zone {
-    description: "The user’s timezone"
+    description: "The Zendesk user’s timezone"
     type: string
     sql: ${TABLE}.time_zone ;;
   }
+
+  ### Measures
 
   measure: count {
     description: "Count Zendesk users"

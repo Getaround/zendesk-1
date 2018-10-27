@@ -270,6 +270,8 @@ view: tickets {
            ELSE NULL END;;
   }
 
+  ### Measures
+
   measure: count_pending_tickets {
     type: count
     filters: {
