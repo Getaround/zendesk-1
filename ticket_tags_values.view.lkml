@@ -45,21 +45,6 @@ view: ticket__tags {
     sql: ${TABLE}.all_values ILIKE '%closed_by_merge%' ;;
   }
 
-  dimension_group: time_ticket_created_at {
-    alias: [created_at]
-    description: "Time the tag was added to the ticket, in the timezone specified by the Looker user"
-    label: "Created At"
-    hidden: yes
-    type: time
-    timeframes: [
-      time,
-      date,
-      week,
-      month
-      ]
-    sql: ${tickets.time_created_at_time}::timestamp ;;
-  }
-
   ### Measures
 
   measure: count {
@@ -74,7 +59,6 @@ view: ticket__tags {
       value,
       all_values,
       is_ticket_closed_by_merge,
-      time_ticket_created_at_time
     ]
   }
 }

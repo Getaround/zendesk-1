@@ -57,7 +57,7 @@ view: ticket_first_and_last_touch {
  dimension: ticket_id {
     primary_key: yes
     type: number
-    hidden: no
+    hidden: yes
     sql: ${TABLE}.ticket_id ;;
   }
 
@@ -69,16 +69,17 @@ view: ticket_first_and_last_touch {
   }
 
   dimension: first_touch_agent_name {
-    description: "ID of agent who was the first agent to make a change to the ticket"
+    description: "Name of agent who was the first agent to make a change to the ticket"
     group_label: "First Touch"
     type: string
     sql: ${TABLE}.first_touch_agent_name ;;
   }
 
-  dimension_group: first_touch_created_at {
-    type: time
-    group_label: "Time First Touch Created At"
+  dimension_group: time_first_touch_created_at {
     description: "First Touch Created At, in the timezone specified by the Looker user"
+    group_label: "Time First Touch Created At"
+    label: "First Touch Created At"
+    type: time
     timeframes: [
       raw,
       time,
@@ -100,10 +101,11 @@ view: ticket_first_and_last_touch {
   }
 
 
-  dimension_group: first_touch_created_at_utc {
+  dimension_group: time_first_touch_created_at_utc {
+    description: "First Touch Created At, in UTC"
+    group_label: "Time First Touch Created At"
+    label: "First Touch Created At UTC"
     type: time
-    group_label: "Time First Touch Created At UTC"
-    label: "Last First Created At UTC"
     timeframes: [
       raw,
       time,
@@ -133,16 +135,17 @@ view: ticket_first_and_last_touch {
   }
 
   dimension: last_touch_agent_name {
-    description: "ID of agent who was the last agent to make a change to the ticket"
+    description: "Name of agent who was the last agent to make a change to the ticket"
     group_label: "Last Touch"
     type: string
     sql: ${TABLE}.last_touch_agent_name ;;
   }
 
   dimension_group: last_touch_created_at {
-    type: time
-    group_label: "Time Last Touch Created At"
     description: "Last Touch Created At, in the timezone specified by the Looker user"
+    group_label: "Time Last Touch Created At"
+    label: "Last Touch Created At"
+    type: time
     timeframes: [
       raw,
       time,
@@ -164,9 +167,10 @@ view: ticket_first_and_last_touch {
   }
 
   dimension_group: last_touch_created_at_utc {
-    type: time
-    group_label: "Time Last Touch Created At UTC"
+    description: "Last Touch Created At, in UTC"
+    group_label: "Time Last Touch Created At"
     label: "Last Touch Created At UTC"
+    type: time
     timeframes: [
       raw,
       time,
@@ -193,7 +197,7 @@ view: ticket_first_and_last_touch {
       ticket_id,
       first_touch_agent_location,
       first_touch_agent_name,
-      first_touch_created_at_time,
+      time_first_touch_created_at_date,
       last_touch_agent_location,
       last_touch_agent_name,
       last_touch_created_at_time

@@ -19,7 +19,8 @@ explore: tickets {
     relationship: one_to_one
   }
 
-  join: ticket_fact {
+  join: ticket_facts {
+    view_label: "Ticket Fact"
     type: left_outer
     foreign_key: tickets.id
     relationship: one_to_one

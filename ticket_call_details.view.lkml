@@ -46,12 +46,14 @@ view: ticket_call_details {
   }
 
   dimension: call_duration_seconds {
+    group_label: "Call Duration"
     type: number
     value_format_name: decimal_0
     sql: ${TABLE}.call_duration::NUMERIC ;;
   }
 
   dimension: call_duration_minutes {
+    group_label: "Call Duration"
     type: number
     value_format_name: decimal_2
     sql: ${TABLE}.call_duration::NUMERIC / 60 ;;
@@ -76,10 +78,10 @@ view: ticket_call_details {
   }
 
   dimension_group: time_started_at {
-    type: time
-    group_label: "Time Started At"
     description: "Time Call Started At, in the timezone specified by the Looker user"
+    group_label: "Time Started At"
     label: "Started At"
+    type: time
     timeframes: [
       raw,
       time,
@@ -95,9 +97,10 @@ view: ticket_call_details {
   }
 
   dimension_group: time_started_at_utc {
-    type: time
-    group_label: "Time Started At UTC"
+    description: "Time Call Started At, in UTC"
+    group_label: "Time Started At"
     label: "Started At UTC"
+    type: time
     timeframes: [
       raw,
       time,
@@ -129,6 +132,7 @@ view: ticket_call_details {
 
   measure: sum_call_duration_seconds {
     description: "Sum of call duration, in seconds"
+    group_label: "Call Duration"
     type: sum
     value_format_name: decimal_0
     sql: ${call_duration_seconds} ;;
@@ -137,6 +141,7 @@ view: ticket_call_details {
 
   measure: average_call_duration_seconds {
     description: "Average of call duration, in seconds"
+    group_label: "Call Duration"
     type: average
     value_format_name: decimal_0
     sql: ${call_duration_seconds} ;;
@@ -145,6 +150,7 @@ view: ticket_call_details {
 
   measure: median_call_duration_seconds {
     description: "Median of call duration, in seconds"
+    group_label: "Call Duration"
     type: median
     value_format_name: decimal_0
     sql: ${call_duration_seconds} ;;
@@ -153,6 +159,7 @@ view: ticket_call_details {
 
   measure: sum_call_duration_minutes {
     description: "Sum of call duration, in minutes"
+    group_label: "Call Duration"
     type: sum
     value_format_name: decimal_2
     sql: ${call_duration_minutes} ;;

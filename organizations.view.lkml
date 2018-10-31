@@ -9,6 +9,8 @@ view: organizations {
 
   dimension_group: time_created_at {
     description: "The time the organization was created, in the timezone specified by the Looker user"
+    group_label: "Time Created At"
+    label: "Created At"
     type: time
     hidden: yes
     timeframes: [
@@ -47,8 +49,9 @@ view: organizations {
   ### Measures
 
   measure: count {
-    description: "Count Zendesk organizations"
-    type: count
+    description: "Count distinct Zendesk organizations"
+    type: count_distinct
+    sql: ${name} ;;
     drill_fields: [default*]
   }
 

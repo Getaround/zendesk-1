@@ -8,14 +8,14 @@ view: tickets {
   }
 
   dimension: assignee_email {
-    description: "the requester is the customer who initiated the ticket. the email is retrieved from the `users` table."
+    description: "The email of the assignee (agent currently assigned to the ticket)"
     type: string
     sql: ${assignees.email} ;;
   }
 
   ## include only if your Zendesk application utilizes the assignee_id field
   dimension: assignee_id {
-    description: "The ID of the agent currently assigned to the ticket"
+    description: "The ID of the assignee (agent currently assigned to the ticket)"
     type: number
     value_format_name: id
     sql: ${TABLE}.assignee_id ;;
@@ -23,9 +23,10 @@ view: tickets {
 
   dimension_group: time_created_at {
     alias: [created_at]
-    type: time
-    group_label: "Time Created At"
     description: "Time Created At, in the timezone specified by the Looker user"
+    group_label: "Time Created At"
+    label: "Created At"
+    type: time
     timeframes: [
       raw,
       time,
@@ -69,7 +70,7 @@ view: tickets {
 
   dimension: time_created_at_filtered {
     label_from_parameter: time_created_at_filter
-    description: "Use this field with the Time Created At Filter.  Using this field allows you to adjust the time frame dynamically"
+    description: "Use this field with the Time Created At Filter.  Using this field allows you to adjust the time frame dynamically. In the timezone specified by the Looker user"
     type: string
     sql: CASE WHEN {% parameter time_created_at_filter %} = 'date' THEN ${time_created_at_date}::text
           WHEN {% parameter time_created_at_filter %} = 'week' THEN ${time_created_at_week}
@@ -81,9 +82,10 @@ view: tickets {
 
   dimension_group: time_created_at_utc {
     alias: [created_at_utc]
-    type: time
-    group_label: "Time Created At UTC"
+    description: "Time Created At, in UTC"
+    group_label: "Time Created At"
     label: "Created At UTC"
+    type: time
     timeframes: [
       raw,
       time,
@@ -107,7 +109,6 @@ view: tickets {
 
   dimension: group_id {
     type: number
-    value_format_name: id
     hidden: yes
     sql: ${TABLE}.group_id ;;
   }
@@ -115,32 +116,29 @@ view: tickets {
   dimension: group_name {
     description: "The current group that the ticket is assigned to"
     type: string
+    hidden: yes
     sql: ${groups.name} ;;
   }
 
   dimension: organization_id {
     type: number
-    value_format_name: id
+    hidden: yes
     sql: ${TABLE}.organization_id ;;
   }
 
-  dimension: organization_name {
-    type: string
-    sql: ${organizations.name} ;;
-  }
-
-  dimension: recipient {
+  dimension: recipient_email {
+    description: "The original recipient email address of the ticket (in most cases, help@getaround.com). "
     type: string
     sql: ${TABLE}.recipient ;;
   }
 
   dimension: requester_email {
-    description: "the requester is the customer who initiated the ticket. the email is retrieved from the `users` table."
+    description:  "The email of the requester (customer who initiated the ticket)"
     sql: ${requesters.email} ;;
   }
 
   dimension: requester_id {
-    description: "The requester is the customer who initiated the ticket"
+    description: "The ID of the requester (customer who initiated the ticket)"
     type: number
     value_format_name: id
     sql: ${TABLE}.requester_id ;;
@@ -170,30 +168,42 @@ view: tickets {
     sql: ${TABLE}.satisfaction_rating__score ;;
   }
 
+  dimension: csat_reason {
+    description: "CSAT reason submitted by the ticket requester"
+    label: "CSAT Reason"
+    group_label: "CSAT"
+    type: string
+    sql: ${TABLE}.satisfaction_rating__reason ;;
+  }
+
   dimension: status {
+    description: "The state of the ticket. Possible values are: new, open, pending, hold, solved and closed"
     type: string
     sql: ${TABLE}.status ;;
   }
 
   ## depending on use, either this field or "via_channel" will represent the channel the ticket came through
   dimension: subject {
+    description: "The most recent value of the subject field for the ticket"
     type: string
     sql: ${TABLE}.subject ;;
   }
 
   dimension: submitter_id {
-    description: "the submitter is always the first to comment on a ticket"
+    description: "The id of the person who initiated the first public comment for the ticket."
     type: number
-    value_format_name: id
+    hidden: yes
     sql: ${TABLE}.submitter_id ;;
   }
 
   dimension: type {
+    description: "The ticket type. Possible values are: problem, incident, question and task."
     type: string
     sql: ${TABLE}.type ;;
   }
 
   dimension: via__channel {
+    description: "The channel used to create the ticket (e.g. API, SMS, Email, Facebook, etc)"
     type: string
     sql: ${TABLE}.via__channel ;;
   }
@@ -222,27 +232,31 @@ view: tickets {
 
   dimension: is_pending {
     alias: [is_backlogged]
+    description: "\"Yes\" if the ticket status is pending."
     type: yesno
     sql: ${status} = 'pending' ;;
   }
 
-  dimension: is_onhold {
+  dimension: is_on_hold {
+    description: "\"Yes\" if the ticket status is hold."
     type: yesno
     sql: ${status} = 'hold' ;;
   }
 
   dimension: is_new {
+    description: "\"Yes\" if the ticket status is new."
     type: yesno
     sql: ${status} = 'new' ;;
   }
 
   dimension: is_open {
+    description: "\"Yes\" if the ticket status is open."
     type: yesno
     sql: ${status} = 'open' ;;
   }
 
   dimension: is_solved {
-    description: "solved tickets have either a solved or closed status"
+    description: "\"Yes\" if the ticket status is solved or closed."
     type: yesno
     sql: ${status} = 'solved' OR ${status} = 'closed' ;;
   }
@@ -258,7 +272,7 @@ view: tickets {
   }
 
   dimension: ticket_source {
-    description: "How the ticket was created"
+    description: "How the ticket was created (e.g. Inbound Call, Inbound Email, Forked Ticket, Outbound Call, etc)"
     group_label: "Ticket Details"
     type: string
     sql: CASE WHEN ${via__channel} = 'voice' AND ${via__source__rel} = 'inbound' THEN 'Inbound Call'
@@ -274,13 +288,14 @@ view: tickets {
            WHEN ${via__channel} = 'facebook' AND ${via__source__rel} IN ('message', 'post') THEN 'Facebook'
            WHEN ${via__channel} = 'twitter' AND ${via__source__rel} IN ('direct_message', 'mention') THEN 'Twitter'
            WHEN ${via__channel} = 'web' AND ${via__source__rel} = 'follow_up' THEN 'Inbound Email' --- follow-up ticket
-           WHEN ${via__channel} = 'web' AND ${via__source__rel} IS NULL AND ${ticket_fact.number_outbound_emails} > 0 THEN 'Outbound Email'
+           WHEN ${via__channel} = 'web' AND ${via__source__rel} IS NULL AND ${ticket_facts.number_outbound_emails} > 0 THEN 'Outbound Email'
            ELSE NULL END;;
   }
 
   ### Measures
 
   measure: count_pending_tickets {
+    description: "Count of tickets in pending status"
     type: count
     filters: {
       field: is_pending
@@ -289,17 +304,19 @@ view: tickets {
     drill_fields: [default*]
   }
 
-  measure: count_onhold_tickets {
+  measure: count_on_hold_tickets {
+    description: "Count of tickets in hold status"
     type: count
 
     filters: {
-      field: is_onhold
+      field: is_on_hold
       value: "Yes"
     }
     drill_fields: [default*]
   }
 
   measure: count_new_tickets {
+    description: "Count of tickets in new status"
     type: count
 
     filters: {
@@ -310,6 +327,7 @@ view: tickets {
   }
 
   measure: count_open_tickets {
+    description: "Count of tickets in open status"
     type: count
 
     filters: {
@@ -320,6 +338,7 @@ view: tickets {
   }
 
   measure: count_solved_tickets {
+    description: "Count of tickets in solved or closed status"
     type: count
 
     filters: {
@@ -327,21 +346,6 @@ view: tickets {
       value: "Yes"
     }
     drill_fields: [default*]
-  }
-
-  measure: count_distinct_organizations {
-    type: count_distinct
-    sql: ${organization_id} ;;
-  }
-
-  measure: count_orgs_submitting {
-    type: count_distinct
-    sql: ${organizations.name} ;;
-
-    filters: {
-      field: organization_name
-      value: "-NULL"
-    }
   }
 
   measure: count_satisfied {
@@ -388,7 +392,6 @@ view: tickets {
     fields: [
       hyperlink,
       time_created_at_time,
-      organization_name,
       status,
       csat_rating,
       type,

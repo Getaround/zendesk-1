@@ -9,6 +9,8 @@ view: groups {
 
   dimension_group: time_created_at {
     description: "Timestamp when the group was created at, in the timezone specified by the Looker user"
+    group_label: "Time Created At"
+    label: "Created At"
     type: time
     timeframes: [
       time,

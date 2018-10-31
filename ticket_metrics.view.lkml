@@ -10,7 +10,7 @@ view: ticket_metrics {
   }
 
   dimension: agent_wait_time_in_minutes__business {
-    description: "The number of minutes the agent spent waiting, inside of business hours"
+    description: "The number of minutes the agent spent waiting, inside of business hours.  Business hours are from M-F, 9am - 5pm PST."
     group_label: "Wait Time"
     type: number
     sql: ${TABLE}.agent_wait_time_in_minutes__business ;;
@@ -40,7 +40,7 @@ view: ticket_metrics {
 
   dimension_group: time_last_assigned_at_utc {
     description: "The time the ticket was last assigned, in UTC"
-    group_label: "Time Last Assigned At UTC"
+    group_label: "Time Last Assigned At"
     label: "Last Assigned At UTC"
     type: time
     timeframes: [
@@ -71,12 +71,14 @@ view: ticket_metrics {
     alias: [group_name]
     description: "The name of the group last assigned to the ticket"
     type: string
+    hidden: yes
     sql: ${groups.name} ;;
   }
 
   dimension_group: time_last_updated_at {
     alias: [assignee_updated_at]
     description: "The time the assignee last updated the ticket, in the timezone specified by the Looker user"
+    group_label: "Last Updated At"
     type: time
     timeframes: [
       time,
@@ -84,34 +86,13 @@ view: ticket_metrics {
       week,
       month
     ]
-    hidden: yes
     sql: ${TABLE}.assignee_updated_at ;;
-  }
-
-  dimension_group: time_created_at {
-    alias: [created_at]
-    description: "The time the ticket metric was created"
-    type: time
-    timeframes: [
-      time,
-      date,
-      week,
-      month
-    ]
-    hidden: yes
-    sql: ${TABLE}.created_at ;;
-  }
-
-  dimension: organization_name {
-    description: "The name of the organization associated with this ticket"
-    type: string
-    sql: ${tickets.organization_name} ;;
   }
 
   # MINUTES
 
   dimension: first_resolution_time_in_minutes__business {
-    description: "The number of minutes to the first resolution time, inside of business hours"
+    description: "The number of minutes to the first resolution time, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Resolution Time"
     type: number
     value_format_name: decimal_2
@@ -127,7 +108,7 @@ view: ticket_metrics {
   }
 
   dimension: full_resolution_time_in_minutes__business {
-    description: "The number of minutes to the full resolution inside of business hours"
+    description: "The number of minutes to the full resolution inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "Full Resolution Time"
     type: number
     value_format_name: decimal_2
@@ -151,9 +132,10 @@ view: ticket_metrics {
   }
 
   dimension: first_resolution_time_in_hours__business {
-    description: "The number of hours to the first resolution time, inside of business hours"
+    description: "The number of hours to the first resolution time, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Resolution Time"
     type: number
+    value_format_name: decimal_2
     sql: (${TABLE}.first_resolution_time_in_minutes__business / 60) ;;
   }
 
@@ -161,11 +143,12 @@ view: ticket_metrics {
     description: "The number of hours to the first resolution time"
     group_label: "First Resolution Time"
     type: number
+    value_format_name: decimal_2
     sql: (${TABLE}.first_resolution_time_in_minutes__calendar / 60) ;;
   }
 
   dimension: full_resolution_time_in_hours__business {
-    description: "The number of hours to the full resolution inside of business hours"
+    description: "The number of hours to the full resolution inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "Full Resolution Time"
     type: number
     value_format_name: decimal_2
@@ -181,9 +164,10 @@ view: ticket_metrics {
   }
 
   dimension: first_resolution_time_in_days__business {
-    description: "The number of days to the first resolution time, inside of business hours"
+    description: "The number of days to the first resolution time, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Resolution Time"
     type: number
+    value_format_name: decimal_2
     sql: (${TABLE}.first_resolution_time_in_minutes__business / 480) ;;
   }
 
@@ -191,11 +175,12 @@ view: ticket_metrics {
     description: "The number of days to the first resolution time"
     group_label: "First Resolution Time"
     type: number
+    value_format_name: decimal_2
     sql: (${TABLE}.first_resolution_time_in_minutes__calendar / 1440) ;;
   }
 
   dimension: full_resolution_time_in_days__business {
-    description: "The number of days to the full resolution, inside of business hours"
+    description: "The number of days to the full resolution, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "Full Resolution Time"
     type: number
     value_format_name: decimal_2
@@ -212,6 +197,8 @@ view: ticket_metrics {
 
   dimension_group: time_initially_assigned_at {
     description: "The time the ticket was initially assigned, in the timezone specified by the Looker user"
+    group_label: "Time Initially Assigned At"
+    label: "Initially Assigned At"
     type: time
     timeframes: [
       time,
@@ -225,6 +212,8 @@ view: ticket_metrics {
 
   dimension_group: time_latest_comment_added_at {
     description: "The time the last comment was added to the ticket, in the timezone specified by the Looker user"
+    group_label: "Time Lastest Comment Added At"
+    label: "Lastest Comment Added At"
     type: time
     timeframes: [
       time,
@@ -249,7 +238,7 @@ view: ticket_metrics {
   }
 
   dimension: reply_time_in_minutes__business {
-    description: "The number of minutes to the first reply, inside of business hours"
+    description: "The number of minutes to the first reply, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Reply Time"
     type: number
     value_format_name: decimal_2
@@ -273,7 +262,7 @@ view: ticket_metrics {
   }
 
   dimension: reply_time_in_hours__business {
-    description: "The number of hours to the first reply, inside of business hours"
+    description: "The number of hours to the first reply, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Reply Time"
     type: number
     value_format_name: decimal_2
@@ -290,6 +279,8 @@ view: ticket_metrics {
 
   dimension_group: time_requester_updated_at {
     description: "The time the requester last updated the ticket, in the timezone specified by the Looker user"
+    group_label: "Time Requester Updated At"
+    label: "Requester Updated At"
     type: time
     timeframes: [
       time,
@@ -302,9 +293,10 @@ view: ticket_metrics {
   }
 
   dimension: requester_wait_time_in_minutes__business {
-    description: "The number of minutes the requester spent waiting inside of business hours"
+    description: "The number of minutes the requester spent waiting inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "Wait Time"
     type: number
+    value_format_name: decimal_2
     sql: ${TABLE}.requester_wait_time_in_minutes__business ;;
   }
 
@@ -312,13 +304,14 @@ view: ticket_metrics {
     description: "The number of minutes the requester spent waiting"
     group_label: "Wait Time"
     type: number
+    value_format_name: decimal_2
     sql: ${TABLE}.requester_wait_time_in_minutes__calendar ;;
   }
 
   dimension_group: time_solved_at {
     alias: [solved]
-    group_label: "Time Solved At"
     description: "Time the ticket was last solved at, in the timezone specified by the Looker user"
+    group_label: "Time Solved At"
     label: "Solved At"
     type: time
     timeframes: [
@@ -342,8 +335,8 @@ view: ticket_metrics {
   }
 
   dimension_group: time_solved_at_utc {
-    group_label: "Time Solved At UTC"
     description: "Time the ticket was last solved at, in UTC"
+    group_label: "Time Solved At"
     label: "Solved At UTC"
     type: time
     timeframes: [
@@ -390,7 +383,7 @@ view: ticket_metrics {
 
   dimension: time_solved_at_filtered {
     label_from_parameter: time_solved_at_filter
-    description: "Use this field with the Time Created At Filter.  Using this field allows you to adjust the time frame dynamically"
+    description: "Use this field with the Time Created At Filter.  Using this field allows you to adjust the time frame dynamically. In the timezone specified by the Looker user"
     type: string
     sql: CASE WHEN {% parameter time_solved_at_filter %} = 'date' THEN ${time_solved_at_date}::text
           WHEN {% parameter time_solved_at_filter %} = 'week' THEN ${time_solved_at_week}
@@ -415,9 +408,10 @@ view: ticket_metrics {
   }
 
   measure: avg_first_resolution_time_in_minutes__business {
-    description: "The average number of minutes to the first resolution time, inside of business hours"
+    description: "The average number of minutes to the first resolution time, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Resolution Time"
     type: average
+    value_format_name: decimal_2
     sql: ${first_resolution_time_in_minutes__business} ;;
     drill_fields: [default*]
   }
@@ -426,12 +420,13 @@ view: ticket_metrics {
     description: "The average number of minutes to the first resolution time"
     group_label: "First Resolution Time"
     type: average
+    value_format_name: decimal_2
     sql: ${first_resolution_time_in_minutes__calendar} ;;
     drill_fields: [default*]
   }
 
   measure: avg_full_resolution_time_in_minutes__business {
-    description: "The average number of minutes to the full resolution inside of business hours"
+    description: "The average number of minutes to the full resolution inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "Full Resolution Time"
     type: average
     value_format_name: decimal_2
@@ -449,9 +444,10 @@ view: ticket_metrics {
   }
 
   measure: average_first_resolution_time_in_hours__business {
-    description: "The average number of hours to the first resolution time, inside of business hours"
+    description: "The average number of hours to the first resolution time, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Resolution Time"
     type: average
+    value_format_name: decimal_2
     sql: ${first_resolution_time_in_hours__business} ;;
     drill_fields: [default*]
   }
@@ -465,7 +461,7 @@ view: ticket_metrics {
   }
 
   measure: avg_full_resolution_time_in_hours__business {
-    description: "The average number of hours to the full resolution inside of business hours"
+    description: "The average number of hours to the full resolution inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "Full Resolution Time"
     type: average
     value_format_name: decimal_2
@@ -483,9 +479,10 @@ view: ticket_metrics {
   }
 
   measure: average_first_resolution_time_in_days__business {
-    description: "The average number of days to the first resolution time, inside of business hours"
+    description: "The average number of days to the first resolution time, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Resolution Time"
     type: average
+    value_format_name: decimal_2
     sql: ${first_resolution_time_in_days__business} ;;
     drill_fields: [default*]
   }
@@ -494,12 +491,13 @@ view: ticket_metrics {
     description: "The average number of days to the first resolution time"
     group_label: "First Resolution Time"
     type: average
+    value_format_name: decimal_2
     sql: ${first_resolution_time_in_days__calendar} ;;
     drill_fields: [default*]
   }
 
   measure: avg_full_resolution_time_in_days__business {
-    description: "The average number of days to the full resolution, inside of business hours"
+    description: "The average number of days to the full resolution, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "Full Resolution Time"
     type: average
     value_format_name: decimal_2
@@ -517,9 +515,10 @@ view: ticket_metrics {
   }
 
   measure: avg_reply_time_in_minutes__business {
-    description: "The average number of minutes to the first reply, inside of business hours"
+    description: "The average number of minutes to the first reply, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Reply Time"
     type: average
+    value_format_name: decimal_2
     sql: ${reply_time_in_minutes__business} ;;
     drill_fields: [default*]
   }
@@ -543,9 +542,10 @@ view: ticket_metrics {
   }
 
   measure: avg_reply_time_in_hours__business {
-    description: "The average number of hours to the first reply, inside of business hours"
+    description: "The average number of hours to the first reply, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Reply Time"
     type: average
+    value_format_name: decimal_2
     sql: ${reply_time_in_hours__business} ;;
     drill_fields: [default*]
   }
@@ -559,6 +559,18 @@ view: ticket_metrics {
     drill_fields: [default*]
   }
 
+  measure: sum_number_reopens {
+    description: "Sum of the total number of reopens"
+    type: sum
+    sql: ${TABLE}.reopens ;;
+  }
+
+  measure: sum_number_replies {
+    description: "Sum of the total number of replies"
+    type: sum
+    sql: ${TABLE}.replies ;;
+  }
+
   set: default {
     fields: [
       id,
@@ -566,8 +578,6 @@ view: ticket_metrics {
       agent_wait_time_in_minutes__calendar,
       last_assignee_id,
       last_assignee_email,
-      last_group_name,
-      organization_name,
       first_resolution_time_in_minutes__business,
       first_resolution_time_in_minutes__calendar,
       full_resolution_time_in_minutes__business,

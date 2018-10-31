@@ -1,4 +1,4 @@
-view: ticket_fact {
+view: ticket_facts {
   derived_table: {
     sql: SELECT
           audits.ticket_id,
