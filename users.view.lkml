@@ -4,6 +4,7 @@ view: users {
   dimension: id {
     primary_key: yes
     type: number
+    hidden: yes
     sql: ${TABLE}.id ;;
   }
 
@@ -14,10 +15,11 @@ view: users {
   }
 
   dimension_group: time_created_at {
-    description: "Timestamp when the Zendesk user was created at"
+    description: "Timestamp when the Zendesk user was created at, in the timezone specified by the Looker user"
     group_label: "Time Created At"
     label: "Created At"
     type: time
+    hidden: yes
     timeframes: [
       time,
       date,
@@ -55,6 +57,7 @@ view: users {
   dimension: time_zone {
     description: "The Zendesk user’s timezone"
     type: string
+    hidden: yes
     sql: ${TABLE}.time_zone ;;
   }
 

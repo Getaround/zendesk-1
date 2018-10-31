@@ -47,7 +47,7 @@ view: ticket__tags {
 
   dimension_group: time_ticket_created_at {
     alias: [created_at]
-    description: "Time the tag was added to the ticket"
+    description: "Time the tag was added to the ticket, in the timezone specified by the Looker user"
     label: "Created At"
     hidden: yes
     type: time
@@ -65,6 +65,16 @@ view: ticket__tags {
   measure: count {
     description: "Count Zendesk ticket tag values"
     type: count
-    drill_fields: []
+    drill_fields: [default*]
+  }
+
+  set: default {
+    fields: [
+      ticket_id,
+      value,
+      all_values,
+      is_ticket_closed_by_merge,
+      time_ticket_created_at_time
+    ]
   }
 }

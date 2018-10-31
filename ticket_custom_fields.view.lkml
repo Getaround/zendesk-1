@@ -185,6 +185,7 @@ view: ticket_custom_fields {
   measure: count {
     description: "Count tickets custom field records"
     type: count
+    drill_fields: [default*]
   }
 
   measure: count_trip_related {
@@ -194,6 +195,7 @@ view: ticket_custom_fields {
       field: is_trip_related
       value: "Yes"
     }
+    drill_fields: [default*]
   }
 
   measure: count_car_related {
@@ -203,6 +205,7 @@ view: ticket_custom_fields {
       field: is_car_related
       value: "Yes"
     }
+    drill_fields: [default*]
   }
 
   measure: count_unique_trips {
@@ -215,17 +218,40 @@ view: ticket_custom_fields {
     description: "Unique count of Car IDs referenced by Zendesk tickets"
     type:  count_distinct
     sql:  ${getaround_car_id} ;;
+    drill_fields: [default*]
   }
 
   measure: sum_total_time_spent {
     description: "Sum total time spent working this ticket, in seconds"
     type: sum
     sql: ${total_time_spent} ;;
+    drill_fields: [default*]
   }
 
   measure: sum_time_spent_last_update {
     description: "Sum time spent on the last ticket update, in seconds"
     type: sum
     sql: ${time_spent_last_update} ;;
+    drill_fields: [default*]
+  }
+
+  set: default {
+    fields: [
+      ticket_id,
+      getaround_car_id,
+      getaround_trip_id,
+      category_name,
+      category_tag,
+      zone_group_name,
+      zone_group_tag,
+      exit_reason_name,
+      exit_reason_tag,
+      claim_status_name,
+      claim_status_tag,
+      total_time_spent,
+      time_spent_last_update,
+      is_trip_related,
+      is_car_related
+    ]
   }
 }

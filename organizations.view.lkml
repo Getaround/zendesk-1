@@ -8,7 +8,7 @@ view: organizations {
   }
 
   dimension_group: time_created_at {
-    description: "The time the organization was created"
+    description: "The time the organization was created, in the timezone specified by the Looker user"
     type: time
     hidden: yes
     timeframes: [
@@ -39,6 +39,7 @@ view: organizations {
   }
 
   dimension: notes {
+    description: "Notes about the organization, if created by admin"
     type: string
     sql: ${TABLE}.notes ;;
   }
@@ -48,6 +49,17 @@ view: organizations {
   measure: count {
     description: "Count Zendesk organizations"
     type: count
-    drill_fields: [id, name]
+    drill_fields: [default*]
+  }
+
+  set: default {
+    fields: [
+      id,
+      time_created_at_time,
+      details,
+      name,
+      is_owner_group,
+      notes
+    ]
   }
 }

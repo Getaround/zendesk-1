@@ -3,54 +3,6 @@ connection: "getdata"
 # include all the views
 include: "*.view"
 
-explore: audits {
-  label: "Ticket Changes"
-
-  join: tickets {
-    type: left_outer
-    sql_on: ${audits.ticket_id} = ${tickets.id} ;;
-    relationship: many_to_one
-  }
-
-  join: ticket_facts {
-    type: left_outer
-    sql_on: ${audits.ticket_id} = ${ticket_facts.ticket_id} ;;
-    relationship: many_to_one
-  }
-
-  join: ticket_custom_fields {
-    type: left_outer
-    foreign_key: tickets.id
-    relationship: one_to_one
-  }
-
-  join: organizations {
-    type: left_outer
-    sql_on: ${tickets.organization_id} = ${organizations.id} ;;
-    relationship: many_to_one
-  }
-
-  join: requesters {
-    from: users
-    type: left_outer
-    sql_on: ${tickets.requester_id} = ${requesters.id} ;;
-    relationship: many_to_one
-  }
-
-  join: assignees {
-    from: users
-    type: left_outer
-    sql_on: ${tickets.assignee_id} = ${assignees.id} ;;
-    relationship: many_to_one
-  }
-
-  join: audits__events {
-    view_label: "Ticket Changes"
-    sql_on: ${audits.id} = ${audits__events.audit_id} ;;
-    relationship: one_to_many
-  }
-}
-
 explore: users {
   join: organizations {
     type: left_outer
@@ -67,7 +19,7 @@ explore: tickets {
     relationship: one_to_one
   }
 
-  join: ticket_facts {
+  join: ticket_fact {
     type: left_outer
     foreign_key: tickets.id
     relationship: one_to_one
@@ -112,8 +64,23 @@ explore: tickets {
   }
 
   join: ticket_first_and_last_touch {
+    view_label: "Ticket Fact"
     type: left_outer
     sql_on: ${tickets.id} = ${ticket_first_and_last_touch.ticket_id} ;;
     relationship: one_to_one
+  }
+
+  join: ticket_group_details {
+    view_label: "Ticket Fact"
+    type: left_outer
+    sql_on: ${tickets.id} = ${ticket_group_details.ticket_id} ;;
+    relationship: one_to_one
+  }
+
+  join: ticket_call_details {
+    view_label: "Ticket Call Information"
+    type: left_outer
+    sql_on: ${tickets.id} = ${ticket_call_details.ticket_id} ;;
+    relationship: one_to_many
   }
 }

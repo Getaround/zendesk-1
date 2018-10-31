@@ -1,4 +1,3 @@
-# need to QA first & last groups before creating PR
 view: ticket_first_and_last_touch {
   derived_table: {
     sql: SELECT
@@ -14,8 +13,8 @@ view: ticket_first_and_last_touch {
                       WHEN audits.metadata__system__location LIKE '%United Kingdom%' THEN 'UK'
                       WHEN audits.metadata__system__location LIKE '%United Arab Emirates%' THEN 'UAE'
                       ELSE 'Other' END) OVER (PARTITION BY ticket_id ORDER BY audits.created_at ASC) AS first_touch_agent_location,
-        FIRST_VALUE(author_id) OVER (PARTITION BY ticket_id ORDER BY audits.created_at ASC) AS first_touch_agent_id,
-        FIRST_VALUE(groups.name) OVER (PARTITION BY ticket_id ORDER BY audits.created_at ASC) AS first_touch_agent_default_group,
+        FIRST_VALUE(users.name) OVER (PARTITION BY ticket_id ORDER BY audits.created_at ASC) AS first_touch_agent_name,
+        FIRST_VALUE(audits.created_at) OVER (PARTITION BY ticket_id ORDER BY audits.created_at ASC) AS first_touch_created_at,
         FIRST_VALUE(CASE
                       WHEN audits.metadata__system__location LIKE '%Philippines%' THEN 'Philippines'
                       WHEN audits.metadata__system__location LIKE '%San Francisco%' THEN 'San Francisco'
@@ -27,8 +26,9 @@ view: ticket_first_and_last_touch {
                       WHEN audits.metadata__system__location LIKE '%United Kingdom%' THEN 'UK'
                       WHEN audits.metadata__system__location LIKE '%United Arab Emirates%' THEN 'UAE'
                       ELSE 'Other' END) OVER (PARTITION BY ticket_id ORDER BY audits.created_at DESC) AS last_touch_agent_location,
-        FIRST_VALUE(author_id) OVER (PARTITION BY ticket_id ORDER BY audits.created_at DESC) AS last_touch_agent_id,
-        FIRST_VALUE(groups.name) OVER (PARTITION BY ticket_id ORDER BY audits.created_at DESC) AS last_touch_agent_default_group
+        FIRST_VALUE(users.name) OVER (PARTITION BY ticket_id ORDER BY audits.created_at DESC) AS last_touch_agent_name,
+        FIRST_VALUE(audits.author_id) OVER (PARTITION BY ticket_id ORDER BY audits.created_at DESC) AS last_agent_id,
+        FIRST_VALUE(audits.created_at) OVER (PARTITION BY ticket_id ORDER BY audits.created_at DESC) AS last_touch_created_at
       FROM
         zendesk_stitch.ticket_audits AS audits
       LEFT JOIN
@@ -36,63 +36,167 @@ view: ticket_first_and_last_touch {
       ON
         users.id = audits.author_id
       LEFT JOIN
-        zendesk_stitch.groups as groups
+        zendesk_stitch.ticket_audits__events as events
       ON
-        groups.id = users.default_group_id
+        events._sdc_source_key_id = audits.id
       WHERE
-        users.role IN ('agent', 'admin')
+          (users.role = 'agent' OR users.role = 'admin')
+        AND
+          users.email != 'zendesk@getaround.com'
+        AND
+          ((events.public = true
+           AND
+          events.type = 'Comment')
+        OR
+          audits.via__channel = 'voice')
        ;;
     indexes: ["ticket_id"]
     sql_trigger_value: SELECT COUNT(*) FROM zendesk_stitch.ticket_audits ;;
   }
 
-  dimension: ticket_id {
+ dimension: ticket_id {
+    primary_key: yes
     type: number
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.ticket_id ;;
   }
 
   dimension: first_touch_agent_location {
     description: "Location of agent who was the first agent to make a change to the ticket"
+    group_label: "First Touch"
     type: string
     sql: ${TABLE}.first_touch_agent_location ;;
   }
 
-  dimension: first_touch_agent_id {
+  dimension: first_touch_agent_name {
     description: "ID of agent who was the first agent to make a change to the ticket"
-    type: number
-    sql: ${TABLE}.first_touch_agent_id ;;
+    group_label: "First Touch"
+    type: string
+    sql: ${TABLE}.first_touch_agent_name ;;
   }
 
-  dimension: first_touch_agent_default_group {
-    description: "Group (default) of agent who was the last agent to make a change to the ticket"
-    type: number
-    sql: ${TABLE}.first_touch_agent_default_group ;;
+  dimension_group: first_touch_created_at {
+    type: time
+    group_label: "Time First Touch Created At"
+    description: "First Touch Created At, in the timezone specified by the Looker user"
+    timeframes: [
+      raw,
+      time,
+      date,
+      time_of_day,
+      week,
+      month,
+      quarter,
+      hour_of_day,
+      day_of_week,
+      day_of_week_index,
+      day_of_month,
+      year,
+      week_of_year,
+      month_num,
+      quarter_of_year
+    ]
+    sql: ${TABLE}.first_touch_created_at ;;
+  }
+
+
+  dimension_group: first_touch_created_at_utc {
+    type: time
+    group_label: "Time First Touch Created At UTC"
+    label: "Last First Created At UTC"
+    timeframes: [
+      raw,
+      time,
+      date,
+      time_of_day,
+      week,
+      month,
+      quarter,
+      hour_of_day,
+      day_of_week,
+      day_of_week_index,
+      day_of_month,
+      year,
+      week_of_year,
+      month_num,
+      quarter_of_year
+    ]
+    sql: ${TABLE}.first_touch_created_at ;;
+    convert_tz: no
   }
 
   dimension: last_touch_agent_location {
     description: "Location of agent who was the last agent to make a change to the ticket"
+    group_label: "Last Touch"
     type: string
     sql: ${TABLE}.last_touch_agent_location ;;
   }
 
-  dimension: last_touch_agent_id {
+  dimension: last_touch_agent_name {
     description: "ID of agent who was the last agent to make a change to the ticket"
-    type: number
-    sql: ${TABLE}.last_touch_agent_id ;;
+    group_label: "Last Touch"
+    type: string
+    sql: ${TABLE}.last_touch_agent_name ;;
   }
 
-  dimension: last_touch_agent_default_group {
-    description: "Group (default) of agent who was the last agent to make a change to the ticket"
-    type: number
-    sql: ${TABLE}.last_touch_agent_default_group ;;
+  dimension_group: last_touch_created_at {
+    type: time
+    group_label: "Time Last Touch Created At"
+    description: "Last Touch Created At, in the timezone specified by the Looker user"
+    timeframes: [
+      raw,
+      time,
+      date,
+      time_of_day,
+      week,
+      month,
+      quarter,
+      hour_of_day,
+      day_of_week,
+      day_of_week_index,
+      day_of_month,
+      year,
+      week_of_year,
+      month_num,
+      quarter_of_year
+    ]
+    sql: ${TABLE}.last_touch_created_at ;;
   }
 
-  set: detail {
-    fields: [ticket_id,
+  dimension_group: last_touch_created_at_utc {
+    type: time
+    group_label: "Time Last Touch Created At UTC"
+    label: "Last Touch Created At UTC"
+    timeframes: [
+      raw,
+      time,
+      date,
+      time_of_day,
+      week,
+      month,
+      quarter,
+      hour_of_day,
+      day_of_week,
+      day_of_week_index,
+      day_of_month,
+      year,
+      week_of_year,
+      month_num,
+      quarter_of_year
+    ]
+    sql: ${TABLE}.last_touch_created_at ;;
+    convert_tz: no
+  }
+
+  set: default {
+    fields: [
+      ticket_id,
       first_touch_agent_location,
-      first_touch_agent_id,
+      first_touch_agent_name,
+      first_touch_created_at_time,
       last_touch_agent_location,
-      last_touch_agent_id]
+      last_touch_agent_name,
+      last_touch_created_at_time
+    ]
   }
 }

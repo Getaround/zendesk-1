@@ -24,8 +24,10 @@ view: ticket_metrics {
   }
 
   dimension_group: time_last_assigned_at {
-    description: "The time the ticket was last assigned"
+    alias: [assigned]
+    description: "The time the ticket was last assigned, in the timezone specified by the Looker user"
     group_label: "Time Last Assigned At"
+    label: "Last Assigned At"
     type: time
     timeframes: [
       time,
@@ -36,26 +38,45 @@ view: ticket_metrics {
     sql: ${TABLE}.assigned_at ;;
   }
 
+  dimension_group: time_last_assigned_at_utc {
+    description: "The time the ticket was last assigned, in UTC"
+    group_label: "Time Last Assigned At UTC"
+    label: "Last Assigned At UTC"
+    type: time
+    timeframes: [
+      time,
+      date,
+      week,
+      month
+    ]
+    convert_tz: no
+    sql: ${TABLE}.assigned_at ;;
+  }
+
   dimension: last_assignee_id {
+    alias: [assignee_id]
     description: "The id of the user last assigned to the ticket"
     type: number
     sql: ${tickets.assignee_id} ;;
   }
 
   dimension: last_assignee_email {
+    alias: [assignee_email]
     description: "The email address of the user last assigned to the ticket"
     type: string
     sql: ${assignees.email} ;;
   }
 
   dimension: last_group_name {
+    alias: [group_name]
     description: "The name of the group last assigned to the ticket"
     type: string
     sql: ${groups.name} ;;
   }
 
   dimension_group: time_last_updated_at {
-    description: "The time the assignee last updated the ticket"
+    alias: [assignee_updated_at]
+    description: "The time the assignee last updated the ticket, in the timezone specified by the Looker user"
     type: time
     timeframes: [
       time,
@@ -68,6 +89,7 @@ view: ticket_metrics {
   }
 
   dimension_group: time_created_at {
+    alias: [created_at]
     description: "The time the ticket metric was created"
     type: time
     timeframes: [
@@ -96,26 +118,12 @@ view: ticket_metrics {
     sql: ${TABLE}.first_resolution_time_in_minutes__business ;;
   }
 
-  measure: avg_first_resolution_time_in_minutes__business {
-    description: "The average number of minutes to the first resolution time, inside of business hours"
-    group_label: "First Resolution Time"
-    type: average
-    sql: ${first_resolution_time_in_minutes__business} ;;
-  }
-
   dimension: first_resolution_time_in_minutes__calendar {
     description: "The number of minutes to the first resolution time"
     group_label: "First Resolution Time"
     type: number
     value_format_name: decimal_2
     sql: ${TABLE}.first_resolution_time_in_minutes__calendar ;;
-  }
-
-  measure: avg_first_resolution_time_in_minutes__calendar {
-    description: "The average number of minutes to the first resolution time"
-    group_label: "First Resolution Time"
-    type: average
-    sql: ${first_resolution_time_in_minutes__calendar} ;;
   }
 
   dimension: full_resolution_time_in_minutes__business {
@@ -126,28 +134,12 @@ view: ticket_metrics {
     sql: ${TABLE}.full_resolution_time_in_minutes__business ;;
   }
 
-  measure: avg_full_resolution_time_in_minutes__business {
-    description: "The average number of minutes to the full resolution inside of business hours"
-    group_label: "Full Resolution Time"
-    type: average
-    value_format_name: decimal_2
-    sql: ${full_resolution_time_in_minutes__business} ;;
-  }
-
   dimension: full_resolution_time_in_minutes__calendar {
     description: "The number of minutes to the full resolution"
     group_label: "Full Resolution Time"
     type: number
     value_format_name: decimal_2
     sql: ${TABLE}.full_resolution_time_in_minutes__calendar ;;
-  }
-
-  measure: avg_full_resolution_time_in_minutes__calendar {
-    description: "The average number of minutes to the full resolution"
-    group_label: "Full Resolution Time"
-    type: average
-    value_format_name: decimal_2
-    sql: ${full_resolution_time_in_minutes__calendar} ;;
   }
 
   dimension: full_resolution_time_in_minutes__calendar_less_than_8_hours {
@@ -158,8 +150,6 @@ view: ticket_metrics {
     sql: ${TABLE}.full_resolution_time_in_minutes__calendar <= 480 ;;
   }
 
-  # HOURS
-
   dimension: first_resolution_time_in_hours__business {
     description: "The number of hours to the first resolution time, inside of business hours"
     group_label: "First Resolution Time"
@@ -167,25 +157,11 @@ view: ticket_metrics {
     sql: (${TABLE}.first_resolution_time_in_minutes__business / 60) ;;
   }
 
-  measure: average_first_resolution_time_in_hours__business {
-    description: "The average number of hours to the first resolution time, inside of business hours"
-    group_label: "First Resolution Time"
-    type: average
-    sql: ${first_resolution_time_in_hours__business} ;;
-  }
-
   dimension: first_resolution_time_in_hours__calendar {
     description: "The number of hours to the first resolution time"
     group_label: "First Resolution Time"
     type: number
     sql: (${TABLE}.first_resolution_time_in_minutes__calendar / 60) ;;
-  }
-
-  measure: average_first_resolution_time_in_hours__calendar {
-    description: "The average number of hours to the first resolution time"
-    group_label: "First Resolution Time"
-    type: average
-    sql: ${first_resolution_time_in_hours__calendar} ;;
   }
 
   dimension: full_resolution_time_in_hours__business {
@@ -196,14 +172,6 @@ view: ticket_metrics {
     sql: ${TABLE}.full_resolution_time_in_minutes__business / 60 ;;
   }
 
-  measure: avg_full_resolution_time_in_hours__business {
-    description: "The average number of hours to the full resolution inside of business hours"
-    group_label: "Full Resolution Time"
-    type: average
-    value_format_name: decimal_2
-    sql: ${full_resolution_time_in_hours__business} ;;
-  }
-
   dimension: full_resolution_time_in_hours__calendar {
     description: "The number of hours to the full resolution"
     group_label: "Full Resolution Time"
@@ -212,16 +180,6 @@ view: ticket_metrics {
     sql: ${TABLE}.full_resolution_time_in_minutes__calendar / 60 ;;
   }
 
-  measure: avg_full_resolution_time_in_hours__calendar {
-    description: "The average number of hours to the full resolution"
-    group_label: "Full Resolution Time"
-    type: average
-    value_format_name: decimal_2
-    sql: ${full_resolution_time_in_minutes__calendar} ;;
-  }
-
-  # DAYS
-
   dimension: first_resolution_time_in_days__business {
     description: "The number of days to the first resolution time, inside of business hours"
     group_label: "First Resolution Time"
@@ -229,25 +187,11 @@ view: ticket_metrics {
     sql: (${TABLE}.first_resolution_time_in_minutes__business / 480) ;;
   }
 
-  measure: average_first_resolution_time_in_days__business {
-    description: "The average number of days to the first resolution time, inside of business hours"
-    group_label: "First Resolution Time"
-    type: average
-    sql: ${first_resolution_time_in_days__business} ;;
-  }
-
   dimension: first_resolution_time_in_days__calendar {
     description: "The number of days to the first resolution time"
     group_label: "First Resolution Time"
     type: number
     sql: (${TABLE}.first_resolution_time_in_minutes__calendar / 1440) ;;
-  }
-
-  measure: average_first_resolution_time_in_days__calendar {
-    description: "The average number of days to the first resolution time"
-    group_label: "First Resolution Time"
-    type: average
-    sql: ${first_resolution_time_in_days__calendar} ;;
   }
 
   dimension: full_resolution_time_in_days__business {
@@ -258,14 +202,6 @@ view: ticket_metrics {
     sql: ${TABLE}.full_resolution_time_in_minutes__business / 480 ;;
   }
 
-  measure: avg_full_resolution_time_in_days__business {
-    description: "The average number of days to the full resolution, inside of business hours"
-    group_label: "Full Resolution Time"
-    type: average
-    value_format_name: decimal_2
-    sql: ${full_resolution_time_in_days__business} ;;
-  }
-
   dimension: full_resolution_time_in_days__calendar {
     description: "The number of days to the full resolution"
     group_label: "Full Resolution Time"
@@ -274,16 +210,8 @@ view: ticket_metrics {
     sql: ${TABLE}.full_resolution_time_in_minutes__calendar / 1440 ;;
   }
 
-  measure: avg_full_resolution_time_in_days__calendar {
-    description: "The average number of days to the full resolution"
-    group_label: "Full Resolution Time"
-    type: average
-    value_format_name: decimal_2
-    sql: ${full_resolution_time_in_minutes__calendar} ;;
-  }
-
   dimension_group: time_initially_assigned_at {
-    description: "The time the ticket was initially assigned"
+    description: "The time the ticket was initially assigned, in the timezone specified by the Looker user"
     type: time
     timeframes: [
       time,
@@ -296,7 +224,7 @@ view: ticket_metrics {
   }
 
   dimension_group: time_latest_comment_added_at {
-    description: "The time the last comment was added to the ticket"
+    description: "The time the last comment was added to the ticket, in the timezone specified by the Looker user"
     type: time
     timeframes: [
       time,
@@ -320,21 +248,12 @@ view: ticket_metrics {
     sql: ${TABLE}.replies ;;
   }
 
-  # FIRST REPLY MINUTES
-
   dimension: reply_time_in_minutes__business {
     description: "The number of minutes to the first reply, inside of business hours"
     group_label: "First Reply Time"
     type: number
     value_format_name: decimal_2
     sql: ${TABLE}.reply_time_in_minutes__business ;;
-  }
-
-  measure: avg_reply_time_in_minutes__business {
-    description: "The average number of minutes to the first reply, inside of business hours"
-    group_label: "First Reply Time"
-    type: average
-    sql: ${reply_time_in_minutes__business} ;;
   }
 
   dimension: reply_time_in_minutes__calendar {
@@ -345,22 +264,6 @@ view: ticket_metrics {
     sql: ${TABLE}.reply_time_in_minutes__calendar ;;
   }
 
-  measure: avg_reply_time_in_minutes__calendar {
-    description: "The average number of minutes to the first reply"
-    group_label: "First Reply Time"
-    type: average
-    value_format_name: decimal_2
-    sql: ${reply_time_in_minutes__calendar} ;;
-  }
-
-  measure: median_reply_time_in_minutes__calendar {
-    description: "The median number of minutes to the first reply"
-    group_label: "First Reply Time"
-    type: median
-    value_format_name: decimal_2
-    sql: ${reply_time_in_minutes__calendar} ;;
-  }
-
   dimension: reply_time_in_hours__calendar_meet_SLA {
     description: "\"Yes\" if the ticket was first replied to within the first 4 calendar hours"
     label: "First Reply Time Meets 4 hour SLA"
@@ -369,21 +272,12 @@ view: ticket_metrics {
     sql: ${TABLE}.reply_time_in_minutes__calendar <= 240 ;;
   }
 
-  # FIRST REPLY HOURS
-
   dimension: reply_time_in_hours__business {
     description: "The number of hours to the first reply, inside of business hours"
     group_label: "First Reply Time"
     type: number
     value_format_name: decimal_2
     sql: ${TABLE}.reply_time_in_minutes__business / 60 ;;
-  }
-
-  measure: avg_reply_time_in_hours__business {
-    description: "The average number of hours to the first reply, inside of business hours"
-    group_label: "First Reply Time"
-    type: average
-    sql: ${reply_time_in_hours__business} ;;
   }
 
   dimension: reply_time_in_hours__calendar {
@@ -394,16 +288,8 @@ view: ticket_metrics {
     sql: ${TABLE}.reply_time_in_minutes__calendar / 60 ;;
   }
 
-  measure: avg_reply_time_in_hours__calendar {
-    description: "The average number of hours to the first reply"
-    group_label: "First Reply Time"
-    type: average
-    value_format_name: decimal_2
-    sql: ${reply_time_in_hours__calendar} ;;
-  }
-
   dimension_group: time_requester_updated_at {
-    description: "The time the requester last updated the ticket"
+    description: "The time the requester last updated the ticket, in the timezone specified by the Looker user"
     type: time
     timeframes: [
       time,
@@ -431,8 +317,10 @@ view: ticket_metrics {
 
   dimension_group: time_solved_at {
     alias: [solved]
-    type: time
     group_label: "Time Solved At"
+    description: "Time the ticket was last solved at, in the timezone specified by the Looker user"
+    label: "Solved At"
+    type: time
     timeframes: [
       raw,
       time,
@@ -450,6 +338,32 @@ view: ticket_metrics {
       month_num,
       quarter_of_year
     ]
+    sql: ${TABLE}.solved_at ;;
+  }
+
+  dimension_group: time_solved_at_utc {
+    group_label: "Time Solved At UTC"
+    description: "Time the ticket was last solved at, in UTC"
+    label: "Solved At UTC"
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      time_of_day,
+      week,
+      month,
+      quarter,
+      hour_of_day,
+      day_of_week,
+      day_of_week_index,
+      day_of_month,
+      year,
+      week_of_year,
+      month_num,
+      quarter_of_year
+    ]
+    convert_tz: no
     sql: ${TABLE}.solved_at ;;
   }
 
@@ -497,6 +411,187 @@ view: ticket_metrics {
   measure: count {
     description: "Count Zendesk ticket metrics"
     type: count
-    drill_fields: [id, tickets.via__source__from__name, tickets.id, tickets.via__source__to__name]
+    drill_fields: [default*]
+  }
+
+  measure: avg_first_resolution_time_in_minutes__business {
+    description: "The average number of minutes to the first resolution time, inside of business hours"
+    group_label: "First Resolution Time"
+    type: average
+    sql: ${first_resolution_time_in_minutes__business} ;;
+    drill_fields: [default*]
+  }
+
+  measure: avg_first_resolution_time_in_minutes__calendar {
+    description: "The average number of minutes to the first resolution time"
+    group_label: "First Resolution Time"
+    type: average
+    sql: ${first_resolution_time_in_minutes__calendar} ;;
+    drill_fields: [default*]
+  }
+
+  measure: avg_full_resolution_time_in_minutes__business {
+    description: "The average number of minutes to the full resolution inside of business hours"
+    group_label: "Full Resolution Time"
+    type: average
+    value_format_name: decimal_2
+    sql: ${full_resolution_time_in_minutes__business} ;;
+    drill_fields: [default*]
+  }
+
+  measure: avg_full_resolution_time_in_minutes__calendar {
+    description: "The average number of minutes to the full resolution"
+    group_label: "Full Resolution Time"
+    type: average
+    value_format_name: decimal_2
+    sql: ${full_resolution_time_in_minutes__calendar} ;;
+    drill_fields: [default*]
+  }
+
+  measure: average_first_resolution_time_in_hours__business {
+    description: "The average number of hours to the first resolution time, inside of business hours"
+    group_label: "First Resolution Time"
+    type: average
+    sql: ${first_resolution_time_in_hours__business} ;;
+    drill_fields: [default*]
+  }
+
+  measure: average_first_resolution_time_in_hours__calendar {
+    description: "The average number of hours to the first resolution time"
+    group_label: "First Resolution Time"
+    type: average
+    sql: ${first_resolution_time_in_hours__calendar} ;;
+    drill_fields: [default*]
+  }
+
+  measure: avg_full_resolution_time_in_hours__business {
+    description: "The average number of hours to the full resolution inside of business hours"
+    group_label: "Full Resolution Time"
+    type: average
+    value_format_name: decimal_2
+    sql: ${full_resolution_time_in_hours__business} ;;
+    drill_fields: [default*]
+  }
+
+  measure: avg_full_resolution_time_in_hours__calendar {
+    description: "The average number of hours to the full resolution"
+    group_label: "Full Resolution Time"
+    type: average
+    value_format_name: decimal_2
+    sql: ${full_resolution_time_in_minutes__calendar} ;;
+    drill_fields: [default*]
+  }
+
+  measure: average_first_resolution_time_in_days__business {
+    description: "The average number of days to the first resolution time, inside of business hours"
+    group_label: "First Resolution Time"
+    type: average
+    sql: ${first_resolution_time_in_days__business} ;;
+    drill_fields: [default*]
+  }
+
+  measure: average_first_resolution_time_in_days__calendar {
+    description: "The average number of days to the first resolution time"
+    group_label: "First Resolution Time"
+    type: average
+    sql: ${first_resolution_time_in_days__calendar} ;;
+    drill_fields: [default*]
+  }
+
+  measure: avg_full_resolution_time_in_days__business {
+    description: "The average number of days to the full resolution, inside of business hours"
+    group_label: "Full Resolution Time"
+    type: average
+    value_format_name: decimal_2
+    sql: ${full_resolution_time_in_days__business} ;;
+    drill_fields: [default*]
+  }
+
+  measure: avg_full_resolution_time_in_days__calendar {
+    description: "The average number of days to the full resolution"
+    group_label: "Full Resolution Time"
+    type: average
+    value_format_name: decimal_2
+    sql: ${full_resolution_time_in_minutes__calendar} ;;
+    drill_fields: [default*]
+  }
+
+  measure: avg_reply_time_in_minutes__business {
+    description: "The average number of minutes to the first reply, inside of business hours"
+    group_label: "First Reply Time"
+    type: average
+    sql: ${reply_time_in_minutes__business} ;;
+    drill_fields: [default*]
+  }
+
+  measure: avg_reply_time_in_minutes__calendar {
+    description: "The average number of minutes to the first reply"
+    group_label: "First Reply Time"
+    type: average
+    value_format_name: decimal_2
+    sql: ${reply_time_in_minutes__calendar} ;;
+    drill_fields: [default*]
+  }
+
+  measure: median_reply_time_in_minutes__calendar {
+    description: "The median number of minutes to the first reply"
+    group_label: "First Reply Time"
+    type: median
+    value_format_name: decimal_2
+    sql: ${reply_time_in_minutes__calendar} ;;
+    drill_fields: [default*]
+  }
+
+  measure: avg_reply_time_in_hours__business {
+    description: "The average number of hours to the first reply, inside of business hours"
+    group_label: "First Reply Time"
+    type: average
+    sql: ${reply_time_in_hours__business} ;;
+    drill_fields: [default*]
+  }
+
+  measure: avg_reply_time_in_hours__calendar {
+    description: "The average number of hours to the first reply"
+    group_label: "First Reply Time"
+    type: average
+    value_format_name: decimal_2
+    sql: ${reply_time_in_hours__calendar} ;;
+    drill_fields: [default*]
+  }
+
+  set: default {
+    fields: [
+      id,
+      agent_wait_time_in_minutes__business,
+      agent_wait_time_in_minutes__calendar,
+      last_assignee_id,
+      last_assignee_email,
+      last_group_name,
+      organization_name,
+      first_resolution_time_in_minutes__business,
+      first_resolution_time_in_minutes__calendar,
+      full_resolution_time_in_minutes__business,
+      full_resolution_time_in_minutes__calendar,
+      full_resolution_time_in_minutes__calendar_less_than_8_hours,
+      first_resolution_time_in_hours__business,
+      first_resolution_time_in_hours__calendar,
+      full_resolution_time_in_hours__business,
+      full_resolution_time_in_hours__calendar,
+      first_resolution_time_in_days__business,
+      first_resolution_time_in_days__calendar,
+      full_resolution_time_in_days__business,
+      full_resolution_time_in_days__calendar,
+      number_reopens,
+      number_replies,
+      reply_time_in_minutes__business,
+      reply_time_in_minutes__calendar,
+      reply_time_in_hours__calendar_meet_SLA,
+      reply_time_in_hours__business,
+      reply_time_in_hours__calendar,
+      requester_wait_time_in_minutes__business,
+      requester_wait_time_in_minutes__calendar,
+      time_solved_at_filtered,
+      ticket_id
+    ]
   }
 }

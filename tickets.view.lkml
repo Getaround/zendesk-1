@@ -25,6 +25,7 @@ view: tickets {
     alias: [created_at]
     type: time
     group_label: "Time Created At"
+    description: "Time Created At, in the timezone specified by the Looker user"
     timeframes: [
       raw,
       time,
@@ -107,7 +108,14 @@ view: tickets {
   dimension: group_id {
     type: number
     value_format_name: id
+    hidden: yes
     sql: ${TABLE}.group_id ;;
+  }
+
+  dimension: group_name {
+    description: "The current group that the ticket is assigned to"
+    type: string
+    sql: ${groups.name} ;;
   }
 
   dimension: organization_id {
@@ -266,7 +274,7 @@ view: tickets {
            WHEN ${via__channel} = 'facebook' AND ${via__source__rel} IN ('message', 'post') THEN 'Facebook'
            WHEN ${via__channel} = 'twitter' AND ${via__source__rel} IN ('direct_message', 'mention') THEN 'Twitter'
            WHEN ${via__channel} = 'web' AND ${via__source__rel} = 'follow_up' THEN 'Inbound Email' --- follow-up ticket
-           WHEN ${via__channel} = 'web' AND ${via__source__rel} IS NULL AND ${ticket_facts.number_outbound_emails} > 0 THEN 'Outbound Email'
+           WHEN ${via__channel} = 'web' AND ${via__source__rel} IS NULL AND ${ticket_fact.number_outbound_emails} > 0 THEN 'Outbound Email'
            ELSE NULL END;;
   }
 
