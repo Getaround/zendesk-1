@@ -49,12 +49,12 @@ view: users {
   }
 
   dimension: role {
-    description: "The role of the Zendesk user. Possible values are agent, admin, end-user."
+    description: "The role of the Zendesk user. Possible values: agent, admin, end-user"
     type: string
     sql: ${TABLE}.role ;;
   }
 
-  dimension: time_zone {
+  dimension: timezone {
     description: "The Zendesk user’s timezone"
     type: string
     hidden: yes

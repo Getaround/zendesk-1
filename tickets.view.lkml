@@ -13,7 +13,6 @@ view: tickets {
     sql: ${assignees.email} ;;
   }
 
-  ## include only if your Zendesk application utilizes the assignee_id field
   dimension: assignee_id {
     description: "The ID of the assignee (agent currently assigned to the ticket)"
     type: number
@@ -23,7 +22,7 @@ view: tickets {
 
   dimension_group: time_created_at {
     alias: [created_at]
-    description: "Time Created At, in the timezone specified by the Looker user"
+    description: "Timestamp when the ticket was created, in the timezone specified by the Looker user"
     group_label: "Time Created At"
     label: "Created At"
     type: time
@@ -82,7 +81,7 @@ view: tickets {
 
   dimension_group: time_created_at_utc {
     alias: [created_at_utc]
-    description: "Time Created At, in UTC"
+    description: "Timestamp when the ticket was created, in UTC"
     group_label: "Time Created At"
     label: "Created At UTC"
     type: time
@@ -127,13 +126,13 @@ view: tickets {
   }
 
   dimension: recipient_email {
-    description: "The original recipient email address of the ticket (in most cases, help@getaround.com). "
+    description: "The original recipient email address of the ticket (in most cases, help@getaround.com)"
     type: string
     sql: ${TABLE}.recipient ;;
   }
 
   dimension: requester_email {
-    description:  "The email of the requester (customer who initiated the ticket)"
+    description:  "The email address of the requester (customer who initiated the ticket)"
     sql: ${requesters.email} ;;
   }
 
@@ -145,7 +144,7 @@ view: tickets {
   }
 
   dimension: csat_comment {
-    description: "CSAT comment submitted by the ticket requester"
+    description: "CSAT comment submitted by the ticket requester (customer who initiated the ticket)"
     label: "CSAT Comment"
     group_label: "CSAT"
     type: string
@@ -153,7 +152,7 @@ view: tickets {
   }
 
   dimension: csat_id {
-    description: "CSAT ID for the rating submitted by the ticket requester"
+    description: "CSAT ID for the rating submitted by the ticket requester (customer who initiated the ticket)"
     label: "CSAT ID"
     group_label: "CSAT"
     type: number
@@ -161,7 +160,7 @@ view: tickets {
   }
 
   dimension: csat_rating {
-    description: "CSAT rating submitted by the ticket requester"
+    description: "CSAT rating submitted by the ticket requester (customer who initiated the ticket)"
     label: "CSAT Rating"
     group_label: "CSAT"
     type: string
@@ -169,7 +168,7 @@ view: tickets {
   }
 
   dimension: csat_reason {
-    description: "CSAT reason submitted by the ticket requester"
+    description: "CSAT reason submitted by the ticket requester (customer who initiated the ticket)"
     label: "CSAT Reason"
     group_label: "CSAT"
     type: string
@@ -177,12 +176,11 @@ view: tickets {
   }
 
   dimension: status {
-    description: "The state of the ticket. Possible values are: new, open, pending, hold, solved and closed"
+    description: "The current status of the ticket. Possible values: new, open, pending, hold, solved, and closed"
     type: string
     sql: ${TABLE}.status ;;
   }
 
-  ## depending on use, either this field or "via_channel" will represent the channel the ticket came through
   dimension: subject {
     description: "The most recent value of the subject field for the ticket"
     type: string
@@ -190,14 +188,14 @@ view: tickets {
   }
 
   dimension: submitter_id {
-    description: "The id of the person who initiated the first public comment for the ticket."
+    description: "The ID of the person who initiated the first public comment for the ticket."
     type: number
     hidden: yes
     sql: ${TABLE}.submitter_id ;;
   }
 
   dimension: type {
-    description: "The ticket type. Possible values are: problem, incident, question and task."
+    description: "The ticket type. Possible values: problem, incident, question, and task."
     type: string
     sql: ${TABLE}.type ;;
   }
@@ -216,16 +214,9 @@ view: tickets {
 
   dimension: hyperlink {
     description: "Hyperlink to the Zendesk ticket"
-    group_label: "Zendesk"
     type: string
     sql: ${TABLE}.id ;;
     html: <a href="https://getaround.zendesk.com/agent/tickets/{{ value }}">{{ value }}</a> ;;
-  }
-
-  measure: count {
-    description: "Count Zendesk tickets"
-    type: count
-    drill_fields: [default*]
   }
 
   # ----- ADDITIONAL FIELDS -----
@@ -273,7 +264,6 @@ view: tickets {
 
   dimension: ticket_source {
     description: "How the ticket was created (e.g. Inbound Call, Inbound Email, Forked Ticket, Outbound Call, etc)"
-    group_label: "Ticket Details"
     type: string
     sql: CASE WHEN ${via__channel} = 'voice' AND ${via__source__rel} = 'inbound' THEN 'Inbound Call'
            WHEN ${via__channel} = 'voice' AND ${via__source__rel} = 'outbound' THEN 'Outbound Call'
@@ -294,6 +284,12 @@ view: tickets {
 
   ### Measures
 
+  measure: count {
+    description: "Count Zendesk tickets"
+    type: count
+    drill_fields: [default*]
+  }
+
   measure: count_pending_tickets {
     description: "Count of tickets in pending status"
     type: count
@@ -307,7 +303,6 @@ view: tickets {
   measure: count_on_hold_tickets {
     description: "Count of tickets in hold status"
     type: count
-
     filters: {
       field: is_on_hold
       value: "Yes"
@@ -318,7 +313,6 @@ view: tickets {
   measure: count_new_tickets {
     description: "Count of tickets in new status"
     type: count
-
     filters: {
       field: is_new
       value: "Yes"
@@ -329,7 +323,6 @@ view: tickets {
   measure: count_open_tickets {
     description: "Count of tickets in open status"
     type: count
-
     filters: {
       field: is_open
       value: "Yes"
@@ -340,7 +333,6 @@ view: tickets {
   measure: count_solved_tickets {
     description: "Count of tickets in solved or closed status"
     type: count
-
     filters: {
       field: is_solved
       value: "Yes"

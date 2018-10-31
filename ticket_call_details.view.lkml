@@ -72,13 +72,13 @@ view: ticket_call_details {
   }
 
   dimension: call_number {
-    description: "Sequential number of call, associated with each ticket"
+    description: "Sequential number of call, associated with each ticket (e.g. first call, second call, etc.)"
     type: number
     sql: ${TABLE}.call_number ;;
   }
 
   dimension_group: time_started_at {
-    description: "Time Call Started At, in the timezone specified by the Looker user"
+    description: "Time call started at, in the timezone specified by the Looker user"
     group_label: "Time Started At"
     label: "Started At"
     type: time
@@ -97,7 +97,7 @@ view: ticket_call_details {
   }
 
   dimension_group: time_started_at_utc {
-    description: "Time Call Started At, in UTC"
+    description: "Time call started at, in UTC"
     group_label: "Time Started At"
     label: "Started At UTC"
     type: time
@@ -130,7 +130,7 @@ view: ticket_call_details {
     drill_fields: [default*]
   }
 
-  measure: sum_call_duration_seconds {
+  measure: sum_call_seconds {
     description: "Sum of call duration, in seconds"
     group_label: "Call Duration"
     type: sum
@@ -139,7 +139,7 @@ view: ticket_call_details {
     drill_fields: [default*]
   }
 
-  measure: average_call_duration_seconds {
+  measure: average_call_seconds {
     description: "Average of call duration, in seconds"
     group_label: "Call Duration"
     type: average
@@ -148,7 +148,7 @@ view: ticket_call_details {
     drill_fields: [default*]
   }
 
-  measure: median_call_duration_seconds {
+  measure: median_call_seconds {
     description: "Median of call duration, in seconds"
     group_label: "Call Duration"
     type: median
@@ -157,7 +157,7 @@ view: ticket_call_details {
     drill_fields: [default*]
   }
 
-  measure: sum_call_duration_minutes {
+  measure: sum_call_minutes {
     description: "Sum of call duration, in minutes"
     group_label: "Call Duration"
     type: sum

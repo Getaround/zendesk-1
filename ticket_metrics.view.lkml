@@ -55,7 +55,7 @@ view: ticket_metrics {
 
   dimension: last_assignee_id {
     alias: [assignee_id]
-    description: "The id of the user last assigned to the ticket"
+    description: "The ID of the user last assigned to the ticket"
     type: number
     sql: ${tickets.assignee_id} ;;
   }
@@ -78,7 +78,7 @@ view: ticket_metrics {
   dimension_group: time_last_updated_at {
     alias: [assignee_updated_at]
     description: "The time the assignee last updated the ticket, in the timezone specified by the Looker user"
-    group_label: "Last Updated At"
+    group_label: "Time Last Updated At"
     type: time
     timeframes: [
       time,
@@ -407,7 +407,7 @@ view: ticket_metrics {
     drill_fields: [default*]
   }
 
-  measure: avg_first_resolution_time_in_minutes__business {
+  measure: average_first_resolution_time_in_minutes__business {
     description: "The average number of minutes to the first resolution time, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Resolution Time"
     type: average
@@ -416,7 +416,7 @@ view: ticket_metrics {
     drill_fields: [default*]
   }
 
-  measure: avg_first_resolution_time_in_minutes__calendar {
+  measure: average_first_resolution_time_in_minutes__calendar {
     description: "The average number of minutes to the first resolution time"
     group_label: "First Resolution Time"
     type: average
@@ -425,7 +425,7 @@ view: ticket_metrics {
     drill_fields: [default*]
   }
 
-  measure: avg_full_resolution_time_in_minutes__business {
+  measure: average_full_resolution_time_in_minutes__business {
     description: "The average number of minutes to the full resolution inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "Full Resolution Time"
     type: average
@@ -434,7 +434,7 @@ view: ticket_metrics {
     drill_fields: [default*]
   }
 
-  measure: avg_full_resolution_time_in_minutes__calendar {
+  measure: average_full_resolution_time_in_minutes__calendar {
     description: "The average number of minutes to the full resolution"
     group_label: "Full Resolution Time"
     type: average
@@ -460,7 +460,7 @@ view: ticket_metrics {
     drill_fields: [default*]
   }
 
-  measure: avg_full_resolution_time_in_hours__business {
+  measure: average_full_resolution_time_in_hours__business {
     description: "The average number of hours to the full resolution inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "Full Resolution Time"
     type: average
@@ -469,7 +469,7 @@ view: ticket_metrics {
     drill_fields: [default*]
   }
 
-  measure: avg_full_resolution_time_in_hours__calendar {
+  measure: average_full_resolution_time_in_hours__calendar {
     description: "The average number of hours to the full resolution"
     group_label: "Full Resolution Time"
     type: average
@@ -496,7 +496,7 @@ view: ticket_metrics {
     drill_fields: [default*]
   }
 
-  measure: avg_full_resolution_time_in_days__business {
+  measure: average_full_resolution_time_in_days__business {
     description: "The average number of days to the full resolution, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "Full Resolution Time"
     type: average
@@ -505,7 +505,7 @@ view: ticket_metrics {
     drill_fields: [default*]
   }
 
-  measure: avg_full_resolution_time_in_days__calendar {
+  measure: average_full_resolution_time_in_days__calendar {
     description: "The average number of days to the full resolution"
     group_label: "Full Resolution Time"
     type: average
@@ -514,7 +514,7 @@ view: ticket_metrics {
     drill_fields: [default*]
   }
 
-  measure: avg_reply_time_in_minutes__business {
+  measure: average_reply_time_in_minutes__business {
     description: "The average number of minutes to the first reply, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Reply Time"
     type: average
@@ -523,7 +523,7 @@ view: ticket_metrics {
     drill_fields: [default*]
   }
 
-  measure: avg_reply_time_in_minutes__calendar {
+  measure: average_reply_time_in_minutes__calendar {
     description: "The average number of minutes to the first reply"
     group_label: "First Reply Time"
     type: average
@@ -541,7 +541,7 @@ view: ticket_metrics {
     drill_fields: [default*]
   }
 
-  measure: avg_reply_time_in_hours__business {
+  measure: average_reply_time_in_hours__business {
     description: "The average number of hours to the first reply, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Reply Time"
     type: average
@@ -550,7 +550,7 @@ view: ticket_metrics {
     drill_fields: [default*]
   }
 
-  measure: avg_reply_time_in_hours__calendar {
+  measure: average_reply_time_in_hours__calendar {
     description: "The average number of hours to the first reply"
     group_label: "First Reply Time"
     type: average

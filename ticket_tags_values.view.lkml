@@ -34,7 +34,7 @@ view: ticket__tags {
   }
 
   dimension: all_values {
-    description: "Concatenated view of all Zendesk ticket tags"
+    description: "Concatenated view of all Zendesk ticket tags, comma separated"
     type: string
     sql: ${TABLE}.all_values ;;
   }
