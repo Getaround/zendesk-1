@@ -48,7 +48,7 @@ view: satisfaction_ratings {
   }
 
   dimension: reason {
-    description: "CSAT reason submitted by the ticket requester (customer who initiated the ticket)"
+    description: "Customers who select 'Bad, I'm unsatisfied' are presented with a drop-down menu of possible reasons for their negative response"
     label: "Reason"
     type: string
     sql: ${TABLE}.reason ;;

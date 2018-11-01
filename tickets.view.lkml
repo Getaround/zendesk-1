@@ -143,6 +143,38 @@ view: tickets {
     sql: ${TABLE}.requester_id ;;
   }
 
+  dimension: csat_comment {
+    description: "CSAT comment submitted by the ticket requester"
+    label: "CSAT Comment"
+    group_label: "CSAT"
+    type: string
+    sql: ${TABLE}.satisfaction_rating__comment ;;
+  }
+
+  dimension: csat_id {
+    description: "CSAT ID for the rating submitted by the ticket requester"
+    label: "CSAT ID"
+    group_label: "CSAT"
+    type: number
+    sql: ${TABLE}.satisfaction_rating__id ;;
+  }
+
+  dimension: csat_rating {
+    description: "CSAT rating submitted by the ticket requester"
+    label: "CSAT Rating"
+    group_label: "CSAT"
+    type: string
+    sql: ${TABLE}.satisfaction_rating__score ;;
+  }
+
+  dimension: csat_reason {
+    description: "Customers who select 'Bad, I'm unsatisfied' are presented with a drop-down menu of possible reasons for their negative response"
+    label: "CSAT Reason"
+    group_label: "CSAT"
+    type: string
+    sql: ${TABLE}.satisfaction_rating__reason ;;
+  }
+
   dimension: status {
     description: "The current status of the ticket. Possible values: new, open, pending, hold, solved, and closed"
     type: string
@@ -304,6 +336,49 @@ view: tickets {
     filters: {
       field: is_solved
       value: "Yes"
+    }
+    drill_fields: [default*]
+  }
+  measure: count_satisfied {
+    description: "Count tickets marked as \"good\" by the requester"
+    group_label: "CSAT"
+    type: count
+    filters: {
+      field: csat_rating
+      value: "good"
+    }
+    drill_fields: [default*]
+  }
+
+  measure: count_dissatisfied {
+    description: "Count tickets marked as \"bad\" by the requester"
+    group_label: "CSAT"
+    type: count
+    filters: {
+      field: csat_rating
+      value: "bad"
+    }
+    drill_fields: [default*]
+  }
+
+  measure: count_offered {
+    description: "Count tickets marked as \"offered\" by the requester"
+    group_label: "CSAT"
+    type: count
+    filters: {
+      field: csat_rating
+      value: "offered"
+    }
+    drill_fields: [default*]
+  }
+
+  measure: count_unoffered {
+    description: "Count tickets marked as \"unoffered\" by the requester"
+    group_label: "CSAT"
+    type: count
+    filters: {
+      field: csat_rating
+      value: "unoffered"
     }
     drill_fields: [default*]
   }

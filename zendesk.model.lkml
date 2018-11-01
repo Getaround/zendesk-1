@@ -83,11 +83,11 @@ explore: tickets {
     sql_on: ${tickets.id} = ${ticket_call_details.ticket_id} ;;
     relationship: one_to_many
   }
-
-  join: satisfaction_ratings {
-    view_label: "CSAT Ratings"
-    type: left_outer
-    sql_on: ${tickets.id} = ${satisfaction_ratings.ticket_id} ;;
-    relationship: one_to_many
-  }
+#
+#   join: satisfaction_ratings {
+#     view_label: "CSAT Ratings"
+#     type: left_outer
+#     sql_on: ${tickets.id} = ${satisfaction_ratings.ticket_id} ;;
+#     relationship: one_to_many
+#   }
 }
