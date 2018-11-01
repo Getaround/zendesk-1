@@ -132,7 +132,7 @@ view: tickets {
   }
 
   dimension: requester_email {
-    description:  "The email address of the requester (customer who initiated the ticket)"
+    description: "The email address of the requester (customer who initiated the ticket)"
     sql: ${requesters.email} ;;
   }
 
@@ -141,38 +141,6 @@ view: tickets {
     type: number
     value_format_name: id
     sql: ${TABLE}.requester_id ;;
-  }
-
-  dimension: csat_comment {
-    description: "CSAT comment submitted by the ticket requester (customer who initiated the ticket)"
-    label: "CSAT Comment"
-    group_label: "CSAT"
-    type: string
-    sql: ${TABLE}.satisfaction_rating__comment ;;
-  }
-
-  dimension: csat_id {
-    description: "CSAT ID for the rating submitted by the ticket requester (customer who initiated the ticket)"
-    label: "CSAT ID"
-    group_label: "CSAT"
-    type: number
-    sql: ${TABLE}.satisfaction_rating__id ;;
-  }
-
-  dimension: csat_rating {
-    description: "CSAT rating submitted by the ticket requester (customer who initiated the ticket)"
-    label: "CSAT Rating"
-    group_label: "CSAT"
-    type: string
-    sql: ${TABLE}.satisfaction_rating__score ;;
-  }
-
-  dimension: csat_reason {
-    description: "CSAT reason submitted by the ticket requester (customer who initiated the ticket)"
-    label: "CSAT Reason"
-    group_label: "CSAT"
-    type: string
-    sql: ${TABLE}.satisfaction_rating__reason ;;
   }
 
   dimension: status {
@@ -340,52 +308,11 @@ view: tickets {
     drill_fields: [default*]
   }
 
-  measure: count_satisfied {
-    description: "Count tickets marked as \"good\" by the requester"
-    type: count
-    filters: {
-      field: csat_rating
-      value: "good"
-    }
-    drill_fields: [default*]
-  }
-
-  measure: count_dissatisfied {
-    description: "Count tickets marked as \"bad\" by the requester"
-    type: count
-    filters: {
-      field: csat_rating
-      value: "bad"
-    }
-    drill_fields: [default*]
-  }
-
-  measure: count_offered {
-    description: "Count tickets marked as \"offered\" by the requester"
-    type: count
-    filters: {
-      field: csat_rating
-      value: "offered"
-    }
-    drill_fields: [default*]
-  }
-
-  measure: count_unoffered {
-    description: "Count tickets marked as \"unoffered\" by the requester"
-    type: count
-    filters: {
-      field: csat_rating
-      value: "unoffered"
-    }
-    drill_fields: [default*]
-  }
-
   set: default {
     fields: [
       hyperlink,
       time_created_at_time,
       status,
-      csat_rating,
       type,
       via__channel,
       subject

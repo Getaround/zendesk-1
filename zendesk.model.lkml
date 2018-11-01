@@ -12,7 +12,6 @@ explore: users {
 }
 
 explore: tickets {
-
   join: ticket_custom_fields {
     type: left_outer
     foreign_key: tickets.id
@@ -20,7 +19,7 @@ explore: tickets {
   }
 
   join: ticket_facts {
-    view_label: "Ticket Facts"
+    view_label: "Ticket Fact"
     type: left_outer
     foreign_key: tickets.id
     relationship: one_to_one
@@ -82,6 +81,13 @@ explore: tickets {
     view_label: "Ticket Call Information"
     type: left_outer
     sql_on: ${tickets.id} = ${ticket_call_details.ticket_id} ;;
+    relationship: one_to_many
+  }
+
+  join: satisfaction_ratings {
+    view_label: "CSAT Ratings"
+    type: left_outer
+    sql_on: ${tickets.id} = ${satisfaction_ratings.ticket_id} ;;
     relationship: one_to_many
   }
 }

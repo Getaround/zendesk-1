@@ -10,14 +10,14 @@ view: ticket_metrics {
   }
 
   dimension: agent_wait_time_in_minutes__business {
-    description: "The number of minutes the agent spent waiting, inside of business hours.  Business hours are from M-F, 9am - 5pm PST."
+    description: "The cumulative number of minutes a ticket has been in a pending state (awaiting customer response), inside of business hours.  Business hours are from M-F, 9am - 5pm PST."
     group_label: "Wait Time"
     type: number
     sql: ${TABLE}.agent_wait_time_in_minutes__business ;;
   }
 
   dimension: agent_wait_time_in_minutes__calendar {
-    description: "The number of minutes the agent spent waiting"
+    description: "The cumulative number of minutes a ticket has been in a pending state (awaiting customer response)"
     group_label: "Wait Time"
     type: number
     sql: ${TABLE}.agent_wait_time_in_minutes__calendar ;;
@@ -92,7 +92,7 @@ view: ticket_metrics {
   # MINUTES
 
   dimension: first_resolution_time_in_minutes__business {
-    description: "The number of minutes to the first resolution time, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
+    description: "The number of minutes from when a ticket is created to when it is first solved, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Resolution Time"
     type: number
     value_format_name: decimal_2
@@ -100,7 +100,7 @@ view: ticket_metrics {
   }
 
   dimension: first_resolution_time_in_minutes__calendar {
-    description: "The number of minutes to the first resolution time"
+    description: "The number of minutes from when a ticket is created to when it is first solved"
     group_label: "First Resolution Time"
     type: number
     value_format_name: decimal_2
@@ -108,7 +108,7 @@ view: ticket_metrics {
   }
 
   dimension: full_resolution_time_in_minutes__business {
-    description: "The number of minutes to the full resolution inside of business hours. Business hours are from M-F, 9am - 5pm PST."
+    description: "The number of minutes from when a ticket is created to when it is solved for the last time, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "Full Resolution Time"
     type: number
     value_format_name: decimal_2
@@ -116,7 +116,7 @@ view: ticket_metrics {
   }
 
   dimension: full_resolution_time_in_minutes__calendar {
-    description: "The number of minutes to the full resolution"
+    description: "The number of minutes from when a ticket is created to when it is solved for the last time"
     group_label: "Full Resolution Time"
     type: number
     value_format_name: decimal_2
@@ -132,7 +132,7 @@ view: ticket_metrics {
   }
 
   dimension: first_resolution_time_in_hours__business {
-    description: "The number of hours to the first resolution time, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
+    description: "The number of hours from when a ticket is created to when it is first solved, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Resolution Time"
     type: number
     value_format_name: decimal_2
@@ -140,7 +140,7 @@ view: ticket_metrics {
   }
 
   dimension: first_resolution_time_in_hours__calendar {
-    description: "The number of hours to the first resolution time"
+    description: "The number of hours from when a ticket is created to when it is first solved"
     group_label: "First Resolution Time"
     type: number
     value_format_name: decimal_2
@@ -148,7 +148,7 @@ view: ticket_metrics {
   }
 
   dimension: full_resolution_time_in_hours__business {
-    description: "The number of hours to the full resolution inside of business hours. Business hours are from M-F, 9am - 5pm PST."
+    description: "The number of hours from when a ticket is created to when it is solved for the last time, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "Full Resolution Time"
     type: number
     value_format_name: decimal_2
@@ -156,7 +156,7 @@ view: ticket_metrics {
   }
 
   dimension: full_resolution_time_in_hours__calendar {
-    description: "The number of hours to the full resolution"
+    description: "The number of hours from when a ticket is created to when it is solved for the last time"
     group_label: "Full Resolution Time"
     type: number
     value_format_name: decimal_2
@@ -164,7 +164,7 @@ view: ticket_metrics {
   }
 
   dimension: first_resolution_time_in_days__business {
-    description: "The number of days to the first resolution time, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
+    description: "The number of days from when a ticket is created to when it is first solved, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Resolution Time"
     type: number
     value_format_name: decimal_2
@@ -172,7 +172,7 @@ view: ticket_metrics {
   }
 
   dimension: first_resolution_time_in_days__calendar {
-    description: "The number of days to the first resolution time"
+    description: "The number of days from when a ticket is created to when it is first solved"
     group_label: "First Resolution Time"
     type: number
     value_format_name: decimal_2
@@ -180,7 +180,7 @@ view: ticket_metrics {
   }
 
   dimension: full_resolution_time_in_days__business {
-    description: "The number of days to the full resolution, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
+    description: "The number of days from when a ticket is created to when it is solved for the last time, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "Full Resolution Time"
     type: number
     value_format_name: decimal_2
@@ -188,7 +188,7 @@ view: ticket_metrics {
   }
 
   dimension: full_resolution_time_in_days__calendar {
-    description: "The number of days to the full resolution"
+    description: "The number of days from when a ticket is created to when it is solved for the last time"
     group_label: "Full Resolution Time"
     type: number
     value_format_name: decimal_2
@@ -238,7 +238,7 @@ view: ticket_metrics {
   }
 
   dimension: reply_time_in_minutes__business {
-    description: "The number of minutes to the first reply, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
+    description: "The number of minutes between ticket creation and the first public comment from an agent, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Reply Time"
     type: number
     value_format_name: decimal_2
@@ -246,7 +246,7 @@ view: ticket_metrics {
   }
 
   dimension: reply_time_in_minutes__calendar {
-    description: "The number of minutes to the first reply"
+    description: "The number of minutes between ticket creation and the first public comment from an agent"
     group_label: "First Reply Time"
     type: number
     value_format_name: decimal_2
@@ -262,7 +262,7 @@ view: ticket_metrics {
   }
 
   dimension: reply_time_in_hours__business {
-    description: "The number of hours to the first reply, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
+    description: "The number of hours between ticket creation and the first public comment from an agent, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Reply Time"
     type: number
     value_format_name: decimal_2
@@ -270,7 +270,7 @@ view: ticket_metrics {
   }
 
   dimension: reply_time_in_hours__calendar {
-    description: "The number of hours to the first reply"
+    description: "The number of hours between ticket creation and the first public comment from an agent"
     group_label: "First Reply Time"
     type: number
     value_format_name: decimal_2
@@ -293,7 +293,7 @@ view: ticket_metrics {
   }
 
   dimension: requester_wait_time_in_minutes__business {
-    description: "The number of minutes the requester spent waiting inside of business hours. Business hours are from M-F, 9am - 5pm PST."
+    description: "The cumulative number of minutes that a ticket is in a New, Open or On-hold state, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "Wait Time"
     type: number
     value_format_name: decimal_2
@@ -301,7 +301,7 @@ view: ticket_metrics {
   }
 
   dimension: requester_wait_time_in_minutes__calendar {
-    description: "The number of minutes the requester spent waiting"
+    description: "The cumulative number of minutes that a ticket is in a New, Open or On-hold state"
     group_label: "Wait Time"
     type: number
     value_format_name: decimal_2

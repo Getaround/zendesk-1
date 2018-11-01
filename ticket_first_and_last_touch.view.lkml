@@ -75,10 +75,10 @@ view: ticket_first_and_last_touch {
     sql: ${TABLE}.first_touch_agent_name ;;
   }
 
-  dimension_group: time_first_touch_created_at {
-    description: "First Touch Created At, in the timezone specified by the Looker user"
-    group_label: "Time First Touch Created At"
-    label: "First Touch Created At"
+  dimension_group: time_first_touch_at {
+    description: "First Touch At, in the timezone specified by the Looker user"
+    group_label: "Time First Touch At"
+    label: "First Touch At"
     type: time
     timeframes: [
       raw,
@@ -101,10 +101,10 @@ view: ticket_first_and_last_touch {
   }
 
 
-  dimension_group: time_first_touch_created_at_utc {
-    description: "First Touch Created At, in UTC"
-    group_label: "Time First Touch Created At"
-    label: "First Touch Created At UTC"
+  dimension_group: time_first_touch_at_utc {
+    description: "First Touch At, in UTC"
+    group_label: "Time First Touch At"
+    label: "First Touch At UTC"
     type: time
     timeframes: [
       raw,
@@ -141,10 +141,10 @@ view: ticket_first_and_last_touch {
     sql: ${TABLE}.last_touch_agent_name ;;
   }
 
-  dimension_group: last_touch_created_at {
-    description: "Last Touch Created At, in the timezone specified by the Looker user"
-    group_label: "Time Last Touch Created At"
-    label: "Last Touch Created At"
+  dimension_group: last_touch_at {
+    description: "Last Touch At, in the timezone specified by the Looker user"
+    group_label: "Time Last Touch At"
+    label: "Last Touch At"
     type: time
     timeframes: [
       raw,
@@ -166,10 +166,10 @@ view: ticket_first_and_last_touch {
     sql: ${TABLE}.last_touch_created_at ;;
   }
 
-  dimension_group: last_touch_created_at_utc {
-    description: "Last Touch Created At, in UTC"
-    group_label: "Time Last Touch Created At"
-    label: "Last Touch Created At UTC"
+  dimension_group: last_touch_at_utc {
+    description: "Last Touch At, in UTC"
+    group_label: "Time Last Touch At"
+    label: "Last Touch At UTC"
     type: time
     timeframes: [
       raw,
@@ -197,10 +197,10 @@ view: ticket_first_and_last_touch {
       ticket_id,
       first_touch_agent_location,
       first_touch_agent_name,
-      time_first_touch_created_at_date,
+      time_first_touch_at_date,
       last_touch_agent_location,
       last_touch_agent_name,
-      last_touch_created_at_time
+      last_touch_at_time
     ]
   }
 }

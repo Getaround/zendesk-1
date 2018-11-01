@@ -217,13 +217,6 @@ view: ticket_facts {
 
   ### Measures
 
-    measure: count {
-      description: "Count Tickets Facts"
-      type: count_distinct
-      sql: ${ticket_id} ;;
-      drill_fields: [default*]
-    }
-
     measure: sum_number_outbound_calls {
       description: "Sum Number of outbound calls associated with ticket"
       group_label: "Activity Counts"
