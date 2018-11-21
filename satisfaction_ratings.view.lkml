@@ -93,12 +93,11 @@ view: satisfaction_ratings {
 
   measure: count_satisfied {
     description: "Count ratings marked as \"good\" by the requester"
-    type: count_distinct
+    type: count
     filters: {
       field: rating
       value: "good"
     }
-    sql: ${id} ;;
     drill_fields: [default*]
   }
 
