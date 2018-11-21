@@ -1,28 +1,5 @@
 view: satisfaction_ratings {
-  derived_table: {
-    sql: SELECT
-        ratings.*,
-        agent.name AS assignee_name,
-        requester.name as requester_name,
-        groups.name as group_name
-      FROM
-        zendesk_stitch.satisfaction_ratings AS ratings
-      LEFT JOIN
-        zendesk_stitch.users AS agent
-      ON
-        agent.id = ratings.assignee_id
-      LEFT JOIN
-        zendesk_stitch.users AS requester
-      ON
-        requester.id = ratings.requester_id
-      LEFT JOIN
-        zendesk_stitch.groups AS groups
-      ON
-        groups.id = ratings.group_id
-       ;;
-    indexes: ["ticket_id"]
-    sql_trigger_value: SELECT COUNT(*) FROM zendesk_stitch.satisfaction_ratings ;;
-  }
+  sql_table_name: zendesk_stitch.satisfaction_ratings ;;
 
   dimension: comment {
     description: "CSAT comment submitted by the ticket requester (customer who initiated the ticket)"
@@ -85,25 +62,34 @@ view: satisfaction_ratings {
     sql: ${TABLE}.ticket_id ;;
   }
 
-  dimension: assignee_name {
-    description: "The name of the agent assigned at the time of the rating."
+  dimension: assignee_id {
+    description: "The id of the agent assigned at the time of the rating."
     type: string
-    sql: ${TABLE}.assignee_name ;;
+    hidden: yes
+    sql: ${TABLE}.assignee_id ;;
   }
 
-  dimension: requester_name {
-    description: "The name address of the requester (customer who initiated the ticket and who submitted the rating)"
+  dimension: requester_id {
+    description: "The id of the requester (customer who initiated the ticket and who submitted the rating)"
     type: string
-    sql: ${TABLE}.requester_name ;;
+    hidden: yes
+    sql: ${TABLE}.requester_id ;;
   }
 
-  dimension: group_name {
-    description: "The name of the group assigned at the time of the rating"
+  dimension: group_id {
+    description: "The id of the group assigned at the time of the rating"
     type: string
-    sql: ${TABLE}.group_name ;;
+    hidden: yes
+    sql: ${TABLE}.group_id ;;
   }
 
   ### MEASURES
+
+  measure: count {
+    description: "Count satisfaction ratings"
+    type: count
+    drill_fields: [default*]
+  }
 
   measure: count_satisfied {
     description: "Count ratings marked as \"good\" by the requester"
@@ -148,14 +134,12 @@ view: satisfaction_ratings {
 
   set: default {
     fields: [
-      comment,
       id,
+      time_created_at_time,
+      ticket_id,
       rating,
       reason,
-      ticket_id,
-      assignee_name,
-      requester_name,
-      group_name
+      comment
     ]
   }
 }

@@ -8,6 +8,7 @@ view: groups {
   }
 
   dimension_group: time_created_at {
+    alias: [created_at]
     description: "Timestamp when the group was created at, in the timezone specified by the Looker user"
     group_label: "Time Created At"
     label: "Created At"
@@ -27,11 +28,10 @@ view: groups {
     sql: ${TABLE}.name ;;
   }
 
-  dimension: is_customer_happiness_group {
-    description: "\"Yes\" if this group should be included in Customer Happiness team reporting.  Groups include Happiness, Lead, Supervisor and the managed queues."
+  dimension: is_happiness_group {
+    description: "\"Yes\" if this group should be included in reporting for the Happiness team.  Groups include Happiness, Lead, Supervisor and the managed queues."
     type: yesno
-    sql: ${TABLE}.name IN ('Happiness', 'Lead', 'Supervisor',' Jessica R / City CarShare Managed Queue',
-                           'Bryce / Toyota Connected Managed Queue' , 'Annie S / Drive with Uber Managed Queue') ;;
+    sql: ${id} IN (20357762, 20707481, 32925228, 360000020007, 360000033968, 360000056487) ;;
   }
 
   ### Measures

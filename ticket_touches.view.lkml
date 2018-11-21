@@ -1,4 +1,4 @@
-view: ticket_first_and_last_touch {
+view: ticket_touches {
   derived_table: {
     sql: SELECT
         distinct ticket_id,
@@ -13,7 +13,7 @@ view: ticket_first_and_last_touch {
                       WHEN audits.metadata__system__location LIKE '%United Kingdom%' THEN 'UK'
                       WHEN audits.metadata__system__location LIKE '%United Arab Emirates%' THEN 'UAE'
                       ELSE 'Other' END) OVER (PARTITION BY ticket_id ORDER BY audits.created_at ASC) AS first_touch_agent_location,
-        FIRST_VALUE(users.name) OVER (PARTITION BY ticket_id ORDER BY audits.created_at ASC) AS first_touch_agent_name,
+        FIRST_VALUE(users.id) OVER (PARTITION BY ticket_id ORDER BY audits.created_at ASC) AS first_touch_agent_id,
         FIRST_VALUE(audits.created_at) OVER (PARTITION BY ticket_id ORDER BY audits.created_at ASC) AS first_touch_created_at,
         FIRST_VALUE(CASE
                       WHEN audits.metadata__system__location LIKE '%Philippines%' THEN 'Philippines'
@@ -26,8 +26,7 @@ view: ticket_first_and_last_touch {
                       WHEN audits.metadata__system__location LIKE '%United Kingdom%' THEN 'UK'
                       WHEN audits.metadata__system__location LIKE '%United Arab Emirates%' THEN 'UAE'
                       ELSE 'Other' END) OVER (PARTITION BY ticket_id ORDER BY audits.created_at DESC) AS last_touch_agent_location,
-        FIRST_VALUE(users.name) OVER (PARTITION BY ticket_id ORDER BY audits.created_at DESC) AS last_touch_agent_name,
-        FIRST_VALUE(audits.author_id) OVER (PARTITION BY ticket_id ORDER BY audits.created_at DESC) AS last_agent_id,
+        FIRST_VALUE(users.id) OVER (PARTITION BY ticket_id ORDER BY audits.created_at DESC) AS last_touch_agent_id,
         FIRST_VALUE(audits.created_at) OVER (PARTITION BY ticket_id ORDER BY audits.created_at DESC) AS last_touch_created_at
       FROM
         zendesk_stitch.ticket_audits AS audits
@@ -63,20 +62,24 @@ view: ticket_first_and_last_touch {
 
   dimension: first_touch_agent_location {
     description: "Location of agent who was the first agent to make a change to the ticket"
+    view_label: "Ticket First Touch"
     group_label: "First Touch"
     type: string
     sql: ${TABLE}.first_touch_agent_location ;;
   }
 
-  dimension: first_touch_agent_name {
-    description: "Name of agent who was the first agent to make a change to the ticket"
+  dimension: first_touch_agent_id {
+    description: "ID of agent who was the first agent to make a change to the ticket"
+    view_label: "Ticket First Touch"
     group_label: "First Touch"
     type: string
-    sql: ${TABLE}.first_touch_agent_name ;;
+    hidden: yes
+    sql: ${TABLE}.first_touch_agent_id ;;
   }
 
   dimension_group: time_first_touch_at {
     description: "First Touch At, in the timezone specified by the Looker user"
+    view_label: "Ticket First Touch"
     group_label: "Time First Touch At"
     label: "First Touch At"
     type: time
@@ -103,6 +106,7 @@ view: ticket_first_and_last_touch {
 
   dimension_group: time_first_touch_at_utc {
     description: "First Touch At, in UTC"
+    view_label: "Ticket First Touch"
     group_label: "Time First Touch At"
     label: "First Touch At UTC"
     type: time
@@ -129,20 +133,24 @@ view: ticket_first_and_last_touch {
 
   dimension: last_touch_agent_location {
     description: "Location of agent who was the last agent to make a change to the ticket"
+    view_label: "Ticket Last Touch"
     group_label: "Last Touch"
     type: string
     sql: ${TABLE}.last_touch_agent_location ;;
   }
 
-  dimension: last_touch_agent_name {
-    description: "Name of agent who was the last agent to make a change to the ticket"
+  dimension: last_touch_agent_id {
+    description: "ID of agent who was the last agent to make a change to the ticket"
+    view_label: "Ticket Last Touch"
     group_label: "Last Touch"
     type: string
-    sql: ${TABLE}.last_touch_agent_name ;;
+    hidden: yes
+    sql: ${TABLE}.last_touch_agent_id ;;
   }
 
   dimension_group: last_touch_at {
     description: "Last Touch At, in the timezone specified by the Looker user"
+    view_label: "Ticket Last Touch"
     group_label: "Time Last Touch At"
     label: "Last Touch At"
     type: time
@@ -168,6 +176,7 @@ view: ticket_first_and_last_touch {
 
   dimension_group: last_touch_at_utc {
     description: "Last Touch At, in UTC"
+    view_label: "Ticket Last Touch"
     group_label: "Time Last Touch At"
     label: "Last Touch At UTC"
     type: time
@@ -196,10 +205,8 @@ view: ticket_first_and_last_touch {
     fields: [
       ticket_id,
       first_touch_agent_location,
-      first_touch_agent_name,
       time_first_touch_at_date,
       last_touch_agent_location,
-      last_touch_agent_name,
       last_touch_at_time
     ]
   }

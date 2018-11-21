@@ -1,10 +1,10 @@
-view: ticket_call_details {
+view: ticket_call {
   derived_table: {
     sql: SELECT
         audits.id,
         ticket_id,
         events.data__call_duration AS call_duration,
-        events.data__answered_by_name AS agent_on_call,
+        events.data__answered_by_id AS agent_id,
         CASE
           WHEN audits.metadata__system__location LIKE '%Philippines%' THEN 'Philippines'
           WHEN audits.metadata__system__location LIKE '%San Francisco%' THEN 'San Francisco'
@@ -56,13 +56,14 @@ view: ticket_call_details {
     group_label: "Call Duration"
     type: number
     value_format_name: decimal_2
-    sql: ${TABLE}.call_duration::NUMERIC / 60 ;;
+    sql: ${call_duration_seconds} / 60 ;;
   }
 
-  dimension: agent_on_call {
-    description: "Name of the agent who is on the call"
+  dimension: agent_id {
+    description: "ID of the agent who is on the call"
     type: string
-    sql: ${TABLE}.agent_on_call ;;
+    hidden: yes
+    sql: ${TABLE}.agent_id ;;
   }
 
   dimension: call_location {
@@ -124,9 +125,9 @@ view: ticket_call_details {
 
   ### Measures
 
-  measure: number_of_calls {
-    type: count_distinct
-    sql: ${id} ;;
+  measure: count {
+    description: "Ticket Call Count"
+    type: count
     drill_fields: [default*]
   }
 
@@ -170,8 +171,6 @@ view: ticket_call_details {
     fields: [
       ticket_id,
       call_duration_minutes,
-      call_duration_seconds,
-      agent_on_call,
       call_location,
       time_started_at_time,
       time_started_at_utc_time

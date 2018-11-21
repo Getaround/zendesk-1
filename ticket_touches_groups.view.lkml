@@ -1,4 +1,4 @@
-view: ticket_group_details {
+view: ticket_touches_groups {
   derived_table: {
     sql: SELECT
         DISTINCT audits.ticket_id AS ticket_id,
@@ -31,14 +31,14 @@ view: ticket_group_details {
 
   dimension: first_group {
     description: "The name of the first group the ticket was assigned to"
-    group_label: "First Touch"
+    view_label: "Ticket First Touch"
     type: string
     sql: ${TABLE}.first_group ;;
   }
 
   dimension: last_group {
     description: "The name of the last group the ticket was assigned to"
-    group_label: "Last Touch"
+    view_label: "Ticket Last Touch"
     type: string
     sql: ${tickets.group_name} ;;
   }

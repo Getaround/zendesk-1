@@ -63,31 +63,77 @@ explore: tickets {
     relationship: one_to_many
   }
 
-  join: ticket_first_and_last_touch {
-    view_label: "Ticket Fact"
+  join: ticket_touches {
     type: left_outer
-    sql_on: ${tickets.id} = ${ticket_first_and_last_touch.ticket_id} ;;
+    sql_on: ${tickets.id} = ${ticket_touches.ticket_id} ;;
     relationship: one_to_one
   }
 
-  join: ticket_group_details {
-    view_label: "Ticket Fact"
+  join: ticket_first_assignee {
+    view_label: "Ticket First Touch"
+    from: users
     type: left_outer
-    sql_on: ${tickets.id} = ${ticket_group_details.ticket_id} ;;
+    sql_on: ${ticket_touches.first_touch_agent_id} = ${ticket_first_assignee.id} ;;
+    relationship: many_to_one
+  }
+
+  join: ticket_last_assignee {
+    view_label: "Ticket Last Touch"
+    from: users
+    type: left_outer
+    sql_on: ${ticket_touches.last_touch_agent_id} = ${ticket_last_assignee.id} ;;
+    relationship: many_to_one
+  }
+
+  join: ticket_touches_groups {
+    type: left_outer
+    sql_on: ${tickets.id} = ${ticket_touches_groups.ticket_id} ;;
     relationship: one_to_one
   }
 
-  join: ticket_call_details {
-    view_label: "Ticket Call Information"
+  join: ticket_call {
+    view_label: "Ticket Call"
     type: left_outer
-    sql_on: ${tickets.id} = ${ticket_call_details.ticket_id} ;;
-    relationship: one_to_many
+    sql_on: ${tickets.id} = ${ticket_call.ticket_id} ;;
+    relationship: many_to_one
   }
-#
+
+  join: ticket_call_assignee {
+    view_label: "Ticket Call Assignee"
+    from: users
+    type: left_outer
+    sql_on: ${ticket_call.agent_id} = ${ticket_call_assignee.id} ;;
+    relationship: many_to_one
+  }
+
 #   join: satisfaction_ratings {
 #     view_label: "CSAT Ratings"
 #     type: left_outer
 #     sql_on: ${tickets.id} = ${satisfaction_ratings.ticket_id} ;;
-#     relationship: one_to_many
+#     relationship: many_to_one
+#   }
+#
+#   join: satisfaction_ratings_requesters {
+#     view_label: "CSAT Ratings Requester"
+#     from: users
+#     type: left_outer
+#     sql_on: ${satisfaction_ratings.requester_id} = ${satisfaction_ratings_requesters.id} ;;
+#     relationship: many_to_one
+#   }
+#
+#   join: satisfaction_ratings_assignees {
+#     view_label: "CSAT Ratings Assignee"
+#     from: users
+#     type: left_outer
+#     sql_on: ${satisfaction_ratings.assignee_id} = ${satisfaction_ratings_assignees.id} ;;
+#     relationship: many_to_one
+#   }
+#
+#   join: satisfaction_ratings_group {
+#     view_label: "CSAT Ratings Group"
+#     from: groups
+#     type: left_outer
+#     sql_on: ${satisfaction_ratings.group_id} = ${satisfaction_ratings_group.id} ;;
+#     relationship: many_to_one
 #   }
 }

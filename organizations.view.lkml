@@ -8,6 +8,7 @@ view: organizations {
   }
 
   dimension_group: time_created_at {
+    alias: [created]
     description: "The time the organization was created, in the timezone specified by the Looker user"
     group_label: "Time Created At"
     label: "Created At"
@@ -29,15 +30,15 @@ view: organizations {
   }
 
   dimension: name {
-    description: "The name of the organization, which corresponds to external partners (e.g. insurance entities, specific owner groups) and internal categories (e.g. Vendors)."
+    description: "The name of the organization, which corresponds to external partners (e.g. insurance entities, specific owner organizations) and internal categories (e.g. Vendors)."
     type: string
     sql: ${TABLE}.name ;;
   }
 
-  dimension: is_owner_group {
-    description: "\"Yes\" if this is a vehicle owner group"
+  dimension: is_owner_organization {
+    description: "\"Yes\" if this is a vehicle owner organization"
     type: yesno
-    sql: ${name} IN ('Owner', 'VIP Owners', 'DriveWhip') ;;
+    sql: ${id} IN (27717697608, 360026979927, 360072961408) ;;
   }
 
   dimension: notes {
@@ -61,7 +62,7 @@ view: organizations {
       time_created_at_time,
       details,
       name,
-      is_owner_group,
+      is_owner_organization,
       notes
     ]
   }
