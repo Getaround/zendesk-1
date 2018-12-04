@@ -64,9 +64,8 @@ view: ticket_custom_fields {
                THEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 31479717)
                       OVER (PARTITION BY tickets__fields._sdc_source_key_id)
                ELSE NULL END)::int AS value_time_spent_last_update
-
-        FROM zendesk.tickets__fields
-          LEFT JOIN zendesk.ticket_fields__custom_field_options AS value_options
+       FROM zendesk_stitch.tickets__custom_fields as tickets__fields
+          LEFT JOIN zendesk_stitch.ticket_fields__custom_field_options AS value_options
             ON (tickets__fields.id = value_options._sdc_source_key_id AND
                 tickets__fields.value = value_options.value))
 
@@ -82,7 +81,7 @@ view: ticket_custom_fields {
     indexes: ["ticket_id",
               "value_trip_id",
               "value_car_id"]
-    sql_trigger_value: SELECT MAX(_sdc_sequence) FROM zendesk.tickets__fields ;;
+    sql_trigger_value: SELECT MAX(_sdc_sequence) FROM zendesk_stitch.tickets__custom_fields ;;
   }
 
   dimension: ticket_id {
@@ -97,7 +96,6 @@ view: ticket_custom_fields {
     alias: [car_id]
     description: "Getaround ID of the car this ticket relates to"
     label: "Getaround Car ID"
-    group_label: "Custom Fields"
     type: string
     sql: ${TABLE}.value_car_id ;;
   }
@@ -106,100 +104,88 @@ view: ticket_custom_fields {
     alias: [trip_id]
     description: "Getaround ID of the trip this ticket relates to"
     label: "Getaround Trip ID"
-    group_label: "Custom Fields"
     type: number
     sql: ${TABLE}.corrected_trip_id ;;
-   }
+  }
 
   dimension: category_name {
-    group_label: "Custom Fields"
     description: "Category dropdown full menu item name"
     type: string
     sql: ${TABLE}.value_category_name ;;
   }
 
   dimension: category_tag {
-    group_label: "Custom Fields"
     description: "Category tag associated with a menu item"
     type: string
     sql: ${TABLE}.value_category ;;
   }
 
   dimension: zone_group_name {
-    group_label: "Custom Fields"
     description: "Zone Group dropdown full menu item name"
     type: string
     sql: ${TABLE}.value_zone_group_name ;;
   }
 
   dimension: zone_group_tag {
-    group_label: "Custom Fields"
     description: "Zone Group tag associated with a menu item"
     type: string
     sql: ${TABLE}.value_zone_group ;;
   }
 
   dimension: exit_reason_name {
-    group_label: "Custom Fields"
     description: "Exit Reason dropdown full menu item name"
     type: number
     sql: ${TABLE}.value_exit_reason_name ;;
   }
 
   dimension: exit_reason_tag {
-    group_label: "Custom Fields"
     description: "Exit Reason tag associated with a menu item"
     type: string
     sql: ${TABLE}.value_exit_reason ;;
   }
 
   dimension: claim_status_name {
-    group_label: "Custom Fields"
     description: "Claim Status dropdown full menu item name"
     type: string
     sql: ${TABLE}.value_claim_status_name ;;
   }
 
   dimension: claim_status_tag {
-    group_label: "Custom Fields"
     description: "Claim Status tag associated with a menu item"
     type: string
     sql: ${TABLE}.value_claim_status ;;
   }
 
   dimension: total_time_spent {
-    group_label: "Custom Fields"
     description: "Agent total time spent working this ticket, in seconds"
     type: number
     sql: ${TABLE}.value_total_time_spent ;;
   }
 
   dimension: time_spent_last_update {
-    group_label: "Custom Fields"
     description: "Agent time spent on the last ticket update, in seconds"
     type: number
     sql: ${TABLE}.value_time_spent_last_update ;;
   }
 
   dimension: is_trip_related {
-    group_label: "Custom Fields"
     description: "\"Yes\" if this ticket has a Trip ID set"
     type: yesno
     sql:  ${getaround_trip_id} IS NOT NULL ;;
   }
 
   dimension: is_car_related {
-    group_label: "Custom Fields"
     description: "\"Yes\" if this ticket has a Car ID set"
     type: yesno
     sql:  ${getaround_car_id} IS NOT NULL ;;
   }
 
-  # Measures
+  ### Measures
 
   measure: count {
     description: "Count tickets custom field records"
     type: count
+    drill_fields: [default*]
   }
 
   measure: count_trip_related {
@@ -209,6 +195,7 @@ view: ticket_custom_fields {
       field: is_trip_related
       value: "Yes"
     }
+    drill_fields: [default*]
   }
 
   measure: count_car_related {
@@ -218,6 +205,7 @@ view: ticket_custom_fields {
       field: is_car_related
       value: "Yes"
     }
+    drill_fields: [default*]
   }
 
   measure: count_unique_trips {
@@ -230,17 +218,40 @@ view: ticket_custom_fields {
     description: "Unique count of Car IDs referenced by Zendesk tickets"
     type:  count_distinct
     sql:  ${getaround_car_id} ;;
+    drill_fields: [default*]
   }
 
   measure: sum_total_time_spent {
     description: "Sum total time spent working this ticket, in seconds"
     type: sum
     sql: ${total_time_spent} ;;
+    drill_fields: [default*]
   }
 
   measure: sum_time_spent_last_update {
     description: "Sum time spent on the last ticket update, in seconds"
     type: sum
     sql: ${time_spent_last_update} ;;
+    drill_fields: [default*]
+  }
+
+  set: default {
+    fields: [
+      ticket_id,
+      getaround_car_id,
+      getaround_trip_id,
+      category_name,
+      category_tag,
+      zone_group_name,
+      zone_group_tag,
+      exit_reason_name,
+      exit_reason_tag,
+      claim_status_name,
+      claim_status_tag,
+      total_time_spent,
+      time_spent_last_update,
+      is_trip_related,
+      is_car_related
+    ]
   }
 }

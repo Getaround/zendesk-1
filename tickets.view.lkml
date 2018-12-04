@@ -1,5 +1,5 @@
 view: tickets {
-  sql_table_name: zendesk.tickets ;;
+  sql_table_name: zendesk_stitch.tickets ;;
 
   dimension: id {
     primary_key: yes
@@ -8,25 +8,24 @@ view: tickets {
   }
 
   dimension: assignee_email {
-    description: "the requester is the customer who initiated the ticket. the email is retrieved from the `users` table."
+    description: "The email of the assignee (agent currently assigned to the ticket)"
+    type: string
     sql: ${assignees.email} ;;
   }
 
-  ## include only if your Zendesk application utilizes the assignee_id field
   dimension: assignee_id {
+    description: "The ID of the assignee (agent currently assigned to the ticket)"
     type: number
     value_format_name: id
     sql: ${TABLE}.assignee_id ;;
   }
 
-  #   - dimension: brand_id      ## include only if your Zendesk application utilizes the brand field
-  #     value_format_name: id                ## only associated with Zendesk Enterprise Accounts
-  #     type: number
-  #     sql: ${TABLE}.brand_id
-
-  dimension_group: created_at {
-    type: time
+  dimension_group: time_created_at {
+    alias: [created_at]
+    description: "Timestamp when the ticket was created, in the timezone specified by the Looker user"
     group_label: "Time Created At"
+    label: "Created At"
+    type: time
     timeframes: [
       raw,
       time,
@@ -47,10 +46,45 @@ view: tickets {
     sql: ${TABLE}.created_at ;;
   }
 
-  dimension_group: created_at_utc {
-    type: time
+  parameter: time_created_at_filter {
+    description: "Filter-only field that can be used with the Time Created At Filtered dimension"
+    type: string
+    allowed_value: {
+      label: "Date"
+      value: "date"
+    }
+    allowed_value: {
+      label: "Week"
+      value: "week"
+    }
+    allowed_value: {
+      label: "Month"
+      value: "month"
+    }
+    allowed_value: {
+      label: "Quarter"
+      value: "quarter"
+    }
+  }
+
+  dimension: time_created_at_filtered {
+    label_from_parameter: time_created_at_filter
+    description: "Use this field with the Time Created At Filter.  Using this field allows you to adjust the time frame dynamically. In the timezone specified by the Looker user"
+    type: string
+    sql: CASE WHEN {% parameter time_created_at_filter %} = 'date' THEN ${time_created_at_date}::text
+          WHEN {% parameter time_created_at_filter %} = 'week' THEN ${time_created_at_week}
+          WHEN {% parameter time_created_at_filter %} = 'month' THEN ${time_created_at_month}
+          WHEN {% parameter time_created_at_filter %} = 'quarter' THEN ${time_created_at_quarter}
+         END ;;
+  }
+
+
+  dimension_group: time_created_at_utc {
+    alias: [created_at_utc]
+    description: "Timestamp when the ticket was created, in UTC"
     group_label: "Time Created At"
     label: "Created At UTC"
+    type: time
     timeframes: [
       raw,
       time,
@@ -74,33 +108,36 @@ view: tickets {
 
   dimension: group_id {
     type: number
-    value_format_name: id
+    hidden: yes
     sql: ${TABLE}.group_id ;;
+  }
+
+  dimension: group_name {
+    description: "The current group that the ticket is assigned to"
+    type: string
+    hidden: yes
+    sql: ${groups.name} ;;
   }
 
   dimension: organization_id {
     type: number
-    value_format_name: id
+    hidden: yes
     sql: ${TABLE}.organization_id ;;
   }
 
-  dimension: organization_name {
-    type: string
-    sql: ${organizations.name} ;;
-  }
-
-  dimension: recipient {
+  dimension: recipient_email {
+    description: "The original recipient email address of the ticket (in most cases, help@getaround.com)"
     type: string
     sql: ${TABLE}.recipient ;;
   }
 
   dimension: requester_email {
-    description: "the requester is the customer who initiated the ticket. the email is retrieved from the `users` table."
+    description: "The email address of the requester (customer who initiated the ticket)"
     sql: ${requesters.email} ;;
   }
 
   dimension: requester_id {
-    description: "the requester is the customer who initiated the ticket"
+    description: "The ID of the requester (customer who initiated the ticket)"
     type: number
     value_format_name: id
     sql: ${TABLE}.requester_id ;;
@@ -130,31 +167,41 @@ view: tickets {
     sql: ${TABLE}.satisfaction_rating__score ;;
   }
 
+  dimension: csat_reason {
+    description: "Customers who select 'Bad, I'm unsatisfied' are presented with a drop-down menu of possible reasons for their negative response"
+    label: "CSAT Reason"
+    group_label: "CSAT"
+    type: string
+    sql: ${TABLE}.satisfaction_rating__reason ;;
+  }
+
   dimension: status {
+    description: "The current status of the ticket. Possible values: new, open, pending, hold, solved, and closed"
     type: string
     sql: ${TABLE}.status ;;
   }
 
-  ## depending on use, either this field or "via_channel" will represent the channel the ticket came through
   dimension: subject {
+    description: "The most recent value of the subject field for the ticket"
     type: string
     sql: ${TABLE}.subject ;;
   }
 
-  ## The submitter is always the first to comment on a ticket
   dimension: submitter_id {
-    description: "a submitter is either a customer or an agent submitting on behalf of a customer"
+    description: "The ID of the person who initiated the first public comment for the ticket."
     type: number
-    value_format_name: id
+    hidden: yes
     sql: ${TABLE}.submitter_id ;;
   }
 
   dimension: type {
+    description: "The ticket type. Possible values: problem, incident, question, and task."
     type: string
     sql: ${TABLE}.type ;;
   }
 
   dimension: via__channel {
+    description: "The channel used to create the ticket (e.g. API, SMS, Email, Facebook, etc)"
     type: string
     sql: ${TABLE}.via__channel ;;
   }
@@ -167,43 +214,40 @@ view: tickets {
 
   dimension: hyperlink {
     description: "Hyperlink to the Zendesk ticket"
-    group_label: "Zendesk"
     type: string
     sql: ${TABLE}.id ;;
     html: <a href="https://getaround.zendesk.com/agent/tickets/{{ value }}">{{ value }}</a> ;;
-  }
-
-  measure: count {
-    description: "Count Zendesk tickets"
-    type: count
-    drill_fields: [default*]
   }
 
   # ----- ADDITIONAL FIELDS -----
 
   dimension: is_pending {
     alias: [is_backlogged]
+    description: "\"Yes\" if the ticket status is pending."
     type: yesno
     sql: ${status} = 'pending' ;;
   }
 
-  dimension: is_onhold {
+  dimension: is_on_hold {
+    description: "\"Yes\" if the ticket status is hold."
     type: yesno
     sql: ${status} = 'hold' ;;
   }
 
   dimension: is_new {
+    description: "\"Yes\" if the ticket status is new."
     type: yesno
     sql: ${status} = 'new' ;;
   }
 
   dimension: is_open {
+    description: "\"Yes\" if the ticket status is open."
     type: yesno
     sql: ${status} = 'open' ;;
   }
 
   dimension: is_solved {
-    description: "solved tickets have either a solved or closed status"
+    description: "\"Yes\" if the ticket status is solved or closed."
     type: yesno
     sql: ${status} = 'solved' OR ${status} = 'closed' ;;
   }
@@ -219,8 +263,7 @@ view: tickets {
   }
 
   dimension: ticket_source {
-    description: "How the ticket was created"
-    group_label: "Ticket Details"
+    description: "How the ticket was created (e.g. Inbound Call, Inbound Email, Forked Ticket, Outbound Call, etc)"
     type: string
     sql: CASE WHEN ${via__channel} = 'voice' AND ${via__source__rel} = 'inbound' THEN 'Inbound Call'
            WHEN ${via__channel} = 'voice' AND ${via__source__rel} = 'outbound' THEN 'Outbound Call'
@@ -228,6 +271,7 @@ view: tickets {
            WHEN ${via__channel} = 'email' AND ${via__source__rel} IS NULL AND (${submitter_id} = 387083233
                                     OR ${submitter_id} IN (14347589207, 20732481127, 360354963368)) THEN 'Managed Tickets' ---shadow & no-reply
            WHEN ${via__channel} = 'email' AND ${via__source__rel} IS NULL THEN 'Inbound Email'
+           WHEN ${via__channel} = 'api' AND ${via__source__rel} IS NULL AND ${TABLE}.description LIKE 'Forked%' THEN 'Forked Ticket'
            WHEN ${via__channel} = 'api' AND ${via__source__rel} IS NULL THEN 'Programmatic'
            WHEN ${via__channel} = 'sms' AND ${via__source__rel} IS NULL THEN 'Managed Tickets' --- sms
            WHEN ${via__channel} = 'mobile_sdk' AND ${via__source__rel} = 'mobile_sdk' THEN 'Inbound Email'
@@ -238,7 +282,16 @@ view: tickets {
            ELSE NULL END;;
   }
 
+  ### Measures
+
+  measure: count {
+    description: "Count Zendesk tickets"
+    type: count
+    drill_fields: [default*]
+  }
+
   measure: count_pending_tickets {
+    description: "Count of tickets in pending status"
     type: count
     filters: {
       field: is_pending
@@ -247,19 +300,19 @@ view: tickets {
     drill_fields: [default*]
   }
 
-  measure: count_onhold_tickets {
+  measure: count_on_hold_tickets {
+    description: "Count of tickets in hold status"
     type: count
-
     filters: {
-      field: is_onhold
+      field: is_on_hold
       value: "Yes"
     }
     drill_fields: [default*]
   }
 
   measure: count_new_tickets {
+    description: "Count of tickets in new status"
     type: count
-
     filters: {
       field: is_new
       value: "Yes"
@@ -268,8 +321,8 @@ view: tickets {
   }
 
   measure: count_open_tickets {
+    description: "Count of tickets in open status"
     type: count
-
     filters: {
       field: is_open
       value: "Yes"
@@ -278,32 +331,17 @@ view: tickets {
   }
 
   measure: count_solved_tickets {
+    description: "Count of tickets in solved or closed status"
     type: count
-
     filters: {
       field: is_solved
       value: "Yes"
     }
     drill_fields: [default*]
   }
-
-  measure: count_distinct_organizations {
-    type: count_distinct
-    sql: ${organization_id} ;;
-  }
-
-  measure: count_orgs_submitting {
-    type: count_distinct
-    sql: ${organizations.name} ;;
-
-    filters: {
-      field: organization_name
-      value: "-NULL"
-    }
-  }
-
   measure: count_satisfied {
     description: "Count tickets marked as \"good\" by the requester"
+    group_label: "CSAT"
     type: count
     filters: {
       field: csat_rating
@@ -314,6 +352,7 @@ view: tickets {
 
   measure: count_dissatisfied {
     description: "Count tickets marked as \"bad\" by the requester"
+    group_label: "CSAT"
     type: count
     filters: {
       field: csat_rating
@@ -324,6 +363,7 @@ view: tickets {
 
   measure: count_offered {
     description: "Count tickets marked as \"offered\" by the requester"
+    group_label: "CSAT"
     type: count
     filters: {
       field: csat_rating
@@ -334,6 +374,7 @@ view: tickets {
 
   measure: count_unoffered {
     description: "Count tickets marked as \"unoffered\" by the requester"
+    group_label: "CSAT"
     type: count
     filters: {
       field: csat_rating
@@ -345,57 +386,11 @@ view: tickets {
   set: default {
     fields: [
       hyperlink,
-      created_at_time,
-      organization_name,
+      time_created_at_time,
       status,
-      csat_rating,
       type,
       via__channel,
       subject
     ]
   }
-
-
-  ############ TIME FIELDS ###########
-
-#  dimension_group: time {
-#    type: time
-    ###   use day_of_week
-#    timeframes: [day_of_week, hour_of_day]
-#    sql: ${TABLE}.created_at::timestamp ;;
-#  }
 }
-
-#   - dimension: created_day_of_week
-#     sql_case:
-#       Sunday:    ${hidden_created_day_of_week_index} = 6
-#       Monday:    ${hidden_created_day_of_week_index} = 0
-#       Tuesday:   ${hidden_created_day_of_week_index} = 1
-#       Wednesday: ${hidden_created_day_of_week_index} = 2
-#       Thursday:  ${hidden_created_day_of_week_index} = 3
-#       Friday:    ${hidden_created_day_of_week_index} = 4
-#       Saturday:  ${hidden_created_day_of_week_index} = 5
-
-### REVIEW
-#   - dimension: satisfaction_rating_percent_tier
-#     type: tier
-#     tiers: [10,20,30,40,50,60,70,80,90]
-#     sql: ${satisfaction_rating}
-#
-#   - measure: average_satisfaction_rating
-#     type: avg
-#     sql: ${satisfaction_rating}
-#     value_format: '#,#00.00%'
-
-
-### REVIEW BELOW
-# ----- Sets of fields for drilling ------
-#   sets:
-#     detail:
-#     - via__source__from__ticket_id
-#     - via__source__from__name
-#     - via__source__to__name
-#     - organizations.id
-#     - organizations.name
-#     - audits.count
-#     - zendesk_ticket_metrics.count

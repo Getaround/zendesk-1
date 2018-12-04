@@ -1,5 +1,5 @@
 view: groups {
-  sql_table_name: zendesk.zendesk_groups ;;
+  sql_table_name: zendesk_stitch.groups ;;
 
   dimension: id {
     primary_key: yes
@@ -7,24 +7,46 @@ view: groups {
     sql: ${TABLE}.id ;;
   }
 
-  dimension_group: created_at {
+  dimension_group: time_created_at {
+    alias: [created_at]
+    description: "Timestamp when the group was created at, in the timezone specified by the Looker user"
+    group_label: "Time Created At"
+    label: "Created At"
     type: time
-    timeframes: [time, date, week, month]
+    timeframes: [
+      time,
+      date,
+      week,
+      month
+    ]
     sql: ${TABLE}.created_at ;;
   }
 
-  #   - dimension: deleted
-  #     type: yesno
-  #     sql: ${TABLE}.deleted
-
   dimension: name {
+    description: "The name of the group, which generally corresponds to various teams at Getaround (e.g. Happiness, Claims, City, Safety Specialist, etc.)"
     type: string
     sql: ${TABLE}.name ;;
   }
 
+  dimension: is_happiness_group {
+    description: "\"Yes\" if this group should be included in reporting for the Happiness team.  Groups include Happiness, Lead, Supervisor and the managed queues."
+    type: yesno
+    sql: ${id} IN (20357762, 20707481, 32925228, 360000020007, 360000033968, 360000056487) ;;
+  }
+
+  ### Measures
+
   measure: count {
     description: "Count Zendesk groups"
     type: count
-    drill_fields: [id, name]
+    drill_fields: [default*]
+  }
+
+  set: default {
+    fields: [
+      id,
+      time_created_at_date,
+      name
+    ]
   }
 }

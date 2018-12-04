@@ -5,14 +5,14 @@ view: ticket__tags {
         tags.value,
         value_aggregate.all_values
       FROM
-        zendesk.tickets__tags AS tags
+        zendesk_stitch.tickets__tags AS tags
       LEFT JOIN (
         SELECT
           _sdc_source_key_id,
           STRING_AGG(value,
             ', ') AS all_values
         FROM
-          zendesk.tickets__tags
+          zendesk_stitch.tickets__tags
         GROUP BY
           _sdc_source_key_id) AS value_aggregate
       ON
@@ -34,7 +34,7 @@ view: ticket__tags {
   }
 
   dimension: all_values {
-    description: "Concatenated view of all Zendesk ticket tags"
+    description: "Concatenated view of all Zendesk ticket tags, comma separated"
     type: string
     sql: ${TABLE}.all_values ;;
   }
@@ -45,19 +45,20 @@ view: ticket__tags {
     sql: ${TABLE}.all_values ILIKE '%closed_by_merge%' ;;
   }
 
-  dimension_group: time_ticket_created_at {
-    alias: [created_at]
-    description: "Time the tag was added to the ticket"
-    label: "Created At"
-    hidden: yes
-    type: time
-    timeframes: [time, date, week, month]
-    sql: ${tickets.created_at_time}::timestamp ;;
-  }
+  ### Measures
 
   measure: count {
     description: "Count Zendesk ticket tag values"
     type: count
-    drill_fields: []
+    drill_fields: [default*]
+  }
+
+  set: default {
+    fields: [
+      ticket_id,
+      value,
+      all_values,
+      is_ticket_closed_by_merge,
+    ]
   }
 }

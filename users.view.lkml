@@ -1,126 +1,67 @@
 view: users {
-  sql_table_name: zendesk.users ;;
+  sql_table_name: zendesk_stitch.users ;;
 
   dimension: id {
     primary_key: yes
     type: number
+    hidden: yes
     sql: ${TABLE}.id ;;
   }
 
-  dimension: active {
-    type: yesno
-    sql: ${TABLE}.active ;;
-  }
-
   dimension: alias {
+    description: "The Zendesk user’s alias, displayed to Getaround's users"
     type: string
     sql: ${TABLE}.alias ;;
   }
 
-  dimension_group: created {
+  dimension_group: time_created_at {
+    description: "Timestamp when the Zendesk user was created at, in the timezone specified by the Looker user"
+    group_label: "Time Created At"
+    label: "Created At"
     type: time
-    timeframes: [time, date, week, month]
+    hidden: yes
+    timeframes: [
+      time,
+      date,
+      week,
+      month
+    ]
     sql: ${TABLE}.created_at ;;
   }
 
-  dimension: details {
-    type: string
-    sql: ${TABLE}.details ;;
-  }
-
   dimension: email {
+    description: "The Zendesk user’s primary email address"
     type: string
     sql: ${TABLE}.email ;;
   }
 
-  dimension_group: last_login {
-    type: time
-    timeframes: [time, date, week, month]
-    sql: ${TABLE}.last_login_at ;;
-  }
-
-  dimension: locale {
-    type: string
-    sql: ${TABLE}.locale ;;
-  }
-
-  dimension: locale_id {
-    type: number
-    value_format_name: id
-    sql: ${TABLE}.locale_id ;;
-  }
-
-  dimension: moderator {
-    type: yesno
-    sql: ${TABLE}.moderator ;;
-  }
-
   dimension: name {
+    description: "The Zendesk user’s full name"
     type: string
     sql: ${TABLE}.name ;;
   }
 
-  dimension: notes {
-    type: string
-    sql: ${TABLE}.notes ;;
-  }
-
-  dimension: only_private_comments {
-    type: yesno
-    sql: ${TABLE}.only_private_comments ;;
-  }
-
   dimension: organization_id {
     type: number
+    hidden: yes
     value_format_name: id
     sql: ${TABLE}.organization_id ;;
   }
 
-  dimension: remote_photo_url {
-    type: string
-    sql: ${TABLE}.photo__url ;;
-  }
-
   dimension: role {
+    description: "The role of the Zendesk user. Possible values: agent, admin, end-user"
     type: string
     sql: ${TABLE}.role ;;
   }
 
-  dimension: shared {
-    type: yesno
-    sql: ${TABLE}.shared ;;
-  }
-
-  dimension: suspended {
-    type: yesno
-    sql: ${TABLE}.suspended ;;
-  }
-
-  dimension: ticket_restriction {
+  dimension: timezone {
+    description: "The Zendesk user’s timezone"
     type: string
-    sql: ${TABLE}.ticket_restriction ;;
-  }
-
-  dimension: time_zone {
-    type: string
+    hidden: yes
     sql: ${TABLE}.time_zone ;;
   }
 
-  dimension_group: updated {
-    type: time
-    timeframes: [time, date, week, month]
-    sql: ${TABLE}.updated_at ;;
-  }
-
-  dimension: url {
-    type: string
-    sql: ${TABLE}.url ;;
-  }
-
-  dimension: verified {
-    type: yesno
-    sql: ${TABLE}.verified ;;
-  }
+  ### Measures
 
   measure: count {
     description: "Count Zendesk users"

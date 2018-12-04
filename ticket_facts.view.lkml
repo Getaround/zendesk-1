@@ -24,23 +24,23 @@ view: ticket_facts {
           COUNT(DISTINCT tickets.id) FILTER(WHERE tickets.via__channel = 'api') AS is_programmatically_created
 
         FROM
-        zendesk.audits AS audits
+        zendesk_stitch.ticket_audits AS audits
 
-        LEFT JOIN zendesk.audits__events AS events
-        ON events.audit_id = audits.id
+        LEFT JOIN zendesk_stitch.ticket_audits__events AS events
+        ON events._sdc_source_key_id = audits.id
 
-        LEFT JOIN zendesk.tickets AS tickets
+        LEFT JOIN zendesk_stitch.tickets AS tickets
         ON audits.ticket_id = tickets.id
 
-        LEFT JOIN zendesk.zendesk_ticket_metrics AS metrics
+        LEFT JOIN zendesk_stitch.ticket_metrics AS metrics
         ON audits.ticket_id = metrics.ticket_id
 
-        LEFT JOIN zendesk.zendesk_groups AS groups
+        LEFT JOIN zendesk_stitch.groups AS groups
         ON tickets.group_id = groups.id
         GROUP BY 1,2,3,4,5,6,7 ;;
 
     indexes: ["ticket_id"]
-    sql_trigger_value: SELECT COUNT(*) FROM zendesk.tickets ;;
+    sql_trigger_value: SELECT COUNT(*) FROM zendesk_stitch.tickets ;;
    }
 
     dimension: ticket_id {
@@ -215,14 +215,49 @@ view: ticket_facts {
       sql: ${TABLE}.is_programmatically_created > 0 ;;
     }
 
-    measure: count {
-      description: "Count Tickets Facts"
-      type: count_distinct
-      sql: ${ticket_id} ;;
-      drill_fields: [detail*]
+  ### Measures
+
+    measure: sum_number_outbound_calls {
+      description: "Sum Number of outbound calls associated with ticket"
+      group_label: "Activity Counts"
+      type: sum
+      sql: ${number_outbound_calls} ;;
+      drill_fields: [default*]
     }
 
-    set: detail {
+    measure: sum_number_inbound_calls {
+      description: "Sum Number of inbound calls associated with ticket"
+      group_label: "Activity Counts"
+      type: sum
+      sql: ${number_inbound_calls} ;;
+      drill_fields: [default*]
+    }
+
+    measure: sum_number_inbound_emails {
+      description: "Sum Number of inbound emails associated with ticket"
+      group_label: "Activity Counts"
+      type: sum
+      sql: ${number_inbound_emails} ;;
+      drill_fields: [default*]
+    }
+
+    measure: sum_number_outbound_emails {
+      description: "Sum Number of outbound emails associated with ticket"
+      group_label: "Activity Counts"
+      type: sum
+      sql: ${number_outbound_emails} ;;
+      drill_fields: [default*]
+    }
+
+    measure: sum_number_internal_comments {
+      description: "Sum Number of internal comments associated with ticket"
+      group_label: "Activity Counts"
+      type: sum
+      sql: ${number_internal_comments} ;;
+      drill_fields: [default*]
+    }
+
+    set: default {
       fields: [
         ticket_id,
         status,
@@ -231,10 +266,18 @@ view: ticket_facts {
         via__source__to__name,
         has_touched_multiple_groups,
         number_outbound_calls,
+        has_outbound_calls,
         number_inbound_calls,
+        has_inbound_calls,
         number_inbound_emails,
+        has_inbound_emails,
+        is_customer_visible,
+        is_one_touch_resolved,
+        is_eligible_for_one_touch_resolved,
         number_outbound_emails,
+        has_outbound_emails,
         number_internal_comments,
+        has_internal_comments,
         is_parent_to_merged_tickets,
         is_merged_into_another_ticket,
         is_programmatically_created
