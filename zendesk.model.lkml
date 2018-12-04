@@ -85,9 +85,9 @@ explore: tickets {
     relationship: many_to_one
   }
 
-  join: ticket_touches_groups {
+  join: ticket_group_touches {
     type: left_outer
-    sql_on: ${tickets.id} = ${ticket_touches_groups.ticket_id} ;;
+    sql_on: ${tickets.id} = ${ticket_group_touches.ticket_id} ;;
     relationship: one_to_one
   }
 

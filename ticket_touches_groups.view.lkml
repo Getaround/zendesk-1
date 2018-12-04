@@ -1,4 +1,4 @@
-view: ticket_touches_groups {
+view: ticket_group_touches {
   derived_table: {
     sql: SELECT
         DISTINCT audits.ticket_id AS ticket_id,
