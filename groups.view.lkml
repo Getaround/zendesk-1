@@ -29,9 +29,9 @@ view: groups {
   }
 
   dimension: is_happiness_group {
-    description: "\"Yes\" if this group should be included in reporting for the Happiness team.  Groups include Happiness, Lead, Supervisor and the managed queues."
+    description: "\"Yes\" if this group should be included in reporting for the Happiness team.  Groups include Renter Happiness, Owner Happiness, Owner Success, Happiness Team Lead, Happiness Escalation and the managed queues."
     type: yesno
-    sql: ${id} IN (20357762, 20707481, 32925228, 360000020007, 360000033968, 360000056487) ;;
+    sql: ${id} IN (20357762, 20707481, 32925228, 360000020007, 360000033968, 360000056487, 360000237428, 360000230527) ;;
   }
 
   ### Measures
