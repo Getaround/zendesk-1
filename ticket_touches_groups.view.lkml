@@ -2,8 +2,8 @@ view: ticket_group_touches {
   derived_table: {
     sql: SELECT
         DISTINCT audits.ticket_id AS ticket_id,
-        groups.name AS first_group,
-        events.value AS first_group_id
+        FIRST_VALUE(CASE WHEN events.previous_value IS NULL THEN groups.name ELSE NULL END) OVER (PARTITION BY ticket_id ORDER BY audits.created_at ASC) AS first_group,
+        FIRST_VALUE(CASE WHEN events.previous_value IS NULL THEN events.value ELSE NULL END) OVER (PARTITION BY ticket_id ORDER BY audits.created_at ASC) AS first_group_id
       FROM
         zendesk_stitch.ticket_audits__events AS events
       LEFT JOIN
@@ -16,7 +16,6 @@ view: ticket_group_touches {
         groups.id::text = events.value
       WHERE
         events.field_name = 'group_id'
-        AND events.type = 'Create'
        ;;
     indexes: ["ticket_id"]
     sql_trigger_value: SELECT COUNT(*) FROM zendesk_stitch.ticket_audits__events ;;
@@ -33,7 +32,7 @@ view: ticket_group_touches {
     description: "The name of the first group the ticket was assigned to"
     view_label: "Ticket First Touch"
     type: string
-    sql: COALESCE(${TABLE}.first_group,${tickets.group_name}) ;;
+    sql: ${TABLE}.first_group ;;
   }
 
   dimension: last_group {
