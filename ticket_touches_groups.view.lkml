@@ -33,7 +33,7 @@ view: ticket_group_touches {
     description: "The name of the first group the ticket was assigned to"
     view_label: "Ticket First Touch"
     type: string
-    sql: ${TABLE}.first_group ;;
+    sql: COALESCE(${TABLE}.first_group,${tickets.group_name}) ;;
   }
 
   dimension: last_group {
