@@ -21,7 +21,8 @@ view: ticket_facts {
           COUNT(DISTINCT audits.id) FILTER(WHERE events.type = 'Comment' AND events.public = false)  AS number_internal_comments,
           COUNT(DISTINCT audits.id) FILTER(WHERE audits.via__source__rel = 'merge' and audits.via__source__from__ticket_id IS NULL) AS number_merged_tickets,
           COUNT(DISTINCT audits.id) FILTER(WHERE audits.via__source__rel = 'merge' and audits.via__source__from__ticket_id IS NOT NULL)  AS is_ticket_merged,
-          COUNT(DISTINCT tickets.id) FILTER(WHERE tickets.via__channel = 'api') AS is_programmatically_created
+          COUNT(DISTINCT tickets.id) FILTER(WHERE tickets.via__channel = 'api') AS is_programmatically_created,
+          STRING_AGG(body,'       New Comment:       ') FILTER(WHERE (events.type = 'Comment' AND events.public = true)) AS public_comment_text
 
         FROM
         zendesk_stitch.ticket_audits AS audits
@@ -213,6 +214,12 @@ view: ticket_facts {
       group_label: "Ticket Details"
       type: yesno
       sql: ${TABLE}.is_programmatically_created > 0 ;;
+    }
+
+    dimension: public_comment_text {
+      description: "Concatenation of all public assignee and requester comments associated with this ticket."
+      type: string
+      sql: ${TABLE}.public_comment_text ;;
     }
 
   ### Measures
