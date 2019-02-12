@@ -19,7 +19,7 @@ view: users {
     group_label: "Time Created At"
     label: "Created At"
     type: time
-    hidden: yes
+    hidden: no
     timeframes: [
       time,
       date,
