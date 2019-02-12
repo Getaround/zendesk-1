@@ -61,6 +61,24 @@ view: users {
     sql: ${TABLE}.time_zone ;;
   }
 
+  dimension: agent_bpo_site {
+    description: "BPO site of agent"
+    type: string
+    sql: ${TABLE}.user_fields__bpo_site ;;
+  }
+
+  dimension: agent_team_lead {
+    description: "Team leader assigned to this agent"
+    type: string
+    sql: ${TABLE}.user_fields__team_lead ;;
+  }
+
+  dimension: agent_cohort {
+    description: "Agents cohort. This includes both location and start week information"
+    type: string
+    sql: ${TABLE}.user_fields__bpo_start_date ;;
+  }
+
   ### Measures
 
   measure: count {
