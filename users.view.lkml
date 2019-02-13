@@ -61,20 +61,22 @@ view: users {
     sql: ${TABLE}.time_zone ;;
   }
 
-  dimension: agent_bpo_site {
-    description: "BPO site of agent"
+  dimension: bpo_site {
+    label: "BPO Site"
+    description: "Location of third-party service provider."
     type: string
     sql: ${TABLE}.user_fields__bpo_site ;;
   }
 
-  dimension: agent_team_lead {
-    description: "Team leader assigned to this agent"
+  dimension: team_lead {
+    description: "Name of the team lead responsible for the management of a particular agent."
     type: string
     sql: ${TABLE}.user_fields__team_lead ;;
   }
 
-  dimension: agent_cohort {
-    description: "Agents cohort. This includes both location and start week information"
+  dimension: bpo_start_date {
+    label: "BPO Start Date"
+    description: "Start date of an agent at a third-party service provider."
     type: string
     sql: ${TABLE}.user_fields__bpo_start_date ;;
   }
