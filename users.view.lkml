@@ -74,9 +74,9 @@ view: users {
     sql: ${TABLE}.user_fields__team_lead ;;
   }
 
-  dimension: bpo_start_date {
-    label: "BPO Start Date"
-    description: "Start date of an agent at a third-party service provider."
+  dimension: bpo_cohort {
+    label: "BPO Cohort"
+    description: "Cohort identifier for third-party service provider. This field will be a combination of the agent's start date and starting location."
     type: string
     sql: ${TABLE}.user_fields__bpo_start_date ;;
   }
