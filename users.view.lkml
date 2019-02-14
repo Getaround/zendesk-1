@@ -61,6 +61,26 @@ view: users {
     sql: ${TABLE}.time_zone ;;
   }
 
+  dimension: bpo_site {
+    label: "BPO Site"
+    description: "Location of third-party service provider."
+    type: string
+    sql: ${TABLE}.user_fields__bpo_site ;;
+  }
+
+  dimension: team_lead {
+    description: "Name of the team lead responsible for the management of a particular agent."
+    type: string
+    sql: ${TABLE}.user_fields__team_lead ;;
+  }
+
+  dimension: bpo_cohort {
+    label: "BPO Cohort"
+    description: "Cohort identifier for third-party service provider. This field will be a combination of the agent's start date and starting location."
+    type: string
+    sql: ${TABLE}.user_fields__bpo_start_date ;;
+  }
+
   ### Measures
 
   measure: count {
