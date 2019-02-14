@@ -253,12 +253,20 @@ view: ticket_metrics {
     sql: ${TABLE}.reply_time_in_minutes__calendar ;;
   }
 
-  dimension: reply_time_in_hours__calendar_meet_SLA {
+  dimension: reply_time_in_hours__calendar_meet_4_hour_SLA {
     description: "\"Yes\" if the ticket was first replied to within the first 4 calendar hours"
     label: "First Reply Time Meets 4 hour SLA"
     group_label: "SLA"
     type: yesno
     sql: ${TABLE}.reply_time_in_minutes__calendar <= 240 ;;
+  }
+
+  dimension: reply_time_in_hours__calendar_meet_1_hour_SLA {
+    description: "\"Yes\" if the ticket was first replied to within the first 1 calendar hours.  This SLA applies to safety-alert related tickets"
+    label: "First Reply Time Meets 1 hour SLA"
+    group_label: "SLA"
+    type: yesno
+    sql: ${TABLE}.reply_time_in_minutes__calendar <= 60 ;;
   }
 
   dimension: reply_time_in_hours__business {
@@ -595,7 +603,8 @@ view: ticket_metrics {
       number_replies,
       reply_time_in_minutes__business,
       reply_time_in_minutes__calendar,
-      reply_time_in_hours__calendar_meet_SLA,
+      reply_time_in_hours__calendar_meet_4_hour_SLA,
+      reply_time_in_hours__calendar_meet_1_hour_SLA,
       reply_time_in_hours__business,
       reply_time_in_hours__calendar,
       requester_wait_time_in_minutes__business,
