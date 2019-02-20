@@ -131,6 +131,14 @@ view: ticket_metrics {
     sql: ${TABLE}.full_resolution_time_in_minutes__calendar <= 480 ;;
   }
 
+  dimension: full_resolution_time_in_minutes__calendar_less_than_24_hours {
+    description: "\"Yes\" if the ticket was solved within the first 24 calendar hours"
+    label: "Full Resolution Time Meets 24 hour SLA"
+    group_label: "SLA"
+    type: yesno
+    sql: ${TABLE}.full_resolution_time_in_minutes__calendar <= 1440 ;;
+  }
+
   dimension: first_resolution_time_in_hours__business {
     description: "The number of hours from when a ticket is created to when it is first solved, inside of business hours. Business hours are from M-F, 9am - 5pm PST."
     group_label: "First Resolution Time"
