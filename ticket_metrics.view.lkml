@@ -599,6 +599,7 @@ view: ticket_metrics {
       full_resolution_time_in_minutes__business,
       full_resolution_time_in_minutes__calendar,
       full_resolution_time_in_minutes__calendar_less_than_8_hours,
+      full_resolution_time_in_minutes__calendar_less_than_24_hours,
       first_resolution_time_in_hours__business,
       first_resolution_time_in_hours__calendar,
       full_resolution_time_in_hours__business,
