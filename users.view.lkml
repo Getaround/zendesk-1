@@ -87,6 +87,7 @@ view: users {
       year
     ]
     sql: ${TABLE}.user_fields__bpo_start_date::DATE ;;
+    convert_tz: no
   }
 
 
