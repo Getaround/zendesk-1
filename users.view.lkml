@@ -75,7 +75,7 @@ view: users {
   }
 
   dimension_group: time_bpo_cohort_start_at {
-    description: "Week that the third-party service provider started. This field is used to define BPO cohorts"
+    description: "Week that the third-party service provider started, used to define BPO cohorts.  This is a user-created field and doesn't have a specific timezone."
     group_label: "Time BPO Cohort Start At"
     label: "BPO Cohort Start At"
     type: time
