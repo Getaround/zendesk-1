@@ -415,6 +415,14 @@ view: ticket_metrics {
     sql: ${TABLE}.ticket_id ;;
   }
 
+  dimension: age_bpo_cohort_weeks {
+    label: "Age BPO Cohort Weeks"
+    description: "Age when the BPO agent solved ticket, measured in weeks since cohort start date"
+    type: number
+    sql:  EXTRACT(day from (DATE_TRUNC('week', ${ticket_metrics.time_solved_at_raw})
+      - DATE_TRUNC('week', ${ticket_last_assignee.time_bpo_cohort_start_at_raw})))/7 ;;
+  }
+
   ### Measures
 
   measure: count {

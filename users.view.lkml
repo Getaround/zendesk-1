@@ -74,12 +74,22 @@ view: users {
     sql: ${TABLE}.user_fields__team_lead ;;
   }
 
-  dimension: bpo_cohort {
-    label: "BPO Cohort"
-    description: "Cohort identifier for third-party service provider. This field will be a combination of the agent's start date and starting location."
-    type: string
-    sql: ${TABLE}.user_fields__bpo_start_date ;;
+  dimension_group: time_bpo_cohort_start_at {
+    description: "Week that the third-party service provider started, used to define BPO cohorts.  This is a user-created field and doesn't have a specific timezone."
+    group_label: "Time BPO Cohort Start At"
+    label: "BPO Cohort Start At"
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      year
+    ]
+    sql: ${TABLE}.user_fields__bpo_start_date::DATE ;;
+    convert_tz: no
   }
+
 
   ### Measures
 
