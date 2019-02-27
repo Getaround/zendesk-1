@@ -65,7 +65,7 @@ view: users {
     label: "BPO Site"
     description: "Location of third-party service provider."
     type: string
-    sql: ${TABLE}.user_fields__bpo_site ;;
+    sql: UPPER(${TABLE}.user_fields__bpo_site) ;;
   }
 
   dimension: team_lead {
