@@ -71,7 +71,7 @@ view: users {
   dimension: team_lead {
     description: "Name of the team lead responsible for the management of a particular agent."
     type: string
-    sql: ${TABLE}.user_fields__team_lead ;;
+    sql: INITCAP(REPLACE(${TABLE}.user_fields__team_lead,'_',' ')) ;;
   }
 
   dimension_group: time_bpo_cohort_start_at {
