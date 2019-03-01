@@ -65,13 +65,13 @@ view: users {
     label: "BPO Site"
     description: "Location of third-party service provider."
     type: string
-    sql: ${TABLE}.user_fields__bpo_site ;;
+    sql: UPPER(${TABLE}.user_fields__bpo_site) ;;
   }
 
   dimension: team_lead {
     description: "Name of the team lead responsible for the management of a particular agent."
     type: string
-    sql: ${TABLE}.user_fields__team_lead ;;
+    sql: INITCAP(REPLACE(${TABLE}.user_fields__team_lead,'_',' ')) ;;
   }
 
   dimension_group: time_bpo_cohort_start_at {
