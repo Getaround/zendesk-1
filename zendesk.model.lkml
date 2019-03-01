@@ -12,10 +12,6 @@ explore: users {
 }
 
 explore: tickets {
-  fields: [
-    ALL_FIELDS*,
-    -tickets.getaround_trip_dependent_fields*
-  ]
   join: ticket_custom_fields {
     type: left_outer
     foreign_key: tickets.id
