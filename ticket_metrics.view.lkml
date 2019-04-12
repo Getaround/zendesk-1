@@ -266,15 +266,28 @@ view: ticket_metrics {
     label: "First Reply Time Meets 4 hour SLA"
     group_label: "SLA"
     type: yesno
-    sql: ${TABLE}.reply_time_in_minutes__calendar <= 240 ;;
+    sql: ${reply_time_in_minutes__calendar} <= 240 ;;
   }
 
-  dimension: reply_time_in_hours__calendar_meet_1_hour_SLA {
-    description: "\"Yes\" if the ticket was first replied to within the first 1 calendar hours.  This SLA applies to safety-alert related tickets"
-    label: "First Reply Time Meets 1 hour SLA"
+  dimension: reply_time_in_hours__calendar_meet_2_hour_SLA {
+    description: "\"Yes\" if the ticket was first replied to within the first 2 calendar hours.  This SLA applies to account verification related tickets"
+    label: "First Reply Time Meets 2 hour SLA"
     group_label: "SLA"
     type: yesno
-    sql: ${TABLE}.reply_time_in_minutes__calendar <= 60 ;;
+    sql: ${reply_time_in_minutes__calendar} <= 120
+         AND (${ticket__tags.all_values} LIKE '%question-account-verification%'
+              OR ${ticket__tags.all_values} LIKE '%account_verification%'
+              OR ${ticket__tags.all_values} LIKE '%driving_record%'
+             ) ;;
+  }
+
+  dimension: is_account_verification_ticket {
+    description: "\"Yes\" if the ticket was for account verification"
+    group_label: "SLA"
+    type: yesno
+    sql: ${ticket__tags.all_values} LIKE '%question-account-verification%'
+         OR ${ticket__tags.all_values} LIKE '%account_verification%'
+         OR ${ticket__tags.all_values} LIKE '%driving_record%' ;;
   }
 
   dimension: reply_time_in_hours__business {
@@ -621,7 +634,7 @@ view: ticket_metrics {
       reply_time_in_minutes__business,
       reply_time_in_minutes__calendar,
       reply_time_in_hours__calendar_meet_4_hour_SLA,
-      reply_time_in_hours__calendar_meet_1_hour_SLA,
+      reply_time_in_hours__calendar_meet_2_hour_SLA,
       reply_time_in_hours__business,
       reply_time_in_hours__calendar,
       requester_wait_time_in_minutes__business,
