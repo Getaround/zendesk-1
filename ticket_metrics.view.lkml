@@ -131,12 +131,12 @@ view: ticket_metrics {
     sql: ${TABLE}.full_resolution_time_in_minutes__calendar <= 480 ;;
   }
 
-  dimension: full_resolution_time_in_minutes__calendar_less_than_24_hours {
-    description: "\"Yes\" if the ticket was solved within the first 24 calendar hours"
-    label: "Full Resolution Time Meets 24 hour SLA"
+  dimension: full_resolution_time_in_minutes__calendar_less_than_48_hours {
+    description: "\"Yes\" if the ticket was solved within the first 48 calendar hours"
+    label: "Full Resolution Time Meets 48 hour SLA"
     group_label: "SLA"
     type: yesno
-    sql: ${TABLE}.full_resolution_time_in_minutes__calendar <= 1440 ;;
+    sql: ${TABLE}.full_resolution_time_in_minutes__calendar <= 2880 ;;
   }
 
   dimension: first_resolution_time_in_hours__business {
@@ -620,7 +620,7 @@ view: ticket_metrics {
       full_resolution_time_in_minutes__business,
       full_resolution_time_in_minutes__calendar,
       full_resolution_time_in_minutes__calendar_less_than_8_hours,
-      full_resolution_time_in_minutes__calendar_less_than_24_hours,
+      full_resolution_time_in_minutes__calendar_less_than_48_hours,
       first_resolution_time_in_hours__business,
       first_resolution_time_in_hours__calendar,
       full_resolution_time_in_hours__business,
