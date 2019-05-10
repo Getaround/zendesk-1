@@ -8,6 +8,10 @@ view: ticket_facts {
           tickets.via__source__to__name,
           groups.name,
           metrics.group_stations AS number_of_groups_involved,
+          COUNT(DISTINCT audits.id) FILTER(WHERE events.type = 'Create' AND events.field_name IN
+                    (SELECT id::text FROM zendesk_stitch.ticket_fields
+                      WHERE raw_title ILIKE '%form_choice%'))
+                      AS count_web_form,
           COUNT(DISTINCT audits.id) FILTER(WHERE audits.via__channel = 'voice' AND audits.via__source__from__name = 'Getaround'
                                   AND audits.via__source__rel = 'outbound')  AS number_outbound_calls,
           COUNT(DISTINCT audits.id) FILTER(WHERE (audits.via__channel = 'voice' AND audits.via__source__to__name = 'Getaround'
@@ -40,9 +44,9 @@ view: ticket_facts {
         ON tickets.group_id = groups.id
         GROUP BY 1,2,3,4,5,6,7 ;;
 
-    indexes: ["ticket_id"]
-    sql_trigger_value: SELECT COUNT(*) FROM zendesk_stitch.tickets ;;
-   }
+      indexes: ["ticket_id"]
+      sql_trigger_value: SELECT COUNT(*) FROM zendesk_stitch.tickets ;;
+    }
 
     dimension: ticket_id {
       primary_key: yes
@@ -73,6 +77,13 @@ view: ticket_facts {
       hidden: yes
       type: string
       sql: ${TABLE}.via__source__to__name ;;
+    }
+
+    dimension: is_created_from_webform {
+      description: "Yes, if the ticket was created by webform"
+      group_label: "Activity Details"
+      type: yesno
+      sql: ${TABLE}.count_web_form > 0 ;;
     }
 
     dimension: has_touched_multiple_groups {
@@ -111,10 +122,10 @@ view: ticket_facts {
     }
 
     dimension: number_inbound_emails {
-      description: "Number of inbound emails associated with ticket"
+      description: "Number of inbound emails associated with ticket.  If a user submits a email via web form, this is included"
       group_label: "Activity Counts"
       type: number
-      sql: ${TABLE}.number_inbound_emails ;;
+      sql: ${TABLE}.number_inbound_emails + ${TABLE}.count_web_form ;;
     }
 
     dimension: has_inbound_emails {
@@ -222,7 +233,7 @@ view: ticket_facts {
       sql: ${TABLE}.public_comment_text ;;
     }
 
-  ### Measures
+    ### Measures
 
     measure: sum_number_outbound_calls {
       description: "Sum Number of outbound calls associated with ticket"

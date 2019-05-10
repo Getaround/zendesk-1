@@ -131,12 +131,12 @@ view: ticket_metrics {
     sql: ${TABLE}.full_resolution_time_in_minutes__calendar <= 480 ;;
   }
 
-  dimension: full_resolution_time_in_minutes__calendar_less_than_24_hours {
-    description: "\"Yes\" if the ticket was solved within the first 24 calendar hours"
-    label: "Full Resolution Time Meets 24 hour SLA"
+  dimension: full_resolution_time_in_minutes__calendar_less_than_48_hours {
+    description: "\"Yes\" if the ticket was solved within the first 48 calendar hours"
+    label: "Full Resolution Time Meets 48 hour SLA"
     group_label: "SLA"
     type: yesno
-    sql: ${TABLE}.full_resolution_time_in_minutes__calendar <= 1440 ;;
+    sql: ${TABLE}.full_resolution_time_in_minutes__calendar <= 2880 ;;
   }
 
   dimension: first_resolution_time_in_hours__business {
@@ -266,15 +266,28 @@ view: ticket_metrics {
     label: "First Reply Time Meets 4 hour SLA"
     group_label: "SLA"
     type: yesno
-    sql: ${TABLE}.reply_time_in_minutes__calendar <= 240 ;;
+    sql: ${reply_time_in_minutes__calendar} <= 240 ;;
   }
 
-  dimension: reply_time_in_hours__calendar_meet_1_hour_SLA {
-    description: "\"Yes\" if the ticket was first replied to within the first 1 calendar hours.  This SLA applies to safety-alert related tickets"
-    label: "First Reply Time Meets 1 hour SLA"
+  dimension: reply_time_in_hours__calendar_meet_2_hour_SLA {
+    description: "\"Yes\" if the ticket was first replied to within the first 2 calendar hours.  This SLA applies to account verification related tickets"
+    label: "First Reply Time Meets 2 hour SLA"
     group_label: "SLA"
     type: yesno
-    sql: ${TABLE}.reply_time_in_minutes__calendar <= 60 ;;
+    sql: ${reply_time_in_minutes__calendar} <= 120
+         AND (${ticket__tags.all_values} LIKE '%question-account-verification%'
+              OR ${ticket__tags.all_values} LIKE '%account_verification%'
+              OR ${ticket__tags.all_values} LIKE '%driving_record%'
+             ) ;;
+  }
+
+  dimension: is_account_verification_ticket {
+    description: "\"Yes\" if the ticket was for account verification"
+    group_label: "SLA"
+    type: yesno
+    sql: ${ticket__tags.all_values} LIKE '%question-account-verification%'
+         OR ${ticket__tags.all_values} LIKE '%account_verification%'
+         OR ${ticket__tags.all_values} LIKE '%driving_record%' ;;
   }
 
   dimension: reply_time_in_hours__business {
@@ -607,7 +620,7 @@ view: ticket_metrics {
       full_resolution_time_in_minutes__business,
       full_resolution_time_in_minutes__calendar,
       full_resolution_time_in_minutes__calendar_less_than_8_hours,
-      full_resolution_time_in_minutes__calendar_less_than_24_hours,
+      full_resolution_time_in_minutes__calendar_less_than_48_hours,
       first_resolution_time_in_hours__business,
       first_resolution_time_in_hours__calendar,
       full_resolution_time_in_hours__business,
@@ -621,7 +634,7 @@ view: ticket_metrics {
       reply_time_in_minutes__business,
       reply_time_in_minutes__calendar,
       reply_time_in_hours__calendar_meet_4_hour_SLA,
-      reply_time_in_hours__calendar_meet_1_hour_SLA,
+      reply_time_in_hours__calendar_meet_2_hour_SLA,
       reply_time_in_hours__business,
       reply_time_in_hours__calendar,
       requester_wait_time_in_minutes__business,

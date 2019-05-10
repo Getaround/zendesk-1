@@ -275,6 +275,7 @@ view: tickets {
            WHEN ${via__channel} = 'api' AND ${via__source__rel} IS NULL THEN 'Programmatic'
            WHEN ${via__channel} = 'sms' AND ${via__source__rel} IS NULL THEN 'Managed Tickets' --- sms
            WHEN ${via__channel} = 'mobile_sdk' AND ${via__source__rel} = 'mobile_sdk' THEN 'Inbound Email'
+           WHEN ${ticket_facts.is_created_from_webform} THEN 'Inbound Email'
            WHEN ${via__channel} = 'facebook' AND ${via__source__rel} IN ('message', 'post') THEN 'Facebook'
            WHEN ${via__channel} = 'twitter' AND ${via__source__rel} IN ('direct_message', 'mention') THEN 'Twitter'
            WHEN ${via__channel} = 'web' AND ${via__source__rel} = 'follow_up' THEN 'Inbound Email' --- follow-up ticket
