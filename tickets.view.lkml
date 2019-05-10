@@ -283,6 +283,46 @@ view: tickets {
            ELSE NULL END;;
   }
 
+  dimension: is_created_in_trip {
+    description: "'Yes' if ticket is created between 30 minutes prior to trip start time and 30 minutes post the final trip end time."
+    group_label: "Trip"
+    type: yesno
+    sql: ${time_created_at_utc_raw} >= (${getaround_trip.time_start_at_utc_raw} - INTERVAL '30 minutes')
+      AND ${time_created_at_utc_raw} <= (${getaround_trip.time_end_at_utc_raw} + INTERVAL '30 minutes') ;;
+  }
+
+  dimension: is_created_in_trip_extension {
+    description: "'Yes' if ticket is created between the trip's original end time and 30 minutes post the trip final extension's end time."
+    group_label: "Trip"
+    type: yesno
+    sql: ${time_created_at_utc_raw} >= (${getaround_trip.time_original_end_at_utc_raw})
+      AND ${time_created_at_utc_raw} <= (${getaround_trip.time_end_at_utc_raw} + INTERVAL '30 minutes') ;;
+  }
+
+  dimension: is_created_at_trip_start {
+    description: "'Yes' if ticket is created 30 minutes before or after the trip's start time"
+    group_label: "Trip"
+    type: yesno
+    sql: ${time_created_at_utc_raw} >= (${getaround_trip.time_start_at_utc_raw} - INTERVAL '30 minutes')
+      AND ${time_created_at_utc_raw} <= (${getaround_trip.time_start_at_utc_raw} + INTERVAL '30 minutes') ;;
+  }
+
+  dimension: is_created_at_original_end_time {
+    description: "'Yes' if ticket is created 30 minutes before or after the trip's original end time"
+    group_label: "Trip"
+    type: yesno
+    sql: ${time_created_at_utc_raw} >= (${getaround_trip.time_original_end_at_utc_raw} - INTERVAL '30 minutes')
+      AND ${time_created_at_utc_raw} <= (${getaround_trip.time_original_end_at_utc_raw} + INTERVAL '30 minutes') ;;
+  }
+
+  dimension: is_created_at_trip_creation_time {
+    description: "'Yes' if ticket is created 30 minutes before or after the trip's created at time"
+    group_label: "Trip"
+    type: yesno
+    sql: ${time_created_at_utc_raw} >= (${getaround_trip.time_created_at_utc_raw} - INTERVAL '30 minutes')
+      AND ${time_created_at_utc_raw} <= (${getaround_trip.time_created_at_utc_raw} + INTERVAL '30 minutes') ;;
+  }
+
   ### Measures
 
   measure: count {
@@ -392,6 +432,16 @@ view: tickets {
       type,
       via__channel,
       subject
+    ]
+  }
+
+  set: getaround_trip_dependent_fields {
+    fields: [
+      is_created_in_trip,
+      is_created_in_trip_extension,
+      is_created_at_trip_start,
+      is_created_at_original_end_time,
+      is_created_at_trip_creation_time,
     ]
   }
 }
