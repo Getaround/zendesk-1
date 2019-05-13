@@ -608,6 +608,22 @@ view: ticket_metrics {
     sql: ${TABLE}.replies ;;
   }
 
+  measure: p95_first_reply_time_hours {
+    description: "95th percentile of the number of hours it takes for a ticket's first reply"
+    type: percentile
+    percentile: 95
+    value_format: "0.#"
+    sql: ${reply_time_in_minutes__calendar}/60 ;;
+  }
+
+  measure: p95_full_resolution_time_hours {
+    description: "95th percentile of the number of hours it takes for a ticket to be fully resolved"
+    type: percentile
+    percentile: 95
+    value_format: "0.#"
+    sql: ${TABLE}.full_resolution_time_in_minutes__calendar/60 ;;
+  }
+
   set: default {
     fields: [
       id,
