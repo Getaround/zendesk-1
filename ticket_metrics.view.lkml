@@ -645,7 +645,7 @@ view: ticket_metrics {
     type: percentile
     percentile: 95
     value_format: "0.#"
-    sql: ${av_reply_time_in_minutes__calendar}/60 ;;
+    sql: ${coalesce_reply_time_and_first_resolution_time_in_minutes__calendar}/60 ;;
   }
 
   set: default {
