@@ -456,7 +456,7 @@ view: ticket_metrics {
     label: "Count Coalesce Reply Time and First Resolution Time Calendar Meet 2 hour SLA"
     description: "Count of tickets that are responded to or first resolved within the 2 hour SLA. This is primarily used for the Safety Team"
     type: sum
-    sql: CASE WHEN ${av_reply_time_in_minutes__calendar} <= 120 THEN 1 ELSE NULL END ;;
+    sql: CASE WHEN ${coalesce_reply_time_and_first_resolution_time_in_minutes__calendar} <= 120 THEN 1 ELSE NULL END ;;
     drill_fields: [default*]
   }
 
