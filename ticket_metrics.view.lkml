@@ -306,7 +306,7 @@ view: ticket_metrics {
     sql: ${TABLE}.reply_time_in_minutes__calendar / 60 ;;
   }
 
-  dimension: av_reply_time_in_minutes__calendar {
+  dimension: coalesce_reply_time_and_first_resolution_time_in_minutes__calendar {
     label: "AV_Reply_Time_In_Minutes__Calendar"
     description: "The number of minutes between ticket creation and the first reply from an agent for account verification tickets"
     group_label: "First Reply Time"
