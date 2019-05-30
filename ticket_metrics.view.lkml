@@ -640,7 +640,7 @@ view: ticket_metrics {
     sql: ${TABLE}.full_resolution_time_in_minutes__calendar/60 ;;
   }
 
-  measure: p95_av_reply_time_hours {
+  measure: p95_coalesce_reply_time_and_first_resolution_time_in_calendar_hours {
     description: "95th percentile of the number of hours it takes for an Account Verification ticket to be first replied to"
     type: percentile
     percentile: 95
