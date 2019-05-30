@@ -306,6 +306,15 @@ view: ticket_metrics {
     sql: ${TABLE}.reply_time_in_minutes__calendar / 60 ;;
   }
 
+  dimension: av_reply_time_in_minutes__calendar {
+    label: "AV_Reply_Time_In_Minutes__Calendar"
+    description: "The number of minutes between ticket creation and the first reply from an agent for account verification tickets"
+    group_label: "First Reply Time"
+    type: number
+    value_format_name: decimal_2
+    sql: coalesce(${TABLE}.reply_time_in_minutes__calendar,${first_resolution_time_in_minutes__calendar}) ;;
+  }
+
   dimension_group: time_requester_updated_at {
     description: "The time the requester last updated the ticket, in the timezone specified by the Looker user"
     group_label: "Time Requester Updated At"
@@ -441,6 +450,14 @@ view: ticket_metrics {
   measure: count {
     description: "Count Zendesk ticket metrics"
     type: count
+    drill_fields: [default*]
+  }
+
+  measure: count_within_2hr_sla {
+    label: "Count Within 2hr SLA"
+    description: "Count AV tickets replied to within 2 hours"
+    type: sum
+    sql: CASE WHEN ${av_reply_time_in_minutes__calendar} <= 120 THEN 1 ELSE NULL END ;;
     drill_fields: [default*]
   }
 
@@ -622,6 +639,14 @@ view: ticket_metrics {
     percentile: 95
     value_format: "0.#"
     sql: ${TABLE}.full_resolution_time_in_minutes__calendar/60 ;;
+  }
+
+  measure: p95_av_reply_time_hours {
+    description: "95th percentile of the number of hours it takes for an Account Verification ticket to be first replied to"
+    type: percentile
+    percentile: 95
+    value_format: "0.#"
+    sql: ${av_reply_time_in_minutes__calendar}/60 ;;
   }
 
   set: default {
