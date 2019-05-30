@@ -307,7 +307,7 @@ view: ticket_metrics {
   }
 
   dimension: coalesce_reply_time_and_first_resolution_time_in_minutes__calendar {
-    description: "The number of minutes between ticket creation and the first reply from an agent for account verification tickets"
+    description: "The number of minutes between ticket creation and the first reply from an agent, if it exists.  If not, the number of minutes between ticket creation and first resolved at time.  This is primarily used for the Safety Team, where responding to a customer is not always necessary."
     group_label: "First Reply Time"
     type: number
     value_format_name: decimal_2
