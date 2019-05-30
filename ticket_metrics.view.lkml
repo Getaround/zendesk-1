@@ -306,7 +306,7 @@ view: ticket_metrics {
     sql: ${TABLE}.reply_time_in_minutes__calendar / 60 ;;
   }
 
-  dimension: coalesce_reply_time_and_first_resolution_time_in_minutes__calendar {
+  dimension: reply_time_coalesced_with_first_resolution_time_in_minutes__calendar {
     description: "The number of minutes between ticket creation and the first reply from an agent, if it exists.  If not, the number of minutes between ticket creation and first resolved at time.  This is primarily used for the Safety Team, where responding to a customer is not always necessary."
     group_label: "First Reply Time"
     type: number
@@ -457,7 +457,7 @@ view: ticket_metrics {
     description: "Count of tickets that are responded to or first resolved within the 2 hour SLA. This is primarily used for the Safety Team"
     group_label: "First Reply Time"
     type: sum
-    sql: CASE WHEN ${coalesce_reply_time_and_first_resolution_time_in_minutes__calendar} <= 120 THEN 1 ELSE NULL END ;;
+    sql: CASE WHEN ${reply_time_coalesced_with_first_resolution_time_in_minutes__calendar} <= 120 THEN 1 ELSE NULL END ;;
     drill_fields: [default*]
   }
 
@@ -629,7 +629,7 @@ view: ticket_metrics {
     description: "95th percentile of the number of hours it takes for a ticket's first reply"
     type: percentile
     percentile: 95
-    value_format: "0.#"
+    value_format: "0.##"
     sql: ${reply_time_in_minutes__calendar}/60 ;;
   }
 
@@ -637,7 +637,7 @@ view: ticket_metrics {
     description: "95th percentile of the number of hours it takes for a ticket to be fully resolved"
     type: percentile
     percentile: 95
-    value_format: "0.#"
+    value_format: "0.##"
     sql: ${TABLE}.full_resolution_time_in_minutes__calendar/60 ;;
   }
 
@@ -646,8 +646,8 @@ view: ticket_metrics {
     group_label: "First Reply Time"
     type: percentile
     percentile: 95
-    value_format: "0.#"
-    sql: ${coalesce_reply_time_and_first_resolution_time_in_minutes__calendar}/60 ;;
+    value_format: "0.##"
+    sql: ${reply_time_coalesced_with_first_resolution_time_in_minutes__calendar}/60 ;;
   }
 
   set: default {
