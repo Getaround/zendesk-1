@@ -452,7 +452,7 @@ view: ticket_metrics {
     drill_fields: [default*]
   }
 
-  measure: count_within_2hr_sla {
+  measure: count_coalesce_reply_time_and_first_resolution_time_calendar_meet_2_hour_SLA {
     label: "Count Within 2hr SLA"
     description: "Count AV tickets replied to within 2 hours"
     type: sum
