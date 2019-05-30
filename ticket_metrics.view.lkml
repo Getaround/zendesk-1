@@ -642,6 +642,7 @@ view: ticket_metrics {
 
   measure: p95_coalesce_reply_time_and_first_resolution_time_in_calendar_hours {
     description: "95th percentile of the number of hours it takes for a ticket to be responded to or first resolved"
+    group_label: "First Reply Time"
     type: percentile
     percentile: 95
     value_format: "0.#"
