@@ -650,6 +650,28 @@ view: ticket_metrics {
     sql: ${reply_time_coalesced_with_first_resolution_time_in_minutes__calendar}/60 ;;
   }
 
+  measure: count_within_first_reply_time_4_hour_sla {
+    label: "Count Within First Reply Time 4 Hour SLA"
+    type: count
+    drill_fields: [default*]
+
+    filters: {
+      field: reply_time_in_hours__calendar_meet_4_hour_SLA
+      value: "Yes"
+    }
+  }
+
+  measure: count_within_full_resolution_time_48_hour_sla {
+    label: "Count Within Full Resolution Time 48 Hour SLA"
+    type: count
+    drill_fields: [default*]
+
+    filters: {
+      field: full_resolution_time_in_minutes__calendar_less_than_48_hours
+      value: "Yes"
+    }
+  }
+
   set: default {
     fields: [
       id,
