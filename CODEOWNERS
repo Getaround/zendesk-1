@@ -1,0 +1,12 @@
+# Code Owners for Looker
+#
+# Ownership philosophy mapped out in this file:
+#
+#   - For models, requires review from @kroo or @samzaid
+#   - For views, requires review from @horatiol or @xiaolong
+
+# Sam and Elliot are default owners:
+*             @samzaid @kroo
+
+# Shawn and Horatio for changes to views:
+*.view.lkml   @xiaolong @horatiol
