@@ -180,6 +180,12 @@ view: ticket_custom_fields {
     sql:  ${getaround_car_id} IS NOT NULL ;;
   }
 
+  dimension: value_freedom_metadata {
+    description: "\"Yes\" if this ticket has a Car ID set"
+    type: string
+    sql:  ${TABLE}.value_freedom_metadata ;;
+  }
+
   ### Measures
 
   measure: count {
