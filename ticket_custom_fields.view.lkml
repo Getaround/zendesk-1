@@ -58,12 +58,12 @@ view: ticket_custom_fields {
                       OVER (PARTITION BY tickets__fields._sdc_source_key_id) ~ '^\d+(.\d+)?$'
                THEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 31479707)
                       OVER (PARTITION BY tickets__fields._sdc_source_key_id)
-               ELSE NULL END)::int AS value_total_time_spent,
+               ELSE NULL END)::bigint AS value_total_time_spent,
           (CASE WHEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 31479717)
                       OVER (PARTITION BY tickets__fields._sdc_source_key_id) ~ '^\d+(.\d+)?$'
                THEN MAX(tickets__fields.value) FILTER (WHERE tickets__fields.id = 31479717)
                       OVER (PARTITION BY tickets__fields._sdc_source_key_id)
-               ELSE NULL END)::int AS value_time_spent_last_update
+               ELSE NULL END)::bigint AS value_time_spent_last_update
        FROM zendesk_stitch.tickets__custom_fields as tickets__fields
           LEFT JOIN zendesk_stitch.ticket_fields__custom_field_options AS value_options
             ON (tickets__fields.id = value_options._sdc_source_key_id AND
