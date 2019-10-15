@@ -265,14 +265,16 @@ view: tickets {
   dimension: ticket_source {
     description: "How the ticket was created (e.g. Inbound Call, Inbound Email, Forked Ticket, Outbound Call, etc)"
     type: string
-    sql: CASE WHEN ${via__channel} = 'voice' AND ${via__source__rel} = 'inbound' THEN 'Inbound Call'
+    sql: CASE
+           WHEN ${via__channel} = 'api' AND ${TABLE}.description ILIKE '%UJET%' AND ${TABLE}.subject ILIKE '%voicemail%' THEN 'Inbound Voicemail'
+           WHEN ${TABLE}.description LIKE '%Support Phone Number%' THEN 'Inbound Call'
+           WHEN ${TABLE}.description LIKE '%Outbound Number%' THEN 'Outbound Call'
+           WHEN ${via__channel} = 'voice' AND ${via__source__rel} = 'inbound' THEN 'Inbound Call'
            WHEN ${via__channel} = 'voice' AND ${via__source__rel} = 'outbound' THEN 'Outbound Call'
            WHEN ${via__channel} = 'voice' AND ${via__source__rel} = 'voicemail' THEN 'Inbound Voicemail'
            WHEN ${via__channel} = 'email' AND ${via__source__rel} IS NULL AND (${submitter_id} = 387083233
                                     OR ${submitter_id} IN (14347589207, 20732481127, 360354963368)) THEN 'Managed Tickets' ---shadow & no-reply
            WHEN ${via__channel} = 'email' AND ${via__source__rel} IS NULL THEN 'Inbound Email'
-           WHEN ${via__channel} = 'api' AND ${TABLE}.description ILIKE '%UJET%' AND ${TABLE}.subject ILIKE '%voicemail%' THEN 'Inbound Voicemail'
-           WHEN ${via__channel} = 'api' AND ${TABLE}.description ILIKE '**UJET Call ID**%' THEN 'Inbound Call'
            WHEN ${via__channel} = 'api' AND ${via__source__rel} IS NULL AND ${TABLE}.description LIKE 'Forked%' THEN 'Forked Ticket'
            WHEN ${via__channel} = 'api' AND ${via__source__rel} IS NULL THEN 'Programmatic'
            WHEN ${via__channel} = 'sms' AND ${via__source__rel} IS NULL THEN 'Managed Tickets' --- sms
