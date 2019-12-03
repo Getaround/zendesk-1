@@ -229,6 +229,7 @@ view: tickets {
   }
 
   dimension: is_on_hold {
+    label: "Is On-hold"
     description: "\"Yes\" if the ticket status is hold."
     type: yesno
     sql: ${status} = 'hold' ;;
@@ -344,6 +345,7 @@ view: tickets {
   }
 
   measure: count_on_hold_tickets {
+    label: "Count On-hold Tickets"
     description: "Count of tickets in hold status"
     type: count
     filters: {
