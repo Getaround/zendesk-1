@@ -206,8 +206,14 @@ view: tickets {
     sql: ${TABLE}.via__channel ;;
   }
 
+  dimension: description {
+    description: "The channel used to create the ticket (e.g. API, SMS, Email, Facebook, etc)"
+    type: string
+    sql: ${TABLE}.description ;;
+  }
+
   dimension: via__source__rel {
-    hidden: yes
+    hidden: no
     type: string
     sql: ${TABLE}.via__source__rel ;;
   }
@@ -282,9 +288,48 @@ view: tickets {
            WHEN ${ticket_facts.is_created_from_webform} THEN 'Inbound Email'
            WHEN ${via__channel} = 'facebook' AND ${via__source__rel} IN ('message', 'post') THEN 'Facebook'
            WHEN ${via__channel} = 'twitter' AND ${via__source__rel} IN ('direct_message', 'mention') THEN 'Twitter'
-           WHEN ${via__channel} = 'web' AND ${via__source__rel} = 'follow_up' THEN 'Inbound Email' --- follow-up ticket
+           WHEN ${via__channel} = 'web' AND ${via__source__rel} = 'follow_up' THEN NULL ---'Inbound Email' --- follow-up ticket
            WHEN ${via__channel} = 'web' AND ${via__source__rel} IS NULL AND ${ticket_facts.number_outbound_emails} > 0 THEN 'Outbound Email'
            ELSE NULL END;;
+  }
+
+  dimension: ticket_source2 {
+    description: "How the ticket was created (e.g. Inbound Call, Inbound Email, Forked Ticket, Outbound Call, etc)"
+    type: string
+    sql: CASE
+          WHEN ${via__channel} = 'web' AND ${via__source__rel} = 'follow_up' THEN 'Follow Up'
+          WHEN ${TABLE}.subject = 'Incoming call via UJET' THEN 'Inbound SDK Call'
+          WHEN ${TABLE}.subject = 'Scheduled call via UJET' THEN 'Scheduled Call'
+          WHEN ${TABLE}.subject = 'Chat via UJET' THEN 'In-App Chat'
+          WHEN ${via__channel} = 'api' AND ${TABLE}.description ILIKE '%UJET%' AND ${TABLE}.subject ILIKE '%voicemail%' THEN 'Inbound Voicemail'
+          WHEN ${TABLE}.description LIKE '%Support Phone Number%' THEN 'Inbound Call'
+          WHEN ${TABLE}.description LIKE '%Outbound Number%' THEN 'Outbound Call'
+          WHEN ${via__channel} = 'web' THEN 'Inbound Web Form'
+          WHEN ${ticket__tags.all_values} ILIKE '%renter_feedback%' THEN 'Post-trip negative feedback'
+          WHEN ${ticket__tags.all_values} ILIKE '%bbb%' THEN 'Social Media'
+          WHEN ${ticket__tags.all_values} ILIKE '%new_yelp_review%' THEN 'Social Media'
+          WHEN ${ticket__tags.all_values} ILIKE '%facebook_post%' THEN 'Social Media'
+          WHEN ${ticket__tags.all_values} ILIKE '%feedback_score_distrust%' THEN 'Owner Distrust'
+          WHEN ${ticket__tags.all_values} ILIKE '%walkaround_inspection%' THEN 'Pre-Trip Inspection'
+          WHEN ${ticket__tags.all_values} ILIKE '%owner_submitted_claim_form%' THEN 'Claims Submission'
+          WHEN ${ticket__tags.all_values} ILIKE '%task-onboarding%' THEN 'Onboarding Tickets'
+          WHEN ${ticket__tags.all_values} ILIKE '%task-late-return%' THEN 'Late Return'
+          WHEN ${ticket__tags.all_values} ILIKE '%violation-late-return%' THEN 'Late Return'
+          WHEN ${TABLE}.subject ILIKE 'Trip extension%' THEN 'Late Return'
+          WHEN ${TABLE}.subject ILIKE 'vWork Job Status%' THEN 'vWork w/ no ZD Ticket'
+          WHEN ${TABLE}.subject ILIKE 'Low Battery%' THEN NULL
+          WHEN ${ticket__tags.all_values} ILIKE '%task-rebook%' THEN 'Rebooking'
+          WHEN ${ticket__tags.all_values} ILIKE '%auto-fuel-reimbursement%' THEN 'Fuel Reimbursement'
+          WHEN ${ticket__tags.all_values} ILIKE '%fuel-reimbursement%' THEN 'Fuel Reimbursement'
+          WHEN ${ticket__tags.all_values} ILIKE '%task-connect-outage%' THEN 'Connect Outage'
+          WHEN ${ticket__tags.all_values} ILIKE '%safety-alert%' THEN 'Safety Alerts'
+          WHEN ${ticket__tags.all_values} ILIKE '%account-verification%' THEN 'Account Verification'
+          WHEN ${ticket__tags.all_values} ILIKE '%task-onboarding%' THEN 'Expiring Uber Doc'
+          WHEN ${ticket__tags.all_values} ILIKE '%task-webapp-error%' THEN 'Web App'
+          WHEN ${ticket__tags.all_values} ILIKE '%task-stripe-notice%' THEN 'Stripe Disputes'
+          WHEN ${ticket__tags.all_values} ILIKE '%violation-infraction%' THEN 'Citation Reports'
+          WHEN ${via__channel} = 'api' AND ${via__source__rel} IS NULL AND ${TABLE}.description LIKE 'Forked%' THEN 'Forked Ticket'
+          ELSE NULL END;;
   }
 
   dimension: is_created_in_trip {
