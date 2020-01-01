@@ -60,18 +60,18 @@ view: agent_touch {
     sql: ${TABLE}.created_at ;;
   }
 
-  dimension: email {
+  dimension: agent_email {
     description: "Email address of Agent who touched the ticket"
     group_label: "Agent"
     type: string
-    sql: ${TABLE}."email" ;;
+    sql: ${TABLE}."agent_email" ;;
   }
 
-  dimension: name {
+  dimension: agent_name {
     description: "Full name of Agent who touched the ticket"
     group_label: "Agent"
     type: string
-    sql: ${TABLE}."name" ;;
+    sql: ${TABLE}."agent_name" ;;
   }
 
   dimension: ticket_id {
@@ -84,7 +84,7 @@ view: agent_touch {
     drill_fields: [
       id,
       time_touched_at_utc_raw,
-      email,
+      agent_email,
       ticket_id
       ]
   }
