@@ -1,12 +1,19 @@
 view: agent_touch {
-  sql_table_name: dbt_arthur_common.zendesk_ticket_touch ;;
+  sql_table_name: analytics_common.zendesk_agent_touch ;;
 
 
   dimension: id {
     description: "ID for the touch of a ticket"
     primary_key: yes
+    hidden: yes
     type: number
     sql: ${TABLE}."id" ;;
+  }
+
+  dimension: ticket_id {
+    type: number
+    hidden: yes
+    sql: ${TABLE}."ticket_id" ;;
   }
 
   dimension_group: time_touched_at_utc {
@@ -62,21 +69,14 @@ view: agent_touch {
 
   dimension: agent_email {
     description: "Email address of Agent who touched the ticket"
-    group_label: "Agent"
     type: string
     sql: ${TABLE}."agent_email" ;;
   }
 
   dimension: agent_name {
     description: "Full name of Agent who touched the ticket"
-    group_label: "Agent"
     type: string
     sql: ${TABLE}."agent_name" ;;
-  }
-
-  dimension: ticket_id {
-    type: number
-    sql: ${TABLE}."ticket_id" ;;
   }
 
   measure: count {
