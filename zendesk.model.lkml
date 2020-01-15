@@ -110,6 +110,12 @@ explore: tickets {
     relationship: many_to_one
   }
 
+  join: agent_touch {
+    view_label: "Agent Touch"
+    sql_on: ${tickets.id} = ${agent_touch.ticket_id} ;;
+    relationship: one_to_many
+  }
+
 #   join: satisfaction_ratings {
 #     view_label: "CSAT Ratings"
 #     type: left_outer
