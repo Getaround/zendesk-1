@@ -269,7 +269,6 @@ view: tickets {
   }
 
   dimension: ticket_source {
-    label: "Ticket Source Channel"
     description: "Channel through which the ticket was created (e.g. Inbound Call, Inbound Email, Forked Ticket, Outbound Call, etc)"
     type: string
     sql: CASE
