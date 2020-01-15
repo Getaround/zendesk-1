@@ -78,7 +78,6 @@ view: tickets {
          END ;;
   }
 
-
   dimension_group: time_created_at_utc {
     alias: [created_at_utc]
     description: "Timestamp when the ticket was created, in UTC"
@@ -213,7 +212,7 @@ view: tickets {
   }
 
   dimension: via__source__rel {
-    hidden: no
+    hidden: yes
     type: string
     sql: ${TABLE}.via__source__rel ;;
   }
@@ -270,7 +269,8 @@ view: tickets {
   }
 
   dimension: ticket_source {
-    description: "How the ticket was created (e.g. Inbound Call, Inbound Email, Forked Ticket, Outbound Call, etc)"
+    label: "Ticket Source Channel"
+    description: "Channel through which the ticket was created (e.g. Inbound Call, Inbound Email, Forked Ticket, Outbound Call, etc)"
     type: string
     sql: CASE
            WHEN ${via__channel} = 'api' AND ${TABLE}.description ILIKE '%UJET%' AND ${TABLE}.subject ILIKE '%voicemail%' THEN 'Inbound Voicemail'
@@ -294,8 +294,8 @@ view: tickets {
            ELSE NULL END;;
   }
 
-  dimension: ticket_source2 {
-    description: "How the ticket was created (e.g. Inbound Call, Inbound Email, Forked Ticket, Outbound Call, etc)"
+  dimension: ticket_source_reason {
+    description: "Reason the ticket was created, possibly including channel (e.g. Inbound Call, Safety Alerts, Owner Distrust, Pre-Trip Inspection etc)"
     type: string
     sql: CASE
           WHEN ${via__channel} = 'web' AND ${via__source__rel} = 'follow_up' THEN 'Follow Up'
@@ -431,6 +431,7 @@ view: tickets {
     }
     drill_fields: [default*]
   }
+
   measure: count_satisfied {
     description: "Count tickets marked as \"good\" by the requester"
     group_label: "CSAT"
