@@ -6,7 +6,7 @@
 #   - For views, requires review from @horatiol or @xiaolong
 
 # Sam and Elliot are default owners:
-*             @samzaid @kroo @jaywmehta
+*             @samzaid @kroo
 
 # Shawn and Horatio for changes to views:
-*.view.lkml   @xiaolong @horatiol @jaywmehta
+*.view.lkml   @xiaolong @horatiol @fireplacetv 
